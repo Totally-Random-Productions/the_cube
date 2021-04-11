@@ -79,15 +79,16 @@
 
             init: function()
             {
-                    this.stars=[];
+                    this.flyingWeapon=[];
                     this.mplatforms = [];
                     this.platforms;
+                    this.isOnGround = false;
                     this.player;
                     this.spike;
                     this.turret;
                     this.pillars;
                     this.base;
-                    this.prize;
+                    this.trophy;
                     this.aggrox;
                     this.aggroy;
                     this.target;
@@ -106,7 +107,7 @@
                 this.load.image('death', 'testob/cube3.png');
                 this.load.image('pil', 'testob/pil.png');
                 this.load.image('tur', 'testob/turret1.png');
-                this.load.image('prize', 'testob/prize.png');
+                this.load.image('trophy', 'testob/prize.png');
                 this.load.image('base', 'testob/base.png');
                 this.load.image('circ', 'testob/circle.png');
             },
@@ -120,10 +121,10 @@
                 this.add.image(1280, 0, 'back').setOrigin(0);
                 this.add.image(1280*2, 0, 'back').setOrigin(0);
 
-                this.stars[0] = this.physics.add.sprite(50, 400, 'star').setCircle(25);
-                this.stars[0].body.setGravityY(-300);//sets gravity to negative of the world gravity so the object cannot be moved by gravity
-                this.stars[1] = this.physics.add.sprite(1400, 300, 'star').setCircle(25);
-                this.stars[1].body.setGravityY(-300);
+                this.flyingWeapon[0] = this.physics.add.sprite(50, 400, 'star').setCircle(25);
+                this.flyingWeapon[0].body.setGravityY(-300);//sets gravity to negative of the world gravity so the object cannot be moved by gravity
+                this.flyingWeapon[1] = this.physics.add.sprite(1400, 300, 'star').setCircle(25);
+                this.flyingWeapon[1].body.setGravityY(-300);
 
                 this.platforms = this.physics.add.staticGroup(); //creates a new group for this.platforms. They cannot move at all
                 this.platforms.create(400, 500, 'plat');
@@ -160,30 +161,39 @@
                 this.turret.body.setGravityY(-300);
                 this.turret.setImmovable(true);
 
-                this.prize = this.physics.add.sprite(2500, 200, 'prize');
-                this.prize.setCollideWorldBounds(true); //prevents the object from falling through the world
+                this.trophy = this.physics.add.sprite(2500, 200, 'trophy').setScale(0.3);
+                this.trophy.setCollideWorldBounds(true); //prevents the object from falling through the world
 
                 this.floor = this.physics.add.staticGroup();
                 this.floor.create(640, 670, 'floor');
                 this.floor.create(2370, 670, 'floor');
 
-                this.player = this.physics.add.sprite(100, 450, 'cube');
+                this.player = this.physics.add.sprite(100, 470, 'cube').setScale(1.6);
                 this.player.setBounce(0.1);
                 this.player.setCollideWorldBounds(true);
                 this.player.body.setGravityY(900);
 
-                this.physics.add.collider(this.player, this.platforms); //checks to see if the objects collide
+                this.physics.add.collider(this.player, this.platforms);
+                this.physics.add.collider(this.player, this.floor, groundCheck, this.null, this); //checks to see if the objects collide
                 this.physics.add.collider(this.player, this.mplatforms);
                 this.physics.add.collider(this.player, this.floor);
                 this.physics.add.collider(this.player, this.pillars);
-                this.physics.add.collider(this.floor, this.prize);
+                this.physics.add.collider(this.floor, this.trophy);
                 this.physics.add.collider(this.player, this.spike, this.hit, null, this); //checks to see if the objects collide, passes the objects to the function 'hit' if they do
-                this.physics.add.collider(this.player, this.stars, this.hit, null, this);
+                this.physics.add.collider(this.player, this.flyingWeapon, this.hit, null, this);
                 this.physics.add.collider(this.player, this.turret, this.hit, null, this);
-                this.physics.add.overlap(this.player, this.prize, this.win, null, this); //checks to see if the objects overlap, passes the objects to the function 'win' if they do
+                this.physics.add.overlap(this.player, this.trophy, this.win, null, this); //checks to see if the objects overlap, passes the objects to the function 'win' if they do
 
                 this.cursors = this.input.keyboard.createCursorKeys(); //creates inputs using the arrow keys
                 this.cameras.main.startFollow(this.player, true, 0.05, 0.05); //makes the camera track the player. increasing the numbers makes the camera track faster
+            
+                function groundCheck(player, floor){
+                this.isOnGround = true;
+                
+               console.log('true')
+            }
+
+            
             },
 
             update: function()
@@ -200,24 +210,24 @@
                     }
                 }
 
-                this.stars[0].rotation+=0.5; //sets rotation and velocity of moving obstacles
-                if (this.stars[0].x>300)
+                this.flyingWeapon[0].rotation+=0.2; //sets rotation and velocity of moving obstacles
+                if (this.flyingWeapon[0].x>300)
                 {
-                    this.stars[0].setVelocityX(-150);
+                    this.flyingWeapon[0].setVelocityX(-150);
                 }
-                else if (this.stars[0].x<100)
+                else if (this.flyingWeapon[0].x<100)
                 {
-                    this.stars[0].setVelocityX(150);
+                    this.flyingWeapon[0].setVelocityX(150);
                 }
 
-                this.stars[1].rotation+=0.5;
-                if (this.stars[1].y<=300)
+                this.flyingWeapon[1].rotation+=0.2;
+                if (this.flyingWeapon[1].y<=300)
                 {
-                    this.stars[1].setVelocityY(150);
+                    this.flyingWeapon[1].setVelocityY(150);
                 }
-                else if (this.stars[1].y>500)
+                else if (this.flyingWeapon[1].y>500)
                 {
-                    this.stars[1].setVelocityY(-150);
+                    this.flyingWeapon[1].setVelocityY(-150);
                 }
                 //end of moving obstacles
 
@@ -248,6 +258,7 @@
                 if(!this.cursors.up.isDown)
                 {
                     this.player.allowedToJump = true;
+                    
                 }
 
                 if (this.cursors.left.isDown && !this.cursors.right.isDown)
@@ -279,6 +290,7 @@
                         {
                             this.player.setDisplaySize(50, 50);
                         }
+                        this.jumpCheck();
                     }
                     
                     if(this.player.allowedToJump) //used for wall jumping 
@@ -303,6 +315,8 @@
                 // end of Player Controls
             },
 
+          
+
             hit: function(player, obst)
             {
                 this.physics.pause();
@@ -310,12 +324,22 @@
                 player.setTexture('death');
                 this.gameOver = true;
             },
+               jumpCheck:  function (player, floor){
+                this.isOnGround = false;
+                
+               console.log('false')
+            },
 
             win: function(player, obj)
             {
                 console.log('Good job'); //tells you good job for winning because i don't have a win screen yet
                 obj.disableBody(true, true);
-                this.physics.pause();
+                if(this.isOnGround == true){
+                    console.log('true')
+this.physics.pause();
+                }
+                
+                
                 this.gameWin = true;
             },
 
