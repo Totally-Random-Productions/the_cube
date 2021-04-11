@@ -7,7 +7,7 @@
     <style type="text/css">
         body {
             margin: 0;
-        } 
+        }
         canvas {  
             padding: 1px;
             margin: auto;
@@ -26,297 +26,373 @@
     </style>
 </head>
 <body>
+    <script type="text/javascript">
 
-<script type="text/javascript">
+        /*creates a new scene while extending the Phaser Scene Class 
+        so that the default functions remain the same*/
+        var StartScene = new Phaser.Class({
 
-    var config = {
-        type: Phaser.AUTO,
-        width: 1280,
-        height: 720,
-        
-        physics: {
-            default: 'arcade',
-            arcade: {
-                gravity: { y: 300 },
-                debug: false
-            }
-        },
+            Extends: Phaser.Scene,
 
-        scene: {
-            preload: preload,
-            create: create,
-            update: update
-        }
-    };
+            initialize:
 
-    var startnum=1;
-    var gameOver = false;
-    var player;
-    var platforms;
-    var triangles;
-    var floor;
-    var cursors;
-    var mplatform=[];
-    var start;
-    var spacebar;
-    var pillars;
-    var turret;
-    var aggrox;
-    var aggroy;
-    var prize;
-    var stars=[];
-    var target = 0;
-
-    var game = new Phaser.Game(config);
-    
-    function preload ()
-    {
-        this.load.image('back', 'testob/back.png');//background
-        this.load.image('plat', 'testob/plat.png');//surface
-        this.load.image('tri', 'testob/tri.png');//spikes
-        this.load.image('floor', 'testob/flo.png');//floor
-        this.load.image('star', 'testob/star.png');//moving star
-        this.load.image('cube', 'testob/cube1.png');//cube1
-        this.load.image('death', 'testob/cube3.png');//cube2
-        this.load.image('start', 'testob/start.png');//Menu
-        this.load.image('pil', 'testob/pil.png');//piller
-        this.load.image('tur', 'testob/turret1.png');//turrent
-        this.load.image('die', 'testob/die.png');// X shape for death
-        this.load.image('prize', 'testob/prize.png');//prize
-        this.load.image('base', 'testob/base.png');//torrent's base
-    }
-
-    function create ()
-    {
-        this.cameras.main.setBounds(0, 0, 1280 * 2, 720);//BOUNDS FOR CAMERA
-        this.physics.world.setBounds(0, 0, 1280 * 2, 720);//BOUNDS FOR PLAYER
-
-
-        //BACKGROUND IMAGE IN DIFFERENT LOCATIONS
-        this.add.image(0, 0, 'back').setOrigin(0);
-        this.add.image(1280, 0, 'back').setOrigin(0);
-        this.add.image(1280*2, 0, 'back').setOrigin(0);
-
-        //CREATING STAR SHAPE FOR PLAYER DEATH
-        stars[0] = this.physics.add.sprite(50, 400, 'star').setCircle(25);
-        stars[0].body.setGravityY(-300);
-        stars[1] = this.physics.add.sprite(1400, 300, 'star').setCircle(25);
-        stars[1].body.setGravityY(-300);
-
-        //CREATING PLATFORM
-        platforms = this.physics.add.staticGroup();
-        platforms.create(400, 500, 'plat');
-        platforms.create(700, 380, 'plat');
-        platforms.create(900, 260, 'plat');
-        platforms.create(1000, 175, 'plat');
-
-        //CREATING MOVING PLATFORM
-        mplatform[0] = this.physics.add.sprite(1600, 500, 'plat');
-        mplatform[0].body.setGravityY(-300);
-        mplatform[0].setImmovable(true);
-
-
-        //CREATING TRIANGLES FOR GODS KNOW WHAT THIS IS?
-        triangles = this.physics.add.staticGroup();
-        triangles.create(400, 453, 'tri');
-        triangles.create(1305, 700, 'tri');
-        triangles.create(1305+50, 700, 'tri');
-        triangles.create(1305+100, 700, 'tri');
-        triangles.create(1305+150, 700, 'tri');
-        triangles.create(1305+200, 700, 'tri');
-        triangles.create(1305+250, 700, 'tri');
-        triangles.create(1305+300, 700, 'tri');
-        triangles.create(1305+350, 700, 'tri');
-        triangles.create(1305+400, 700, 'tri');
-
-        //CREATING PILLARS
-        pillars = this.physics.add.staticGroup();
-        pillars.create(2100, 250, 'pil');
-        pillars.create(2400, 550, 'pil');
-
-
-        //CREATING BASE FOR GAME
-        base = this.physics.add.sprite(2130, 300, 'base').setOrigin(0, 0.5);
-        base.setScale(1.25);
-        base.body.setGravityY(-300);
-        base.setImmovable(true);
-
-
-        //CREATING TORRENT TO SHOOT PLAYER
-        turret = this.physics.add.sprite(2150, 300, 'tur').setOrigin(0, 0.5);
-        turret.body.setGravityY(-300);
-        turret.setImmovable(true);
-        
-
-        //CREATING FLOOR
-        floor = this.physics.add.staticGroup();
-        floor.create(640, 670, 'floor');
-        floor.create(2370, 670, 'floor');
-        
-
-        //CREATING TROHPY
-        prize = this.physics.add.sprite(2500, 200, 'prize');
-        prize.setCollideWorldBounds(true);
-
-        //CREATING PLAYER
-        player = this.physics.add.sprite(100, 450, 'cube');
-        player.setBounce(0.1);
-        player.setCollideWorldBounds(true);
-        player.body.setGravityY(900);
-        
-
-        //CREATING COLLIDERS
-        this.physics.add.collider(player, platforms);
-        this.physics.add.collider(player, mplatform);
-        this.physics.add.collider(player, floor);
-        this.physics.add.collider(player, pillars);
-        this.physics.add.collider(floor, prize);
-        this.physics.add.collider(player, triangles, hit, null, this);
-        this.physics.add.collider(player, stars, hit, null, this);
-        this.physics.add.collider(player, turret, hit, null, this);
-        this.physics.add.overlap(player, prize, win, null, this);
-
-        cursors = this.input.keyboard.createCursorKeys();//CREATING KEYBOARD INPUT
-
-        this.cameras.main.startFollow(player, true, 0.05, 0.05);//ALLOWING THE CAMERA TO FOLLOW THE PLAYER
-
-        this.start=this.add.image(0, 0, 'start').setOrigin(0);//MENU SCREEN
-
-        spacebar = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);   //SPACE BAR INPUT     
-    }
-
-    function update ()
-    {
-        aggrox = Phaser.Math.Difference(turret.x, player.x);
-        aggroy = Phaser.Math.Difference(turret.y, player.y);
-        
-        if(aggrox <= 450 && aggroy <= 350)
-        {
-            target = Phaser.Math.Angle.BetweenPoints(turret, player);
-            if(target > -1.5 && target < 1.5)
+            function StartScene ()
             {
-                turret.rotation = target;
-            }
-        }
-        
-        if (Phaser.Input.Keyboard.JustDown(spacebar))
-        {
-            this.start.destroy();
-            startnum=0;
-        }
+                Phaser.Scene.call(this, { key: 'start' });
+            },
 
-        stars[0].rotation+=0.5;
-        if (stars[0].x>300)
-        {
-            stars[0].setVelocityX(-150);
-        }
-        else if (stars[0].x<100)
-        {
-            stars[0].setVelocityX(150);
-        }
-
-        stars[1].rotation+=0.5;
-        if (stars[1].y<=300)
-        {
-            stars[1].setVelocityY(150);
-        }
-        else if (stars[1].y>500)
-        {
-            stars[1].setVelocityY(-150);
-        }
-
-        if (mplatform[0].x<=1600)
-        {
-            mplatform[0].setVelocityX(100);
-        }
-
-        else if (mplatform[0].x>1860)
-        {
-            mplatform[0].setVelocityX(-100);
-        }
-        
-        
-        if (gameOver)
-        {
-            return;
-        }
-        
-        //Player Controls
-        if(!cursors.up.isDown)
-        {
-            player.allowedToJump = true;
-        }
-
-        if(startnum == 0)
-        {
-            if (cursors.left.isDown && !cursors.right.isDown)
+            init: function()//called everytime the scene restarts. I use it to declare variables, 'this' is used so that the scope of the variables is only within this scene.
             {
-                player.setVelocityX(-350);
+                this.spacebar;
+            },
 
-            }
-            else if (cursors.right.isDown && !cursors.left.isDown)
+            preload: function ()
             {
-                player.setVelocityX(350);
+                this.load.image('start', 'testob/start.png');
+            },
 
-            }
-            else
+            create: function ()
             {
-                player.setVelocityX(0);
-            }
+                this.add.image(0, 0, 'start').setOrigin(0);
+                this.spacebar = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);//sets up the spacebar for input  
+            },
 
-            if (cursors.down.isDown)
+            update: function()
             {
-                player.setDisplaySize(100, 25);
-            }
-
-            if(cursors.up.isDown)
-            {
-                if (player.body.touching.down)
+                if (Phaser.Input.Keyboard.JustDown(this.spacebar)) 
                 {
-                    player.setVelocityY(-630);
-                    if(player.setDisplaySize(100, 25))
+                    this.scene.start('game');
+                }
+            }
+
+            });
+
+        var GameScene = new Phaser.Class({
+            Extends: Phaser.Scene,
+
+            initialize:
+
+            function GameScene ()
+            {
+                Phaser.Scene.call(this, { key: 'game' });
+            },
+
+            init: function()
+            {
+                    this.flyingWeapon=[];
+                    this.mplatforms = [];
+                    this.platforms;
+                    this.isOnGround = false;
+                    this.player;
+                    this.spike;
+                    this.turret;
+                    this.pillars;
+                    this.base;
+                    this.trophy;
+                    this.aggrox;
+                    this.aggroy;
+                    this.target;
+                    this.gameOver;
+                    this.gameWin;
+            },
+
+            preload: function ()
+            {
+                this.load.image('back', 'testob/back.png');
+                this.load.image('plat', 'testob/plat.png');
+                this.load.image('spike', 'testob/spike.png');
+                this.load.image('floor', 'testob/flo.png');
+                this.load.image('star', 'testob/star.png');
+                this.load.image('cube', 'testob/cube1.png');
+                this.load.image('death', 'testob/cube3.png');
+                this.load.image('pil', 'testob/pil.png');
+                this.load.image('tur', 'testob/turret1.png');
+                this.load.image('trophy', 'testob/prize.png');
+                this.load.image('base', 'testob/base.png');
+                this.load.image('circ', 'testob/circle.png');
+            },
+
+            create: function ()
+            {
+                this.cameras.main.setBounds(0, 0, 1280 * 2, 720); //stops the camera from leaving the game area
+                this.physics.world.setBounds(0, 0, 1280 * 2, 720);//sets the game area where physics is applied
+
+                this.add.image(0, 0, 'back').setOrigin(0);
+                this.add.image(1280, 0, 'back').setOrigin(0);
+                this.add.image(1280*2, 0, 'back').setOrigin(0);
+
+                this.flyingWeapon[0] = this.physics.add.sprite(50, 400, 'star').setCircle(25);
+                this.flyingWeapon[0].body.setGravityY(-300);//sets gravity to negative of the world gravity so the object cannot be moved by gravity
+                this.flyingWeapon[1] = this.physics.add.sprite(1400, 300, 'star').setCircle(25);
+                this.flyingWeapon[1].body.setGravityY(-300);
+
+                this.platforms = this.physics.add.staticGroup(); //creates a new group for this.platforms. They cannot move at all
+                this.platforms.create(400, 500, 'plat');
+                this.platforms.create(700, 380, 'plat');
+                this.platforms.create(900, 260, 'plat');
+                this.platforms.create(1000, 175, 'plat');
+
+                this.mplatforms[0] = this.physics.add.sprite(1600, 500, 'plat'); //creates a sprite for this.mplatforms[] This can move.
+                this.mplatforms[0].body.setGravityY(-300);
+                this.mplatforms[0].setImmovable(true); //the sprite can still move, but it cannot be moved by collision with other objects
+
+                this.spike = this.physics.add.staticGroup();
+                this.spike.create(400, 453, 'spike');
+                this.spike.create(1305, 700, 'spike');
+                this.spike.create(1305+50, 700, 'spike');
+                this.spike.create(1305+100, 700, 'spike');
+                this.spike.create(1305+150, 700, 'spike');
+                this.spike.create(1305+200, 700, 'spike');
+                this.spike.create(1305+250, 700, 'spike');
+                this.spike.create(1305+300, 700, 'spike');
+                this.spike.create(1305+350, 700, 'spike');
+                this.spike.create(1305+400, 700, 'spike');
+
+                this.pillars = this.physics.add.staticGroup();
+                this.pillars.create(2100, 250, 'pil');
+                this.pillars.create(2400, 550, 'pil');
+
+                this.base = this.physics.add.sprite(2130, 300, 'base').setOrigin(0, 0.5);
+                this.base.setScale(1.25);
+                this.base.body.setGravityY(-300);
+                this.base.setImmovable(true);
+
+                this.turret = this.physics.add.sprite(2150, 300, 'tur').setOrigin(0, 0.5);
+                this.turret.body.setGravityY(-300);
+                this.turret.setImmovable(true);
+
+                this.trophy = this.physics.add.sprite(2500, 200, 'trophy').setScale(0.3);
+                this.trophy.setCollideWorldBounds(true); //prevents the object from falling through the world
+
+                this.floor = this.physics.add.staticGroup();
+                this.floor.create(640, 670, 'floor');
+                this.floor.create(2370, 670, 'floor');
+
+                this.player = this.physics.add.sprite(100, 470, 'cube').setScale(1.6);
+                this.player.setBounce(0.1);
+                this.player.setCollideWorldBounds(true);
+                this.player.body.setGravityY(900);
+
+                this.physics.add.collider(this.player, this.platforms);
+                this.physics.add.collider(this.player, this.floor, groundCheck, this.null, this); //checks to see if the objects collide
+                this.physics.add.collider(this.player, this.mplatforms);
+                this.physics.add.collider(this.player, this.floor);
+                this.physics.add.collider(this.player, this.pillars);
+                this.physics.add.collider(this.floor, this.trophy);
+                this.physics.add.collider(this.player, this.spike, this.hit, null, this); //checks to see if the objects collide, passes the objects to the function 'hit' if they do
+                this.physics.add.collider(this.player, this.flyingWeapon, this.hit, null, this);
+                this.physics.add.collider(this.player, this.turret, this.hit, null, this);
+                this.physics.add.overlap(this.player, this.trophy, this.win, null, this); //checks to see if the objects overlap, passes the objects to the function 'win' if they do
+
+                this.cursors = this.input.keyboard.createCursorKeys(); //creates inputs using the arrow keys
+                this.cameras.main.startFollow(this.player, true, 0.05, 0.05); //makes the camera track the player. increasing the numbers makes the camera track faster
+            
+                function groundCheck(player, floor){
+                this.isOnGround = true;
+                
+               console.log('true')
+            }
+
+            
+            },
+
+            update: function()
+            {
+                this.aggrox = Phaser.Math.Difference(this.turret.x, this.player.x); //finds the positive x distance between the player and turret
+                this.aggroy = Phaser.Math.Difference(this.turret.y, this.player.y); //finds the positive y distance between the player and turret
+                
+                if(this.aggrox <= 450 && this.aggroy <= 350)
+                {
+                    this.target = Phaser.Math.Angle.BetweenPoints(this.turret, this.player);//finds the angle between the turret and player
+                    if(this.target > -1.5 && this.target < 1.5)
                     {
-                        player.setDisplaySize(50, 50);
+                        this.turret.rotation = this.target; // sets the turrets angle of rotation to the angle found above
                     }
+                }
+
+                this.flyingWeapon[0].rotation+=0.2; //sets rotation and velocity of moving obstacles
+                if (this.flyingWeapon[0].x>300)
+                {
+                    this.flyingWeapon[0].setVelocityX(-150);
+                }
+                else if (this.flyingWeapon[0].x<100)
+                {
+                    this.flyingWeapon[0].setVelocityX(150);
+                }
+
+                this.flyingWeapon[1].rotation+=0.2;
+                if (this.flyingWeapon[1].y<=300)
+                {
+                    this.flyingWeapon[1].setVelocityY(150);
+                }
+                else if (this.flyingWeapon[1].y>500)
+                {
+                    this.flyingWeapon[1].setVelocityY(-150);
+                }
+                //end of moving obstacles
+
+                if (this.mplatforms[0].x<=1600) //sets velocity of moving platforms
+                {
+                    this.mplatforms[0].setVelocityX(100);
+                }
+
+                else if (this.mplatforms[0].x>1860)
+                {
+                    this.mplatforms[0].setVelocityX(-100);
+                }
+                //end of moving platforms
+                
+                if (this.gameOver) //true if player is hit by lethal object, determined by function 'hit'
+                {
+                    //starts the GameOver Scene after set amount of time
+                    this.time.addEvent({  
+                    delay: 1000,
+                    loop: false,
+                    callback: () => {
+                        this.scene.start('over');
+                    }
+                })
+               }
+
+               //PLayer Controls
+                if(!this.cursors.up.isDown)
+                {
+                    this.player.allowedToJump = true;
+                    
+                }
+
+                if (this.cursors.left.isDown && !this.cursors.right.isDown)
+                {
+                    this.player.setVelocityX(-350);
+
+                }
+                else if (this.cursors.right.isDown && !this.cursors.left.isDown)
+                {
+                    this.player.setVelocityX(350);
+
+                }
+                else
+                {
+                    this.player.setVelocityX(0);
+                }
+
+                if (this.cursors.down.isDown) //flattens player if down arrow is pressed
+                {
+                    this.player.setDisplaySize(100, 25);
+                }
+
+                if(this.cursors.up.isDown)
+                {
+                    if (this.player.body.touching.down)
+                    {
+                        this.player.setVelocityY(-630);
+                        if(this.player.setDisplaySize(100, 25))
+                        {
+                            this.player.setDisplaySize(50, 50);
+                        }
+                        this.jumpCheck();
+                    }
+                    
+                    if(this.player.allowedToJump) //used for wall jumping 
+                    {
+                        if (this.player.body.touching.left)
+                        {
+                            this.player.setVelocityY(-630);
+                            this.player.setVelocityX(350)
+                            this.player.allowedToJump = false;
+                        }
+
+                        if(this.player.body.touching.right)
+                        { 
+                            this.player.setVelocityY(-630);
+                            this.player.setVelocityX(-350);
+                            this.player.allowedToJump = false;
+                        }
+                        // dissallows player from climbing walls while holding up arrow
+                        // up arrow must be pressed each time the player wants to jump
+                    }
+                }
+                // end of Player Controls
+            },
+
+          
+
+            hit: function(player, obst)
+            {
+                this.physics.pause();
+                player.setDisplaySize(50, 50);
+                player.setTexture('death');
+                this.gameOver = true;
+            },
+               jumpCheck:  function (player, floor){
+                this.isOnGround = false;
+                
+               console.log('false')
+            },
+
+            win: function(player, obj)
+            {
+                console.log('Good job'); //tells you good job for winning because i don't have a win screen yet
+                obj.disableBody(true, true);
+                if(this.isOnGround == true){
+                    console.log('true')
+this.physics.pause();
                 }
                 
-                if(player.allowedToJump)
-                {
-                    if (player.body.touching.left)
-                    {
-                        player.setVelocityY(-630);
-                        player.setVelocityX(350)
-                        player.allowedToJump = false;
-                    }
+                
+                this.gameWin = true;
+            },
 
-                    if(player.body.touching.right)
-                    {
-                        player.setVelocityY(-630);
-                        player.setVelocityX(-350);
-                        player.allowedToJump = false;
-                    }
-                }
+        });
+
+        var GameOverScene = new Phaser.Class({
+
+            Extends: Phaser.Scene,
+
+            initialize:
+
+            function GameOverScene ()
+            {
+                Phaser.Scene.call(this, { key: 'over' });
+            },
+
+            init: function()
+            {
+
+            },
+
+            preload: function ()
+            {
+                this.load.image('die', 'testob/die.png');
+            },
+
+            create: function ()
+            {
+                this.cameras.main.fadeIn(3000);
+                this.add.image(0, 0, 'die').setOrigin(0); //Dark Souls end screen, will have to change but its a good placeholder
+            },
+
+            update: function()
+            {
+
             }
-        }
-        // End Player Controls
-    }
-    
-    function hit (player, obst)
-    {
-        this.physics.pause();
-        player.setDisplaySize(50, 50);
-        player.setTexture('death');
-        gameOver = true;
-    }
 
-    function win(player, obj)
-    {
-        prize.disableBody(true, true);
-        this.physics.pause();
-        gameOver = true;
-    }
+            });
 
-</script>
+            var config = {
+                type: Phaser.AUTO,
+                width: 1280,
+                height: 720,
+                physics: {
+                    default: 'arcade',
+                    arcade: {
+                        gravity: { y: 300 },
+                        debug: false    //disables visible object outlines and paths
+                    }
+                },
+                scene: [ StartScene, GameScene, GameOverScene ]
+            };
 
-</body>
-</html>
+            var game = new Phaser.Game(config);
+
+    </script>
