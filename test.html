@@ -43,26 +43,76 @@
 
             init: function()//called everytime the scene restarts. I use it to declare variables, 'this' is used so that the scope of the variables is only within this scene.
             {
-                this.spacebar;
+                this.startbutton;
+                this.leaderbutton;
+                this.creditsbutton;
+                this.settingsbutton;
             },
 
             preload: function ()
             {
-                this.load.image('start', 'testob/start.png');
+                this.load.image('startbt', 'testob/menustart.png');
+                this.load.image('back', 'testob/menuback.png');
+                this.load.image('leader', 'testob/menuleader.png');
+                this.load.image('credit', 'testob/menucredits.png');
+                this.load.image('settings', 'testob/menusettings.png');
             },
 
             create: function ()
             {
-                this.add.image(0, 0, 'start').setOrigin(0);
-                this.spacebar = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);//sets up the spacebar for input  
-            },
-
-            update: function()
-            {
-                if (Phaser.Input.Keyboard.JustDown(this.spacebar)) 
-                {
+                this.add.image(0, 0, 'back').setOrigin(0);
+                this.startbutton = this.add.image(1280/2, 720-610, 'startbt').setInteractive();
+                this.settingsbutton = this.add.image(1280/2, 720-455, 'settings').setInteractive();
+                this.leaderbutton = this.add.image(1280/2, 720-300, 'leader').setInteractive();
+                this.creditsbutton = this.add.image(1280/2, 720-145, 'credit').setInteractive();
+                
+                this.startbutton.on('pointerdown', function () {
                     this.scene.start('game');
-                }
+                }, this);
+
+                this.startbutton.on('pointerover', function () {
+                    this.startbutton.setScale(1.2);
+                }, this);
+
+                this.startbutton.on('pointerout', function () {
+                    this.startbutton.setScale(1);
+                }, this);
+
+                this.leaderbutton.on('pointerdown', function () {
+                    this.scene.start('leader');
+                }, this);
+
+                this.settingsbutton.on('pointerdown', function () {
+                    this.scene.start('settings');
+                }, this);
+
+                this.settingsbutton.on('pointerover', function () {
+                    this.settingsbutton.setScale(1.2);
+                }, this);
+
+                this.settingsbutton.on('pointerout', function () {
+                    this.settingsbutton.setScale(1);
+                }, this);
+
+                this.leaderbutton.on('pointerover', function () {
+                    this.leaderbutton.setScale(1.2);
+                }, this);
+
+                this.leaderbutton.on('pointerout', function () {
+                    this.leaderbutton.setScale(1);
+                }, this);
+
+                this.creditsbutton.on('pointerdown', function () {
+                    this.scene.start('credits');
+                }, this);
+
+                this.creditsbutton.on('pointerover', function () {
+                    this.creditsbutton.setScale(1.2);
+                }, this);
+
+                this.creditsbutton.on('pointerout', function (event) {
+                    this.creditsbutton.setScale(1);
+                }, this);
             }
 
             });
@@ -94,6 +144,10 @@
                     this.target;
                     this.gameOver;
                     this.gameWin;
+                    this.secondsDecimal = 0;
+                    this.minutes = 0;
+                    this.timer;
+                    this.timerEvent;
             },
 
             preload: function ()
@@ -120,6 +174,10 @@
                 this.add.image(0, 0, 'back').setOrigin(0);
                 this.add.image(1280, 0, 'back').setOrigin(0);
                 this.add.image(1280*2, 0, 'back').setOrigin(0);
+
+                this.timerEvent = this.time.addEvent({delay: 100, callback: this.updateTime, callbackScope: this, loop: true})
+                this.timer = this.add.text(16, 16, '0: 00', { fontSize: '32px', fill: '#000' });
+                this.timer.scrollFactorX = 0;
 
                 this.flyingWeapon[0] = this.physics.add.sprite(50, 400, 'star').setCircle(25);
                 this.flyingWeapon[0].body.setGravityY(-300);//sets gravity to negative of the world gravity so the object cannot be moved by gravity
@@ -333,15 +391,34 @@
             win: function(player, obj)
             {
                 console.log('Good job'); //tells you good job for winning because i don't have a win screen yet
-                obj.disableBody(true, true);
+                
                 if(this.isOnGround == true){
                     console.log('true')
-this.physics.pause();
+                    obj.disableBody(true, true);
+                    this.physics.pause();
                 }
                 
                 
                 this.gameWin = true;
             },
+
+            updateTime: function()
+            {
+                this.secondsDecimal++;
+                if(this.secondsDecimal===599)
+                {
+                    this.secondsDecimal=0;
+                    this.minutes++;
+                }
+                
+                if(this.gameWin || this.gameOver)
+                {
+                    this.timerEvent.remove(false);
+                    //some php for leader board
+                }
+
+                this.timer.setText('0' + this.minutes + ':' + this.secondsDecimal/10);
+            }
 
         });
 
