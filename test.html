@@ -179,9 +179,9 @@
                 this.timer = this.add.text(16, 16, '0: 00', { fontSize: '32px', fill: '#000' });
                 this.timer.scrollFactorX = 0;
 
-                this.flyingWeapon[0] = this.physics.add.sprite(50, 400, 'star').setCircle(25);
+                this.flyingWeapon[0] = this.physics.add.sprite(50, 400, 'star').setCircle(20);
                 this.flyingWeapon[0].body.setGravityY(-300);//sets gravity to negative of the world gravity so the object cannot be moved by gravity
-                this.flyingWeapon[1] = this.physics.add.sprite(1400, 300, 'star').setCircle(25);
+                this.flyingWeapon[1] = this.physics.add.sprite(1400, 300, 'star').setCircle(20);
                 this.flyingWeapon[1].body.setGravityY(-300);
 
                 this.platforms = this.physics.add.staticGroup(); //creates a new group for this.platforms. They cannot move at all
@@ -312,7 +312,9 @@
                 })
                }
 
-               //PLayer Controls
+            //PLayer Controls
+            if(!this.gameWin){
+                
                 if(!this.cursors.up.isDown)
                 {
                     this.player.allowedToJump = true;
@@ -370,6 +372,7 @@
                         // up arrow must be pressed each time the player wants to jump
                     }
                 }
+            }
                 // end of Player Controls
             },
 
@@ -392,12 +395,31 @@
             {
                 console.log('Good job'); //tells you good job for winning because i don't have a win screen yet
                 
+                
                 if(this.isOnGround == true){
+                    this.player.setCollideWorldBounds(false);
+                    this.player.setVelocityX(500);
                     console.log('true')
                     obj.disableBody(true, true);
-                    this.physics.pause();
-                }
+                    this.time.addEvent({  
+                    delay: 500,
+                    loop: false,
+                    callback: () => {
+                        this.physics.pause();
+                    }
+                    
+                })
+
+                this.time.addEvent({  
+                    delay: 500,
+                    loop: false,
+                    callback: () => {
+                        this.scene.start('win');
+                    }
+                    
+                })
                 
+                }
                 
                 this.gameWin = true;
             },
@@ -456,6 +478,40 @@
 
             });
 
+        var GameWinScene = new Phaser.Class({
+
+            Extends: Phaser.Scene,
+
+            initialize:
+
+            function GameWinScene ()
+            {
+                Phaser.Scene.call(this, { key: 'win' });
+            },
+
+            init: function()
+            {
+
+            },
+
+            preload: function ()
+            {
+                this.load.image('winner', 'testob/win.png');
+            },
+
+            create: function ()
+            {
+                this.cameras.main.fadeIn(3000);
+                this.add.image(0, 0, 'winner').setOrigin(0); //Dark Souls end screen, will have to change but its a good placeholder
+            },
+
+            update: function()
+            {
+
+            }
+
+            }); 
+
             var config = {
                 type: Phaser.AUTO,
                 width: 1280,
@@ -467,7 +523,7 @@
                         debug: false    //disables visible object outlines and paths
                     }
                 },
-                scene: [ StartScene, GameScene, GameOverScene ]
+                scene: [ StartScene, GameScene, GameOverScene, GameWinScene ]
             };
 
             var game = new Phaser.Game(config);
