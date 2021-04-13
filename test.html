@@ -142,8 +142,8 @@
                     this.aggrox;
                     this.aggroy;
                     this.target;
-                    this.gameOver;
-                    this.gameWin;
+                    this.gameOver = false;
+                    this.gameWin = false;
                     this.secondsDecimal = 0;
                     this.minutes = 0;
                     this.timer;
@@ -444,6 +444,7 @@
                     delay: 500,
                     loop: false,
                     callback: () => {
+                        this.scene.stop('game');
                         this.scene.start('win');
                     }
                     
