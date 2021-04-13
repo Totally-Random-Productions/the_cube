@@ -149,6 +149,9 @@
                     this.timer;
                     this.timerEvent;
                     this.jumps;
+                    this.bullet;
+                    this.bulletTimer;
+                    this.aiming;
             },
 
             preload: function ()
@@ -165,6 +168,7 @@
                 this.load.image('trophy', 'testob/prize.png');
                 this.load.image('base', 'testob/base.png');
                 this.load.image('circ', 'testob/circle.png');
+                this.load.image('bullet', 'testob/bullet.png');
             },
 
             create: function ()
@@ -220,6 +224,10 @@
                 this.turret.body.setGravityY(-300);
                 this.turret.setImmovable(true);
 
+                this.bullet = this.physics.add.sprite(this.turret.x, this.turret.y, 'bullet');
+                this.bullet.body.setGravityY(-300);
+                this.bulletTimer = this.time.addEvent({delay: 1500, callback: this.shootBullet, callbackScope: this, loop: true})
+
                 this.trophy = this.physics.add.sprite(2500, 200, 'trophy').setScale(0.3);
                 this.trophy.setCollideWorldBounds(true); //prevents the object from falling through the world
 
@@ -239,6 +247,7 @@
                 this.physics.add.collider(this.floor, this.trophy);
                 this.physics.add.collider(this.player, this.spike, this.hit, null, this); //checks to see if the objects collide, passes the objects to the function 'hit' if they do
                 this.physics.add.collider(this.player, this.flyingWeapon, this.hit, null, this);
+                this.physics.add.collider(this.player, this.bullet, this.hit, null, this);
                 this.physics.add.collider(this.player, this.turret, this.hit, null, this);
                 this.physics.add.overlap(this.player, this.trophy, this.win, null, this); //checks to see if the objects overlap, passes the objects to the function 'win' if they do
 
@@ -248,6 +257,7 @@
 
             update: function()
             {
+                this.aiming=false;
                 this.groundCheck();
                 this.aggrox = Phaser.Math.Difference(this.turret.x, this.player.x); //finds the positive x distance between the player and turret
                 this.aggroy = Phaser.Math.Difference(this.turret.y, this.player.y); //finds the positive y distance between the player and turret
@@ -258,6 +268,7 @@
                     if(this.target > -1.5 && this.target < 1.5)
                     {
                         this.turret.rotation = this.target; // sets the turrets angle of rotation to the angle found above
+                        this.aiming = true;
                     }
                 }
 
@@ -382,6 +393,18 @@
                 
             },
 
+            shootBullet: function()
+            {
+                if(this.aiming)
+                {
+                    this.physics.velocityFromRotation(this.turret.rotation, 300, this.bullet.body.velocity);
+                    this.bullet.x = this.turret.x;
+                    this.bullet.y = this.turret.y; 
+                    this.bullet.body.setGravityY(-300);                
+                }
+
+            },
+
             hit: function(player, obst)
             {
                 this.physics.pause();
@@ -397,7 +420,7 @@
                 
                 if(this.isOnGround == true){
                     obj.disableBody(true, true);
-                    //this.player.Velocity = 0; U cud also use this but
+                    this.player.setVelocityX(0); //U cud also use this but
                     this.input.disable = true//input disable makes the player not be able to do anything whatsoever
                      this.player.setCollideWorldBounds(false);
                     setTimeout(() => { 
