@@ -3,7 +3,7 @@
 <head> 
     <meta charset="UTF-8" />
     <title>Test</title>
-    <script src="//cdn.jsdelivr.net/npm/phaser@3.11.0/dist/phaser.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/phaser@3.54.0/dist/phaser.js"></script>
     <style type="text/css">
         body {
             margin: 0;
@@ -148,6 +148,7 @@
                     this.minutes = 0;
                     this.timer;
                     this.timerEvent;
+                    this.jumps;
             },
 
             preload: function ()
@@ -232,9 +233,8 @@
                 this.player.body.setGravityY(900);
 
                 this.physics.add.collider(this.player, this.platforms);
-                this.physics.add.collider(this.player, this.floor, groundCheck, this.null, this); //checks to see if the objects collide
+                this.physics.add.collider(this.player, this.floor); //checks to see if the objects collide
                 this.physics.add.collider(this.player, this.mplatforms);
-                this.physics.add.collider(this.player, this.floor);
                 this.physics.add.collider(this.player, this.pillars);
                 this.physics.add.collider(this.floor, this.trophy);
                 this.physics.add.collider(this.player, this.spike, this.hit, null, this); //checks to see if the objects collide, passes the objects to the function 'hit' if they do
@@ -244,18 +244,11 @@
 
                 this.cursors = this.input.keyboard.createCursorKeys(); //creates inputs using the arrow keys
                 this.cameras.main.startFollow(this.player, true, 0.05, 0.05); //makes the camera track the player. increasing the numbers makes the camera track faster
-            
-                function groundCheck(player, floor){
-                this.isOnGround = true;
-                
-               console.log('true')
-            }
-
-            
             },
 
             update: function()
             {
+                this.groundCheck();
                 this.aggrox = Phaser.Math.Difference(this.turret.x, this.player.x); //finds the positive x distance between the player and turret
                 this.aggroy = Phaser.Math.Difference(this.turret.y, this.player.y); //finds the positive y distance between the player and turret
                 
@@ -314,22 +307,18 @@
 
             //PLayer Controls
             if(!this.gameWin){
-                
-                if(!this.cursors.up.isDown)
+                if(!this.cursors.up.isDown && this.isOnGround)
                 {
-                    this.player.allowedToJump = true;
-                    
+                    this.jumps = 2;
                 }
 
                 if (this.cursors.left.isDown && !this.cursors.right.isDown)
                 {
                     this.player.setVelocityX(-350);
-
                 }
                 else if (this.cursors.right.isDown && !this.cursors.left.isDown)
                 {
-                    this.player.setVelocityX(350);
-
+                    this.player.setVelocityX(350);                    
                 }
                 else
                 {
@@ -341,42 +330,57 @@
                     this.player.setDisplaySize(100, 25);
                 }
 
-                if(this.cursors.up.isDown)
+
+                if(Phaser.Input.Keyboard.JustDown(this.cursors.up) && this.jumps > 0)
                 {
-                    if (this.player.body.touching.down)
+                    if(!this.isOnGround)
+                    {
+                        this.jumps = 1;
+                    }
+
+                    if (this.player.body.touching.left)
                     {
                         this.player.setVelocityY(-630);
-                        if(this.player.setDisplaySize(100, 25))
-                        {
-                            this.player.setDisplaySize(50, 50);
-                        }
-                        this.jumpCheck();
+                        this.player.setVelocityX(350)
+                        this.jumps = 1;
                     }
-                    
-                    if(this.player.allowedToJump) //used for wall jumping 
-                    {
-                        if (this.player.body.touching.left)
-                        {
-                            this.player.setVelocityY(-630);
-                            this.player.setVelocityX(350)
-                            this.player.allowedToJump = false;
-                        }
 
-                        if(this.player.body.touching.right)
-                        { 
-                            this.player.setVelocityY(-630);
-                            this.player.setVelocityX(-350);
-                            this.player.allowedToJump = false;
-                        }
-                        // dissallows player from climbing walls while holding up arrow
-                        // up arrow must be pressed each time the player wants to jump
+                    if(this.player.body.touching.right)
+                    { 
+                        this.player.setVelocityY(-630);
+                        this.player.setVelocityX(-350);
+                        this.jumps = 1;
+                    }
+                    this.player.setVelocityY(-630);
+                    this.jumps--;
+                    // up arrow must be pressed each time the player wants to jump
+                    
+                    if(this.player.setDisplaySize(100, 25))
+                    {
+                        this.player.setDisplaySize(30, 30).setScale(1.6);
                     }
                 }
+                
             }
                 // end of Player Controls
             },
+            groundCheck: function(){
+                if(this.player.body.touching.down)
+                {
+                    this.isOnGround = true;
+                }
 
-          
+                else
+                {
+                    this.isOnGround = false;
+                }
+
+                if (this.player.body.touching.left || this.player.body.touching.right)
+                {
+                    this.jumps = 1;
+                }
+                
+            },
 
             hit: function(player, obst)
             {
@@ -384,11 +388,6 @@
                 player.setDisplaySize(50, 50);
                 player.setTexture('death');
                 this.gameOver = true;
-            },
-               jumpCheck:  function (player, floor){
-                this.isOnGround = false;
-                
-               console.log('false')
             },
 
             win: function(player, obj)
