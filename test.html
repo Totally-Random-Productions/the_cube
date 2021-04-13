@@ -312,6 +312,10 @@
                     loop: false,
                     callback: () => {
                         this.scene.start('over');
+                       /* setTimeout(() => {
+                            this.scene.stop('over')
+                            this.scene.start('start');
+                        }, 2000)*/
                     }
                 })
                }
@@ -444,6 +448,13 @@
                     }
                     
                 })
+                        setTimeout(() => {
+                        this.scene.stop('win');
+                        this.scene.start('start');
+                        console.log('start scene')
+                        
+                           
+                                          }, 2000);
                     }, 1000);
                     
                    
@@ -454,6 +465,7 @@
                 }
                 
                 this.gameWin = true;
+                 
             },
 
             updateTime: function()
