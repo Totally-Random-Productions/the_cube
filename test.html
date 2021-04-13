@@ -397,10 +397,14 @@
                 
                 
                 if(this.isOnGround == true){
-                    this.player.setCollideWorldBounds(false);
-                    this.player.setVelocityX(500);
-                    console.log('true')
                     obj.disableBody(true, true);
+                    //this.player.Velocity = 0; U cud also use this but
+                    this.input.disable = true//input disable makes the player not be able to do anything whatsoever
+                     this.player.setCollideWorldBounds(false);
+                    setTimeout(() => { 
+                    this.player.setVelocityX(500); 
+                          console.log('true')
+                    
                     this.time.addEvent({  
                     delay: 500,
                     loop: false,
@@ -418,6 +422,12 @@
                     }
                     
                 })
+                    }, 1000);
+                    
+                   
+                   
+                    
+              
                 
                 }
                 
