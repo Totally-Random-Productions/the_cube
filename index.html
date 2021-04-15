@@ -24,17 +24,9 @@
     <script src="assets/theme/js/autoStart.js"></script>
     <script src="assets/theme/js/section.js"></script>
 
-    <style>
-        .tabcontent {
-            display: none;
-            padding: 100px 20px;
-            height: 100%;
-        }
-    </style>
-
 </head>
 
-<body onload="sections();">
+<body onload="sections(); autoPlay(); ">
 
     <a id="top"></a>
 
@@ -118,7 +110,7 @@
                         <img onclick="enableMute()" src="assets/images/icons8-mute-26.png" />
                         <img onclick="disableMute()" src="assets/images/icons8-sound-26.png" />
                     </div>
-                    <audio id="bg_music" autoplay loop>
+                    <audio id="bg_music" loop>
                             <source src="assets/media/homocide_toss.mp3" type="audio/mpeg">
                           </audio>
                     <p class="icon-description mb-3 mbr-fonts-style display-7"></p>
@@ -272,8 +264,6 @@
     <script src="assets/theme/js/bgMusic.js"></script>
     <script src="assets/theme/js/navigation.js"></script>
     <script src="assets/web/assets/jquery/jquery.min.js"></script>
-    <script src="assets/popper/popper.min.js"></script>
-    <script src="assets/tether/tether.min.js"></script>
     <script src="assets/bootstrap/js/bootstrap.min.js"></script>
     <script src="assets/smoothscroll/smooth-scroll.js"></script>
     <script src="assets/dropdown/js/nav-dropdown.js"></script>

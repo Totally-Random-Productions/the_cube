@@ -1,3 +1,7 @@
+function body() {
+    document.getElementById('gamebody').style.overflow = "auto";
+}
+
 function sections() {
     document.getElementById('gameplay').style.display = 'block';
     document.getElementById('nav').style.display = 'none';
