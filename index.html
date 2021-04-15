@@ -2,7 +2,6 @@
 <html>
 
 <head>
-    <!-- Site made with Mobirise Website Builder v5.3.0, https://mobirise.com -->
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="generator" content="Mobirise v5.3.0, mobirise.com">
@@ -13,29 +12,31 @@
 
     <title>Home</title>
     <link rel="stylesheet" href="assets/web/assets/mobirise-icons2/mobirise2.css">
-    <link rel="stylesheet" href="assets/tether/tether.min.css">
+    <link rel="stylesheet" href="assets/web/assets/mobirise-icons/mobirise-icons.css">
     <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="assets/bootstrap/css/bootstrap-grid.min.css">
     <link rel="stylesheet" href="assets/bootstrap/css/bootstrap-reboot.min.css">
     <link rel="stylesheet" href="assets/dropdown/css/style.css">
-    <link rel="stylesheet" href="assets/socicon/css/styles.css">
     <link rel="stylesheet" href="assets/theme/css/style.css">
     <link rel="preload" as="style" href="assets/mobirise/css/mbr-additional.css">
     <link rel="stylesheet" href="assets/mobirise/css/mbr-additional.css" type="text/css">
 
-    <script>
-        function autoPlay() {
+    <script src="assets/theme/js/autoStart.js"></script>
+    <script src="assets/theme/js/section.js"></script>
 
-            var x = document.getElementById("test");
-            x.autoplay = true;
-            x.load();
+    <style>
+        .tabcontent {
+            display: none;
+            padding: 100px 20px;
+            height: 100%;
         }
-    </script>
-
+    </style>
 
 </head>
 
-<body onload="autoPlay()">
+<body onload="sections();">
+
+    <a id="top"></a>
 
     <section class="menu menu2 cid-subQpugyeE" once="menu" id="menu2-0">
 
@@ -43,11 +44,11 @@
             <div class="container-fluid">
                 <div class="navbar-brand">
                     <span class="navbar-logo">
-                    <a href="https://mobiri.se">
+                    <a href="index.html#top">
                         <img src="assets/images/icons8-the-dragon-team-1024.png" alt="Mobirise" style="height: 3rem;">
                     </a>
                 </span>
-                    <span class="navbar-caption-wrap"><a class="navbar-caption text-black display-5" href="https://mobiri.se">DRGN Studios</a></span>
+                    <span class="navbar-caption-wrap"><a class="navbar-caption text-black display-5" href="index.html#top">DRGN Stuidos</a></span>
                 </div>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
                 <div class="hamburger">
@@ -60,16 +61,20 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav nav-dropdown" data-app-modern-menu="true">
                         <li class="nav-item">
-                            <a class="nav-link link text-black display-4" href="https://mobiri.se">
-                                <strong>Contacts</strong></a>
+                            <a class="nav-link link text-black display-4 tablink" onclick="showGameplay();">
+                                <strong>Home</strong></a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link link text-black display-4" href="https://mobiri.se">
+                            <a class="nav-link link text-black display-4 tablink" onclick="showNav(); openPage('Learn', this, 'blue')" id="defaultOpen">
                                 <strong>Learn More</strong></a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link link text-black display-4" href="https://mobiri.se">
-                                <strong>About us</strong></a>
+                            <a class="nav-link link text-black display-4 tablink" onclick="showNav(); openPage('Contacts', this, 'purple')">
+                                <strong>Contacts</strong></a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link link text-black display-4 tablink" onclick="showNav(); openPage('About', this, 'red')">
+                                <strong>About Us</strong></a>
                         </li>
                     </ul>
 
@@ -80,12 +85,22 @@
         </nav>
     </section>
 
-    <section class="header17 cid-subQzvmJ21 mbr-fullscreen" data-bg-video="https://www.youtube.com/watch?v=wanELwEItVA" id="header17-1">
+    <section id="gameplay" class="header17 cid-subQzvmJ21 mbr-fullscreen" data-bg-video="https://www.youtube.com/watch?v=wanELwEItVA">
 
 
         <div class="mbr-overlay" style="opacity: 0.4; background-color: rgb(255, 255, 255);">
         </div>
 
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
 
         <div class="align-center container">
             <div class="row justify-content-md-center">
@@ -98,19 +113,18 @@
                             <a onclick="showVideo()"></a><span class="mbr-iconfont mobi-mbri-play mobi-mbri" style="color: rgb(255, 255, 255); fill: rgb(255, 255, 255);"></span></a>
                         </div>
                     </div>
-                    <div class="play-icon-wrapper" style="display: none;">
+                    <div class="play-icon-wrapper">
                         <img onclick="enableAutoPlay()" src="assets/images/icons8-play-26.png" />
                         <img onclick="enableMute()" src="assets/images/icons8-mute-26.png" />
                         <img onclick="disableMute()" src="assets/images/icons8-sound-26.png" />
                     </div>
-                    <audio id="test" autoplay>
-                        <source src="assets/media/Unlike Pluto - Brain, Brain, Go Away.mp3" type="audio/mpeg">
-                      </audio>
+                    <audio id="bg_music" autoplay loop>
+                            <source src="assets/media/homocide_toss.mp3" type="audio/mpeg">
+                          </audio>
                     <p class="icon-description mb-3 mbr-fonts-style display-7"></p>
                 </div>
             </div>
         </div>
-
         <div>
             <div class="modalWindow" style="display: none;">
                 <div class="modalWindow-container">
@@ -126,32 +140,137 @@
                 </div>
             </div>
         </div>
+
     </section>
+
+    <section id="nav" class="cid-sutOT7CcHG" style="display: none;">
+
+        <div class="mbr-overlay" style="opacity: 0.4; background-color: rgb(255, 255, 255);">
+        </div>
+
+        <div id="Learn" class="tabcontent">
+        </div>
+
+        <div id="Contacts" class="tabcontent">
+        </div>
+
+        <div id="About" class="tabcontent">
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-12">
+                        <h3 style="color: white;" class="mbr-section-title mbr-fonts-style align-center mb-4 display-2">
+                            <strong>Our team</strong>
+                        </h3>
+
+                    </div>
+                    <div class="col-sm-6 col-lg-4">
+                        <div class="card-wrap">
+                            <div class="image-wrap">
+                                <img src="assets/images/Aaron.jpg">
+                            </div>
+                            <div class="content-wrap">
+                                <h5 class="mbr-section-title card-title mbr-fonts-style align-center m-0 display-5">
+                                    <strong>Aaron Hazzard</strong>
+                                </h5>
+                                <h6 class="mbr-role mbr-fonts-style align-center mb-3 display-4">
+                                    <strong>Team Leader/Game Art Designer</strong>
+                                </h6>
+                                <p class="card-text mbr-fonts-style align-center display-7">
+                                    Loves programming preferably game programming
+                                    <br> Basketballer and loves fitness
+                                    <br> Plans to work at either Unity/Google
+                                </p>
+
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-6 col-lg-4">
+                        <div class="card-wrap">
+                            <div class="image-wrap">
+                                <img src="assets/images/Mallet.jpg">
+                            </div>
+                            <div class="content-wrap">
+                                <h5 class="mbr-section-title card-title mbr-fonts-style align-center m-0 display-5">
+                                    <strong>Mallet Marie</strong>
+                                </h5>
+                                <h6 class="mbr-role mbr-fonts-style align-center mb-3 display-4">
+                                    <strong>Game Developer</strong>
+                                </h6>
+                                <p class="card-text mbr-fonts-style align-center display-7">
+                                    Student in lower 6.
+                                </p>
+
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-6 col-lg-4">
+                        <div class="card-wrap">
+                            <div class="image-wrap">
+                                <img src="assets/images/Romaine.jpg">
+                            </div>
+                            <div class="content-wrap">
+                                <h5 class="mbr-section-title card-title mbr-fonts-style align-center m-0 display-5">
+                                    <strong>Romaine Carter</strong>
+                                </h5>
+                                <h6 class="mbr-role mbr-fonts-style align-center mb-3 display-4">
+                                    <strong>Web Developer</strong>
+                                </h6>
+                                <p class="card-text mbr-fonts-style align-center display-7">
+
+                                </p>
+
+
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+
+    </section>
+
+    <section class="footer7 cid-suBGYnNpQ6" once="footers" id="footer7-7">
+
+
+
+
+
+        <div class="container">
+            <div class="media-container-row align-center mbr-white">
+                <div class="col-12">
+                    <p class="mbr-text mb-0 mbr-fonts-style display-7">
+                        © Copyright 2021 DRGN Studios - All Rights Reserved
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <section>
-        <a href="https://mobirise.site/y"></a>
+        <a href="https://mobirise.site/k"></a>
     </section>
-    <script>
-        var x = document.getElementById("test");
 
-        function showVideo() {
-            if (document.getElementById('modalWindow').style.display == 'none') {
-                document.getElementById('modalWindow').style.display = 'block';
-            }
-        }
-
-        function enableAutoPlay() {
-            x.autoplay = true;
-            x.load();
-        }
-
-        function enableMute() {
-            x.muted = true;
-        }
-
-        function disableMute() {
-            x.muted = false;
-        }
-    </script>
+    <script src="assets/theme/js/bgMusic.js"></script>
+    <script src="assets/theme/js/navigation.js"></script>
     <script src="assets/web/assets/jquery/jquery.min.js"></script>
     <script src="assets/popper/popper.min.js"></script>
     <script src="assets/tether/tether.min.js"></script>
