@@ -52,7 +52,7 @@
             preload: function ()
             {
                 this.load.image('startbt', 'testob/menustart.png');
-                this.load.image('back', 'testob/menuback.png');
+                this.load.image('back', 'testob/meback.pngnu');
                 this.load.image('leader', 'testob/menuleader.png');
                 this.load.image('credit', 'testob/menucredits.png');
                 this.load.image('settings', 'testob/menusettings.png');
@@ -160,10 +160,10 @@
 
             preload: function ()
             {
-                this.load.image('back', 'testob/back.png');
+                //this.load.image('back', 'testob/back.jpg');
                 this.load.image('plat', 'testob/plat.png');
                 this.load.image('spike', 'testob/spike.png');
-                this.load.image('floor', 'testob/flo.png');
+                this.load.image('floor', 'testob/floor.png');
                 this.load.image('star', 'testob/star.png');
                 this.load.image('cube', 'testob/cube1.png');
                 this.load.image('death', 'testob/cube3.png');
@@ -171,6 +171,7 @@
                 this.load.image('tur', 'testob/turret1.png');
                 this.load.image('trophy', 'testob/prize.png');
                 this.load.image('base', 'testob/base.png');
+                this.load.image('dirt', 'testob/dirt.png')
                 this.load.image('circ', 'testob/circle.png');
                 this.load.image('bullet', 'testob/bullet.png');
             },
@@ -236,7 +237,7 @@
                 this.trophy.setCollideWorldBounds(true); //prevents the object from falling through the world
 
                 this.floor = this.physics.add.staticGroup();
-                this.floor.create(640, 670, 'floor');
+                this.floor.create(640, 670, 'floor').setScale(5, 0.5).refreshBody();
                 this.floor.create(2370, 670, 'floor');
 
                 this.player = this.physics.add.sprite(100, 470, 'cube').setScale(1.6);
@@ -671,7 +672,7 @@
 
             preload: function ()
             {
-                this.load.image('back', 'testob/menuback.png');
+                this.load.image('back', 'testob/back.jpg');
                 this.load.image('tutorial', 'testob/tutorial.png');
                 this.load.image('level1', 'testob/level1.png');
                 this.load.image('level2', 'testob/level2.png');
