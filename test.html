@@ -82,6 +82,7 @@
 
 
     <script type="text/javascript">
+    var level;
         /*creates a new scene while extending the Phaser Scene Class 
                                                                                                                                                                                                                                                                                                                                                                         so that the default functions remain the same*/
         var StartScene = new Phaser.Class({
@@ -221,6 +222,7 @@
                 this.turretText;
                 this.WjumpText;
                 this.trophyText;
+                level = 'tutorial';
             },
 
             preload: function() {
@@ -655,6 +657,7 @@
                 this.axePower;
                 this.axeTimer;
                 this.spacebar;
+                level = 'level1';
             },
 
             preload: function() {
@@ -1091,7 +1094,7 @@
                 this.retrybt = this.add.image(250, 600, 'retry').setInteractive();
                 this.retrybt.on('pointerdown', function() {
                     this.scene.stop('over');
-                    this.scene.start('tutorial');
+                    this.scene.start(level);
                 }, this);
 
                 this.retrybt.on('pointerover', function() {
@@ -1169,7 +1172,7 @@
                 this.retrybt = this.add.image(250, 600, 'retry').setInteractive();
                 this.retrybt.on('pointerdown', function() {
                     this.scene.stop('win');
-                    this.scene.start('tutorial');
+                    this.scene.start(level);
                 }, this);
 
                 this.retrybt.on('pointerover', function() {
