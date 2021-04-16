@@ -4,6 +4,7 @@ function body() {
 
 function sections() {
     document.getElementById('gameplay').style.display = 'block';
+    document.getElementById('forLoad').style.display = 'none';
     document.getElementById('nav').style.display = 'none';
 }
 

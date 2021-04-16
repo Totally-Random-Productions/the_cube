@@ -5,7 +5,7 @@
     <meta charset="UTF-8" />
     <link rel="shortcut icon" href="assets/images/icons8-the-dragon-team-1024.png" type="image/x-icon">
 
-    <title>Test</title>
+    <title>The CUBE</title>
     <link rel="stylesheet" href="assets/web/assets/mobirise-icons2/mobirise2.css">
     <link rel="stylesheet" href="assets/web/assets/mobirise-icons/mobirise-icons.css">
     <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
@@ -69,18 +69,6 @@
                             <a class="nav-link link text-black display-4 tablink" href="index.html">
                                 <strong>Home</strong></a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link link text-black display-4 tablink" href="index.html">
-                                <strong>Learn More</strong></a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link link text-black display-4 tablink" href="index.html">
-                                <strong>Contacts</strong></a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link link text-black display-4 tablink" href="index.html">
-                                <strong>About Us</strong></a>
-                        </li>
                     </ul>
                 </div>
             </div>
@@ -95,7 +83,7 @@
 
     <script type="text/javascript">
         /*creates a new scene while extending the Phaser Scene Class 
-                                                                                                so that the default functions remain the same*/
+                                                                                                                                                                                                                                                                                                                                                                        so that the default functions remain the same*/
         var StartScene = new Phaser.Class({
 
             Extends: Phaser.Scene,
@@ -228,6 +216,7 @@
                 this.DjumpText;
                 this.breakText;
                 this.killText;
+                this.spikeText;
                 this.mPlatText;
                 this.turretText;
                 this.WjumpText;
@@ -345,29 +334,68 @@
                 this.physics.add.collider(this.player, this.turret, this.hit, null, this);
                 this.physics.add.overlap(this.player, this.trophy, this.win, null, this); //checks to see if the objects overlap, passes the objects to the function 'win' if they do
 
-                this.timerEvent = this.time.addEvent({delay: 100, callback: this.updateTime, callbackScope: this, loop: true})
-                this.timer = this.add.text(16, 16, '0: 00', { fontSize: '32px', fill: '#fff' });
+                this.timerEvent = this.time.addEvent({
+                    delay: 100,
+                    callback: this.updateTime,
+                    callbackScope: this,
+                    loop: true
+                })
+                this.timer = this.add.text(16, 16, '0: 00', {
+                    fontSize: '32px',
+                    fill: '#fff'
+                });
                 this.timer.scrollFactorX = 0;
 
-                this.moveText = this.add.text(100, 630, 'Use ⇦ and ⇨ to move', { fontSize: '24px', fill: '#fff' });
-                this.jumpText = this.add.text(100, 430, 'Press ⇧ to jump', { fontSize: '24px', fill: '#fff' });
-                this.DjumpText = this.add.text(100, 190, 'Press ⇧ again to double jump', { fontSize: '24px', fill: '#fff' });
-                this.breakText = this.add.text(500, 150, 'Some platforms break', { fontSize: '24px', fill: '#fff' });
-                this.killText = this.add.text(700, 430, 'Some things kill you', { fontSize: '24px', fill: '#fff' });
-                this.mPlatText = this.add.text(1100, 430, 'Some platforms move', { fontSize: '24px', fill: '#fff' });
-                this.turretText = this.add.text(1700, 430, 'This thing shoots you', { fontSize: '24px', fill: '#fff' });
-                this.WjumpText = this.add.text(1540, 190, 'Press ⇧ against a wall to wall jump', { fontSize: '24px', fill: '#fff' });
-                this.trophyText = this.add.text(2170, 190, 'Collect the trophy to win', { fontSize: '24px', fill: '#fff' });
+                this.moveText = this.add.text(100, 630, 'Use ⇦ and ⇨ to move', {
+                    fontSize: '24px',
+                    fill: '#fff'
+                });
+                this.jumpText = this.add.text(100, 430, 'Press ⇧ to jump', {
+                    fontSize: '24px',
+                    fill: '#fff'
+                });
+                this.DjumpText = this.add.text(100, 190, 'Press ⇧ again to double jump', {
+                    fontSize: '24px',
+                    fill: '#fff'
+                });
+                this.breakText = this.add.text(500, 150, 'Some platforms break', {
+                    fontSize: '24px',
+                    fill: '#fff'
+                });
+                this.killText = this.add.text(700, 430, 'Scythes will kill you', {
+                    fontSize: '24px',
+                    fill: '#fff'
+                });
+                this.spikeText = this.add.text(700, 600, 'Spikes will also kill you', {
+                    fontSize: '24px',
+                    fill: '#fff'
+                });
+                this.mPlatText = this.add.text(1100, 430, 'Some platforms move', {
+                    fontSize: '24px',
+                    fill: '#fff'
+                });
+                this.turretText = this.add.text(1700, 430, 'Turrets will shoot at you', {
+                    fontSize: '24px',
+                    fill: '#fff'
+                });
+                this.WjumpText = this.add.text(1540, 190, 'Press ⇧ against a wall to wall jump', {
+                    fontSize: '24px',
+                    fill: '#fff'
+                });
+                this.trophyText = this.add.text(2170, 190, 'Collect the trophy to win', {
+                    fontSize: '24px',
+                    fill: '#fff'
+                });
 
                 this.cursors = this.input.keyboard.createCursorKeys(); //creates inputs using the arrow keys
-                this.spacebar = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);//sets up the spacebar for input
+                this.spacebar = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE); //sets up the spacebar for input
                 this.cameras.main.startFollow(this.player, true, 0.05, 0.05); //makes the camera track the player. increasing the numbers makes the camera track faster
             },
 
             update: function() {
                 this.aiming = false;
                 this.groundCheck();
-                
+
                 this.controls();
 
                 this.aggrox = Phaser.Math.Difference(this.turret.x, this.player.x); //finds the positive x distance between the player and turret
@@ -403,10 +431,9 @@
                     this.mplatforms[0].setVelocityX(-150);
                 }
 
-                if (this.mplatforms[1].y<=200){
+                if (this.mplatforms[1].y <= 200) {
                     this.mplatforms[1].setVelocityY(150);
-                }
-                else if (this.mplatforms[1].y>500){
+                } else if (this.mplatforms[1].y > 500) {
                     this.mplatforms[1].setVelocityY(-150);
                 }
                 //end of moving platforms
@@ -442,26 +469,18 @@
 
             },
 
-            controls: function()
-            {
-                if(!this.gameWin)
-                {
+            controls: function() {
+                if (!this.gameWin) {
 
-                    if(!this.cursors.up.isDown && this.isOnGround)
-                    {
+                    if (!this.cursors.up.isDown && this.isOnGround) {
                         this.jumps = 2;
                     }
 
-                    if (this.cursors.left.isDown && !this.cursors.right.isDown)
-                    {
+                    if (this.cursors.left.isDown && !this.cursors.right.isDown) {
                         this.player.setVelocityX(-350);
-                    }
-                    else if (this.cursors.right.isDown && !this.cursors.left.isDown)
-                    {
-                        this.player.setVelocityX(350);                    
-                    }
-                    else
-                    {
+                    } else if (this.cursors.right.isDown && !this.cursors.left.isDown) {
+                        this.player.setVelocityX(350);
+                    } else {
                         this.player.setVelocityX(0);
                     }
 
@@ -471,66 +490,54 @@
                     }
 
 
-                    if(Phaser.Input.Keyboard.JustDown(this.cursors.up) && this.jumps > 0)
-                    {
-                        if(!this.isOnGround)
-                        {
+                    if (Phaser.Input.Keyboard.JustDown(this.cursors.up) && this.jumps > 0) {
+                        if (!this.isOnGround) {
                             this.jumps = 1;
                         }
 
-                        if (this.player.body.touching.left)
-                        {
+                        if (this.player.body.touching.left) {
                             this.player.setVelocityY(-630);
                             this.player.setVelocityX(350)
-                        }
-
-                        else if(this.player.body.touching.right)
-                        { 
+                        } else if (this.player.body.touching.right) {
                             this.player.setVelocityY(-630);
                             this.player.setVelocityX(-350);
-                        }
-
-                        else
-                        {
+                        } else {
                             this.player.setVelocityY(-630);
                         }
-                    
+
                         this.jumps--;
                         // up arrow must be pressed each time the player wants to jump
-                        
-                        if(this.player.setDisplaySize(100, 25))
-                        {
+
+                        if (this.player.setDisplaySize(100, 25)) {
                             this.player.setDisplaySize(30, 30).setScale(1.6);
                         }
-                    }   
+                    }
                 }
             },
 
-            break: function(player, obst)
-            {
-                if(player.body.touching.down)
-                {
-                    this.time.addEvent({  
-                    delay: 250,
-                    loop: false,
-                    callback: () => {
-                        obst.setVisible(false);
-                        obst.body.enable = false;
-                    }
-                    
-                })
+            break: function(player, obst) {
+                if (player.body.touching.down) {
+                    this.time.addEvent({
+                        delay: 250,
+                        loop: false,
+                        callback: () => {
+                            obst.setVisible(false);
+                            obst.body.enable = false;
+                        }
 
-                this.time.addEvent({  
-                    delay: 2500,
-                    loop: false,
-                    callback: () => {
-                        obst.setVisible(true);
-                        obst.body.enable = true;
-                    }
-                    
-                })
+                    })
+
+                    this.time.addEvent({
+                        delay: 2500,
+                        loop: false,
+                        callback: () => {
+                            obst.setVisible(true);
+                            obst.body.enable = true;
+                        }
+
+                    })
                 }
-                
+
             },
 
             shootBullet: function() {
@@ -772,19 +779,27 @@
                 this.physics.add.collider(this.player, this.turret, this.hit, null, this);
                 this.physics.add.overlap(this.player, this.trophy, this.win, null, this); //checks to see if the objects overlap, passes the objects to the function 'win' if they do
 
-                this.timerEvent = this.time.addEvent({delay: 100, callback: this.updateTime, callbackScope: this, loop: true})
-                this.timer = this.add.text(16, 16, '0: 00', { fontSize: '32px', fill: '#fff' });
+                this.timerEvent = this.time.addEvent({
+                    delay: 100,
+                    callback: this.updateTime,
+                    callbackScope: this,
+                    loop: true
+                })
+                this.timer = this.add.text(16, 16, '0: 00', {
+                    fontSize: '32px',
+                    fill: '#fff'
+                });
                 this.timer.scrollFactorX = 0;
 
                 this.cursors = this.input.keyboard.createCursorKeys(); //creates inputs using the arrow keys
-                this.spacebar = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);//sets up the spacebar for input
+                this.spacebar = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE); //sets up the spacebar for input
                 this.cameras.main.startFollow(this.player, true, 0.05, 0.05); //makes the camera track the player. increasing the numbers makes the camera track faster
             },
 
             update: function() {
                 this.aiming = false;
                 this.groundCheck();
-                
+
                 this.controls();
 
                 this.aggrox = Phaser.Math.Difference(this.turret.x, this.player.x); //finds the positive x distance between the player and turret
@@ -820,10 +835,9 @@
                     this.mplatforms[0].setVelocityX(-100);
                 }
 
-                if (this.mplatforms[1].y<=200){
+                if (this.mplatforms[1].y <= 200) {
                     this.mplatforms[1].setVelocityY(150);
-                }
-                else if (this.mplatforms[1].y>500){
+                } else if (this.mplatforms[1].y > 500) {
                     this.mplatforms[1].setVelocityY(-150);
                 }
                 //end of moving platforms
@@ -845,10 +859,9 @@
                     })
                 }
 
-                if(this.axePower)
-                {
-                    this.axe.x = this.player.x+50;
-                    this.axe.y = this.player.y-55; 
+                if (this.axePower) {
+                    this.axe.x = this.player.x + 50;
+                    this.axe.y = this.player.y - 55;
                 }
             },
             groundCheck: function() {
@@ -864,46 +877,35 @@
 
             },
 
-            controls: function()
-            {
-                if(!this.gameWin)
-                {
-                    if(Phaser.Input.Keyboard.JustDown(this.spacebar) && this.axePower)
-                    {
+            controls: function() {
+                if (!this.gameWin) {
+                    if (Phaser.Input.Keyboard.JustDown(this.spacebar) && this.axePower) {
                         this.axePower = false;
                         this.axeTimer.reset();
-                        this.axeTimer = this.time.addEvent({delay: 5000, callback: this.axeDown, callbackScope: this, loop: false});
-                        if(this.cursors.left.isDown && !this.cursors.right.isDown)
-                        {
+                        this.axeTimer = this.time.addEvent({
+                            delay: 5000,
+                            callback: this.axeDown,
+                            callbackScope: this,
+                            loop: false
+                        });
+                        if (this.cursors.left.isDown && !this.cursors.right.isDown) {
                             this.axe.setVelocityX(-300);
-                        }
-
-                        else if (this.cursors.right.isDown && !this.cursors.left.isDown)
-                        {
+                        } else if (this.cursors.right.isDown && !this.cursors.left.isDown) {
                             this.axe.setVelocityX(300);
-                        }
-
-                        else
-                        {
+                        } else {
                             this.axe.setVelocityY(-400);
                         }
                     }
 
-                    if(!this.cursors.up.isDown && this.isOnGround)
-                    {
+                    if (!this.cursors.up.isDown && this.isOnGround) {
                         this.jumps = 2;
                     }
 
-                    if (this.cursors.left.isDown && !this.cursors.right.isDown)
-                    {
+                    if (this.cursors.left.isDown && !this.cursors.right.isDown) {
                         this.player.setVelocityX(-350);
-                    }
-                    else if (this.cursors.right.isDown && !this.cursors.left.isDown)
-                    {
-                        this.player.setVelocityX(350);                    
-                    }
-                    else
-                    {
+                    } else if (this.cursors.right.isDown && !this.cursors.left.isDown) {
+                        this.player.setVelocityX(350);
+                    } else {
                         this.player.setVelocityX(0);
                     }
 
@@ -913,84 +915,74 @@
                     }
 
 
-                    if(Phaser.Input.Keyboard.JustDown(this.cursors.up) && this.jumps > 0)
-                    {
-                        if(!this.isOnGround)
-                        {
+                    if (Phaser.Input.Keyboard.JustDown(this.cursors.up) && this.jumps > 0) {
+                        if (!this.isOnGround) {
                             this.jumps = 1;
                         }
 
-                        if (this.player.body.touching.left)
-                        {
+                        if (this.player.body.touching.left) {
                             this.player.setVelocityY(-630);
                             this.player.setVelocityX(350)
-                        }
-
-                        else if(this.player.body.touching.right)
-                        { 
+                        } else if (this.player.body.touching.right) {
                             this.player.setVelocityY(-630);
                             this.player.setVelocityX(-350);
-                        }
-
-                        else
-                        {
+                        } else {
                             this.player.setVelocityY(-630);
                         }
-                    
+
                         this.jumps--;
                         // up arrow must be pressed each time the player wants to jump
-                        
-                        if(this.player.setDisplaySize(100, 25))
-                        {
+
+                        if (this.player.setDisplaySize(100, 25)) {
                             this.player.setDisplaySize(30, 30).setScale(1.6);
                         }
-                    }   
+                    }
                 }
             },
 
-            axeDestroy: function(axe, obst)
-            {
+            axeDestroy: function(axe, obst) {
                 axe.destroy();
                 obst.destroy();
             },
 
-            pickup: function(player, obst)
-            {
+            pickup: function(player, obst) {
                 this.axePower = true;
-                this.axeTimer = this.time.addEvent({delay: 10000, callback: this.axeDown, callbackScope: this, loop: false});
+                this.axeTimer = this.time.addEvent({
+                    delay: 10000,
+                    callback: this.axeDown,
+                    callbackScope: this,
+                    loop: false
+                });
             },
 
-            axeDown: function()
-            {
+            axeDown: function() {
                 this.axePower = false;
                 this.axe.destroy();
             },
 
-            break: function(player, obst)
-            {
-                if(player.body.touching.down)
-                {
-                    this.time.addEvent({  
-                    delay: 250,
-                    loop: false,
-                    callback: () => {
-                        obst.setVisible(false);
-                        obst.body.enable = false;
-                    }
-                    
-                })
+            break: function(player, obst) {
+                if (player.body.touching.down) {
+                    this.time.addEvent({
+                        delay: 250,
+                        loop: false,
+                        callback: () => {
+                            obst.setVisible(false);
+                            obst.body.enable = false;
+                        }
 
-                this.time.addEvent({  
-                    delay: 2500,
-                    loop: false,
-                    callback: () => {
-                        obst.setVisible(true);
-                        obst.body.enable = true;
-                    }
-                    
-                })
+                    })
+
+                    this.time.addEvent({
+                        delay: 2500,
+                        loop: false,
+                        callback: () => {
+                            obst.setVisible(true);
+                            obst.body.enable = true;
+                        }
+
+                    })
                 }
-                
+
             },
 
             shootBullet: function() {
@@ -1080,37 +1072,37 @@
             },
 
             init: function() {
-                this.menubutton;
                 this.retrybt;
                 this.nextbt;
+                this.menubutton;
             },
 
             preload: function() {
                 this.load.image('die', 'testob/die.png');
+                this.load.image('retry', 'testob/playagain.png');
+                this.load.image('next', 'testob/nextlevel.png');
                 this.load.image('menu', 'testob/returnmenu.png');
-                this.load.image('retry', 'testob/playagain');
-                this.load.image('next', 'testob/nextlevel');
             },
 
             create: function() {
                 this.cameras.main.fadeIn(3000);
                 this.add.image(0, 0, 'die').setOrigin(0); //Dark Souls end screen, will have to change but its a good placeholder
 
-                this.menubutton = this.add.image(300, 600, 'menu').setInteractive();
-                this.menubutton.on('pointerdown', function() {
+                this.retrybt = this.add.image(250, 600, 'retry').setInteractive();
+                this.retrybt.on('pointerdown', function() {
                     this.scene.stop('over');
-                    this.scene.start('start');
+                    this.scene.start('tutorial');
                 }, this);
 
-                this.menubutton.on('pointerover', function() {
-                    this.menubutton.setScale(1.2);
+                this.retrybt.on('pointerover', function() {
+                    this.retrybt.setScale(1.2);
                 }, this);
 
-                this.menubutton.on('pointerout', function() {
-                    this.menubutton.setScale(1);
+                this.retrybt.on('pointerout', function() {
+                    this.retrybt.setScale(1);
                 }, this);
 
-                this.nextbt = this.add.image(700, 600, 'next').setInteractive();
+                this.nextbt = this.add.image(650, 600, 'next').setInteractive();
                 this.nextbt.on('pointerdown', function() {
                     this.scene.stop('over');
                     this.scene.start('levels');
@@ -1124,18 +1116,18 @@
                     this.nextbt.setScale(1);
                 }, this);
 
-                this.retrybt = this.add.image(1100, 600, 'retry').setInteractive();
-                this.retrybt.on('pointerdown', function() {
+                this.menubutton = this.add.image(1050, 600, 'menu').setInteractive();
+                this.menubutton.on('pointerdown', function() {
                     this.scene.stop('over');
-                    this.scene.start('tutorial');
+                    this.scene.start('start');
                 }, this);
 
-                this.retrybt.on('pointerover', function() {
-                    this.retrybt.setScale(1.2);
+                this.menubutton.on('pointerover', function() {
+                    this.menubutton.setScale(1.2);
                 }, this);
 
-                this.retrybt.on('pointerout', function() {
-                    this.retrybt.setScale(1);
+                this.menubutton.on('pointerout', function() {
+                    this.menubutton.setScale(1);
                 }, this);
             },
 
@@ -1158,37 +1150,37 @@
             },
 
             init: function() {
-                this.menubutton;
                 this.retrybt;
                 this.nextbt;
+                this.menubutton;
             },
 
             preload: function() {
                 this.load.image('winner', 'testob/win.png');
+                this.load.image('retry', 'testob/playagain.png');
+                this.load.image('next', 'testob/nextlevel.png');
                 this.load.image('menu', 'testob/returnmenu.png');
-                this.load.image('retry', 'testob/playagain');
-                this.load.image('next', 'testob/nextlevel');
             },
 
             create: function() {
                 this.cameras.main.fadeIn(3000);
                 this.add.image(0, 0, 'winner').setOrigin(0); //Dark Souls end screen, will have to change but its a good placeholder
 
-                this.menubutton = this.add.image(300, 600, 'menu').setInteractive();
-                this.menubutton.on('pointerdown', function() {
+                this.retrybt = this.add.image(250, 600, 'retry').setInteractive();
+                this.retrybt.on('pointerdown', function() {
                     this.scene.stop('win');
-                    this.scene.start('start');
+                    this.scene.start('tutorial');
                 }, this);
 
-                this.menubutton.on('pointerover', function() {
-                    this.menubutton.setScale(1.2);
+                this.retrybt.on('pointerover', function() {
+                    this.retrybt.setScale(1.2);
                 }, this);
 
-                this.menubutton.on('pointerout', function() {
-                    this.menubutton.setScale(1);
+                this.retrybt.on('pointerout', function() {
+                    this.retrybt.setScale(1);
                 }, this);
 
-                this.nextbt = this.add.image(700, 600, 'next').setInteractive();
+                this.nextbt = this.add.image(650, 600, 'next').setInteractive();
                 this.nextbt.on('pointerdown', function() {
                     this.scene.stop('win');
                     this.scene.start('levels');
@@ -1202,18 +1194,18 @@
                     this.nextbt.setScale(1);
                 }, this);
 
-                this.retrybt = this.add.image(1100, 600, 'retry').setInteractive();
-                this.retrybt.on('pointerdown', function() {
+                this.menubutton = this.add.image(1050, 600, 'menu').setInteractive();
+                this.menubutton.on('pointerdown', function() {
                     this.scene.stop('win');
-                    this.scene.start('tutorial');
+                    this.scene.start('start');
                 }, this);
 
-                this.retrybt.on('pointerover', function() {
-                    this.retrybt.setScale(1.2);
+                this.menubutton.on('pointerover', function() {
+                    this.menubutton.setScale(1.2);
                 }, this);
 
-                this.retrybt.on('pointerout', function() {
-                    this.retrybt.setScale(1);
+                this.menubutton.on('pointerout', function() {
+                    this.menubutton.setScale(1);
                 }, this);
             },
 
