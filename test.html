@@ -16,7 +16,7 @@
     <link rel="preload" as="style" href="assets/mobirise/css/mbr-additional.css">
     <link rel="stylesheet" href="assets/mobirise/css/mbr-additional.css" type="text/css">
 
-    <script src="//cdn.jsdelivr.net/npm/phaser@3.11.0/dist/phaser.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/phaser@3.54.0/dist/phaser.js"></script>
     <script src="assets/theme/js/section.js"></script>
     <style type="text/css">
         body {
@@ -118,14 +118,14 @@
 
             preload: function() {
                 this.load.image('startbt', 'testob/menustart.png');
-                this.load.image('back', 'testob/back.jpg');
+                this.load.image('menuback', 'testob/back.png');
                 this.load.image('leader', 'testob/menuleader.png');
                 this.load.image('credit', 'testob/menucredits.png');
                 this.load.image('settings', 'testob/menusettings.png');
             },
 
             create: function() {
-                this.add.image(0, 0, 'back').setOrigin(0);
+                this.add.image(0, 0, 'menuback').setOrigin(0);
                 this.startbutton = this.add.image(1280 / 2, 720 - 610, 'startbt').setInteractive();
                 this.settingsbutton = this.add.image(1280 / 2, 720 - 455, 'settings').setInteractive();
                 this.leaderbutton = this.add.image(1280 / 2, 720 - 300, 'leader').setInteractive();
@@ -198,6 +198,8 @@
             },
 
             init: function() {
+
+                this.breakplatforms = [];
                 this.flyingWeapon = [];
                 this.mplatforms = [];
                 this.platforms;
@@ -221,6 +223,15 @@
                 this.bullet;
                 this.bulletTimer;
                 this.aiming;
+                this.moveText;
+                this.jumpText;
+                this.DjumpText;
+                this.breakText;
+                this.killText;
+                this.mPlatText;
+                this.turretText;
+                this.WjumpText;
+                this.trophyText;
             },
 
             preload: function() {
@@ -238,6 +249,7 @@
                 this.load.image('dirt', 'testob/dirt.png')
                 this.load.image('circ', 'testob/circle.png');
                 this.load.image('bullet', 'testob/bullet.png');
+                this.load.image('axe', 'testob/axe.png');
             },
 
             create: function() {
@@ -248,17 +260,422 @@
                 this.add.image(1280, 0, 'back').setOrigin(0);
                 this.add.image(1280 * 2, 0, 'back').setOrigin(0);
 
-                this.timerEvent = this.time.addEvent({
-                    delay: 100,
-                    callback: this.updateTime,
+                this.flyingWeapon[0] = this.physics.add.sprite(850, 400, 'star').setCircle(20);
+                this.flyingWeapon[0].body.setGravityY(-300); //sets gravity to negative of the world gravity so the object cannot be moved by gravity
+                this.flyingWeapon[1] = this.physics.add.sprite(1400, 200, 'star').setCircle(20);
+                this.flyingWeapon[1].body.setGravityY(-300);
+
+                this.platforms = this.physics.add.staticGroup(); //creates a new group for this.platforms. They cannot move at all
+                this.platforms.create(400, 600, 'plat');
+
+                this.mplatforms[0] = this.physics.add.sprite(1500, 500, 'plat'); //creates a sprite for this.mplatforms[] This can move.
+                this.mplatforms[0].body.setGravityY(-300);
+                this.mplatforms[0].setImmovable(true); //the sprite can still move, but it cannot be moved by collision with other objects
+
+                this.mplatforms[1] = this.physics.add.sprite(1100, 200, 'plat'); //creates a sprite for this.mplatforms[] This can move.
+                this.mplatforms[1].body.setGravityY(-300);
+                this.mplatforms[1].setImmovable(true); //the sprite can still move, but it cannot be moved by collision with other objects
+
+                this.breakplatforms[0] = this.physics.add.sprite(700, 300, 'plat'); //creates a sprite for this.mplatforms[] This can move.
+                this.breakplatforms[0].body.setGravityY(-300);
+                this.breakplatforms[0].setImmovable(true); //the sprite can still move, but it cannot be moved by collision with other objects
+
+                this.spike = this.physics.add.staticGroup();
+                this.spike.create(700 - 150, 650, 'spike');
+                this.spike.create(700 - 100, 650, 'spike');
+                this.spike.create(700 - 50, 650, 'spike');
+                this.spike.create(700, 650, 'spike');
+                this.spike.create(700 + 50, 650, 'spike');
+                this.spike.create(700 + 100, 650, 'spike');
+                this.spike.create(700 + 300, 650, 'spike');
+                this.spike.create(700 + 350, 650, 'spike');
+                this.spike.create(700 + 400, 650, 'spike');
+                this.spike.create(700 + 450, 650, 'spike');
+
+                this.pillars = this.physics.add.staticGroup();
+                this.pillars.create(2100, 250, 'pil');
+                this.pillars.create(2400, 550, 'pil');
+
+                this.base = this.physics.add.sprite(1970, 365, 'base').setOrigin(0, 0.5);
+                this.base.rotation = 1.57;
+                this.base.setScale(1.25);
+                this.base.body.setGravityY(-300);
+                this.base.setImmovable(true);
+
+                this.turret = this.physics.add.sprite(1972, 380, 'tur').setOrigin(0, 0.5);
+                this.turret.body.setGravityY(-300);
+                this.turret.setImmovable(true);
+
+                this.bullet = this.physics.add.sprite(this.turret.x, this.turret.y, 'bullet');
+                this.bullet.body.setGravityY(-300);
+                this.bulletTimer = this.time.addEvent({
+                    delay: 1500,
+                    callback: this.shootBullet,
                     callbackScope: this,
                     loop: true
                 })
-                this.timer = this.add.text(16, 16, '0: 00', {
-                    fontSize: '32px',
-                    fill: '#000'
-                });
+
+                this.trophy = this.physics.add.sprite(2500, 50, 'trophy').setScale(0.3);
+                this.trophy.setCollideWorldBounds(true); //prevents the object from falling through the world
+
+                this.floor = this.physics.add.staticGroup();
+                this.floor.create(1965, 300, 'floor').setScale(0.5, 0.5).refreshBody();
+                this.floor.create(640, 682, 'floor').setScale(5, 0.1).refreshBody();
+                this.floor.create(1920, 682, 'floor').setScale(5, 0.1).refreshBody();
+
+                this.ground = this.physics.add.staticGroup();
+                this.ground.create(640, 708, 'dirt').setScale(5, 0.1).refreshBody();
+                this.ground.create(1920, 708, 'dirt').setScale(5, 0.1).refreshBody();
+
+                this.player = this.physics.add.sprite(100, 470, 'cube').setScale(1.6);
+                this.player.setBounce(0.1);
+                this.player.setCollideWorldBounds(true);
+                this.player.body.setGravityY(900);
+
+                this.physics.add.collider(this.player, this.platforms);
+                this.physics.add.collider(this.player, this.breakplatforms, this.break, null, this);
+                this.physics.add.collider(this.player, this.floor); //checks to see if the objects collide
+                this.physics.add.collider(this.player, this.mplatforms);
+                this.physics.add.collider(this.player, this.pillars);
+                this.physics.add.collider(this.floor, this.trophy);
+                this.physics.add.collider(this.platforms, this.trophy);
+                this.physics.add.collider(this.player, this.spike, this.hit, null, this); //checks to see if the objects collide, passes the objects to the function 'hit' if they do
+                this.physics.add.collider(this.player, this.flyingWeapon, this.hit, null, this);
+                this.physics.add.collider(this.player, this.bullet, this.hit, null, this);
+                this.physics.add.collider(this.player, this.turret, this.hit, null, this);
+                this.physics.add.overlap(this.player, this.trophy, this.win, null, this); //checks to see if the objects overlap, passes the objects to the function 'win' if they do
+
+                this.timerEvent = this.time.addEvent({delay: 100, callback: this.updateTime, callbackScope: this, loop: true})
+                this.timer = this.add.text(16, 16, '0: 00', { fontSize: '32px', fill: '#fff' });
                 this.timer.scrollFactorX = 0;
+
+                this.moveText = this.add.text(100, 630, 'Use ⇦ and ⇨ to move', { fontSize: '24px', fill: '#fff' });
+                this.jumpText = this.add.text(100, 430, 'Press ⇧ to jump', { fontSize: '24px', fill: '#fff' });
+                this.DjumpText = this.add.text(100, 190, 'Press ⇧ again to double jump', { fontSize: '24px', fill: '#fff' });
+                this.breakText = this.add.text(500, 150, 'Some platforms break', { fontSize: '24px', fill: '#fff' });
+                this.killText = this.add.text(700, 430, 'Some things kill you', { fontSize: '24px', fill: '#fff' });
+                this.mPlatText = this.add.text(1100, 430, 'Some platforms move', { fontSize: '24px', fill: '#fff' });
+                this.turretText = this.add.text(1700, 430, 'This thing shoots you', { fontSize: '24px', fill: '#fff' });
+                this.WjumpText = this.add.text(1540, 190, 'Press ⇧ against a wall to wall jump', { fontSize: '24px', fill: '#fff' });
+                this.trophyText = this.add.text(2170, 190, 'Collect the trophy to win', { fontSize: '24px', fill: '#fff' });
+
+                this.cursors = this.input.keyboard.createCursorKeys(); //creates inputs using the arrow keys
+                this.spacebar = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);//sets up the spacebar for input
+                this.cameras.main.startFollow(this.player, true, 0.05, 0.05); //makes the camera track the player. increasing the numbers makes the camera track faster
+            },
+
+            update: function() {
+                this.aiming = false;
+                this.groundCheck();
+                
+                this.controls();
+
+                this.aggrox = Phaser.Math.Difference(this.turret.x, this.player.x); //finds the positive x distance between the player and turret
+                this.aggroy = Phaser.Math.Difference(this.turret.y, this.player.y); //finds the positive y distance between the player and turret
+
+                if (this.aggrox <= 450 && this.aggroy <= 350) {
+                    this.target = Phaser.Math.Angle.BetweenPoints(this.turret, this.player); //finds the angle between the turret and player
+                    if (this.target > 0.2 && this.target < 2.75) {
+                        this.turret.rotation = this.target; // sets the turrets angle of rotation to the angle found above
+                        this.aiming = true;
+                    }
+                }
+
+                this.flyingWeapon[0].rotation += 0.2; //sets rotation and velocity of moving obstacles
+                if (this.flyingWeapon[0].x > 849) {
+                    this.flyingWeapon[0].setVelocityX(-150);
+                } else if (this.flyingWeapon[0].x < 600) {
+                    this.flyingWeapon[0].setVelocityX(150);
+                }
+
+                this.flyingWeapon[1].rotation += 0.2;
+                if (this.flyingWeapon[1].y <= 200) {
+                    this.flyingWeapon[1].setVelocityY(150);
+                } else if (this.flyingWeapon[1].y > 400) {
+                    this.flyingWeapon[1].setVelocityY(-150);
+                }
+                //end of moving obstacles
+
+                if (this.mplatforms[0].x <= 1500) //sets velocity of moving platforms
+                {
+                    this.mplatforms[0].setVelocityX(150);
+                } else if (this.mplatforms[0].x > 1860) {
+                    this.mplatforms[0].setVelocityX(-150);
+                }
+
+                if (this.mplatforms[1].y<=200){
+                    this.mplatforms[1].setVelocityY(150);
+                }
+                else if (this.mplatforms[1].y>500){
+                    this.mplatforms[1].setVelocityY(-150);
+                }
+                //end of moving platforms
+
+                if (this.gameOver) //true if player is hit by lethal object, determined by function 'hit'
+                {
+                    //starts the GameOver Scene after set amount of time
+                    this.time.addEvent({
+                        delay: 1000,
+                        loop: false,
+                        callback: () => {
+                            this.scene.stop('tutorial');
+                            this.scene.start('over');
+                            /* setTimeout(() => {
+                                this.scene.stop('over')
+                                this.scene.start('start');
+                            }, 2000)*/
+                        }
+                    })
+                }
+
+            },
+            groundCheck: function() {
+                if (this.player.body.touching.down) {
+                    this.isOnGround = true;
+                } else {
+                    this.isOnGround = false;
+                }
+
+                if (this.player.body.touching.left || this.player.body.touching.right) {
+                    this.jumps = 1;
+                }
+
+            },
+
+            controls: function()
+            {
+                if(!this.gameWin)
+                {
+
+                    if(!this.cursors.up.isDown && this.isOnGround)
+                    {
+                        this.jumps = 2;
+                    }
+
+                    if (this.cursors.left.isDown && !this.cursors.right.isDown)
+                    {
+                        this.player.setVelocityX(-350);
+                    }
+                    else if (this.cursors.right.isDown && !this.cursors.left.isDown)
+                    {
+                        this.player.setVelocityX(350);                    
+                    }
+                    else
+                    {
+                        this.player.setVelocityX(0);
+                    }
+
+                    if (this.cursors.down.isDown) //flattens player if down arrow is pressed
+                    {
+                        this.player.setDisplaySize(100, 25);
+                    }
+
+
+                    if(Phaser.Input.Keyboard.JustDown(this.cursors.up) && this.jumps > 0)
+                    {
+                        if(!this.isOnGround)
+                        {
+                            this.jumps = 1;
+                        }
+
+                        if (this.player.body.touching.left)
+                        {
+                            this.player.setVelocityY(-630);
+                            this.player.setVelocityX(350)
+                        }
+
+                        else if(this.player.body.touching.right)
+                        { 
+                            this.player.setVelocityY(-630);
+                            this.player.setVelocityX(-350);
+                        }
+
+                        else
+                        {
+                            this.player.setVelocityY(-630);
+                        }
+                    
+                        this.jumps--;
+                        // up arrow must be pressed each time the player wants to jump
+                        
+                        if(this.player.setDisplaySize(100, 25))
+                        {
+                            this.player.setDisplaySize(30, 30).setScale(1.6);
+                        }
+                    }   
+                }
+            },
+
+            break: function(player, obst)
+            {
+                if(player.body.touching.down)
+                {
+                    this.time.addEvent({  
+                    delay: 250,
+                    loop: false,
+                    callback: () => {
+                        obst.setVisible(false);
+                        obst.body.enable = false;
+                    }
+                    
+                })
+
+                this.time.addEvent({  
+                    delay: 2500,
+                    loop: false,
+                    callback: () => {
+                        obst.setVisible(true);
+                        obst.body.enable = true;
+                    }
+                    
+                })
+                }
+                
+            },
+
+            shootBullet: function() {
+                if (this.aiming) {
+                    this.physics.velocityFromRotation(this.turret.rotation, 350, this.bullet.body.velocity);
+                    this.bullet.x = this.turret.x;
+                    this.bullet.y = this.turret.y;
+                    this.bullet.body.setGravityY(-300);
+                }
+
+            },
+
+            hit: function(player, obst) {
+                this.physics.pause();
+                player.setDisplaySize(50, 50);
+                player.setTexture('death');
+                this.gameOver = true;
+            },
+
+            win: function(player, obj) {
+                console.log('Good job'); //tells you good job for winning because i don't have a win screen yet
+
+
+                if (this.isOnGround == true) {
+                    obj.disableBody(true, true);
+                    this.player.setVelocityX(0); //U cud also use this but
+                    this.input.disable = true //input disable makes the player not be able to do anything whatsoever
+                    this.player.setCollideWorldBounds(false);
+                    setTimeout(() => {
+                        this.player.setVelocityX(500);
+                        console.log('true')
+
+                        this.time.addEvent({
+                            delay: 500,
+                            loop: false,
+                            callback: () => {
+                                this.physics.pause();
+                            }
+
+                        })
+
+                        this.time.addEvent({
+                            delay: 500,
+                            loop: false,
+                            callback: () => {
+                                this.scene.stop('tutorial');
+                                this.scene.start('win');
+                            }
+
+                        })
+
+                    }, 1000);
+
+                }
+
+                this.gameWin = true;
+
+            },
+
+            updateTime: function() {
+                this.secondsDecimal++;
+                if (this.secondsDecimal === 599) {
+                    this.secondsDecimal = 0;
+                    this.minutes++;
+                }
+
+                if (this.gameWin || this.gameOver) {
+                    this.timerEvent.remove(false);
+                    //some php for leader board
+                }
+
+                this.timer.setText('0' + this.minutes + ':' + this.secondsDecimal / 10);
+            }
+
+        });
+
+        var Level1Scene = new Phaser.Class({
+            Extends: Phaser.Scene,
+
+            initialize:
+
+                function Level1Scene() {
+                Phaser.Scene.call(this, {
+                    key: 'level1'
+                });
+            },
+
+            init: function() {
+
+                this.breakplatforms = [];
+                this.flyingWeapon = [];
+                this.mplatforms = [];
+                this.platforms;
+                this.isOnGround = false;
+                this.player;
+                this.spike;
+                this.turret;
+                this.pillars;
+                this.base;
+                this.trophy;
+                this.aggrox;
+                this.aggroy;
+                this.target;
+                this.gameOver = false;
+                this.gameWin = false;
+                this.secondsDecimal = 0;
+                this.minutes = 0;
+                this.timer;
+                this.timerEvent;
+                this.jumps;
+                this.bullet;
+                this.bulletTimer;
+                this.aiming;
+                this.axe;
+                this.axePower;
+                this.axeTimer;
+                this.spacebar;
+            },
+
+            preload: function() {
+                this.load.image('back', 'testob/back.jpg');
+                this.load.image('plat', 'testob/plat.png');
+                this.load.image('spike', 'testob/spike.png');
+                this.load.image('floor', 'testob/floor.png');
+                this.load.image('star', 'testob/star.png');
+                this.load.image('cube', 'testob/cube1.png');
+                this.load.image('death', 'testob/cube3.png');
+                this.load.image('pil', 'testob/pil.png');
+                this.load.image('tur', 'testob/turret1.png');
+                this.load.image('trophy', 'testob/prize.png');
+                this.load.image('base', 'testob/base.png');
+                this.load.image('dirt', 'testob/dirt.png')
+                this.load.image('circ', 'testob/circle.png');
+                this.load.image('bullet', 'testob/bullet.png');
+                this.load.image('axe', 'testob/axe.png');
+            },
+
+            create: function() {
+                this.cameras.main.setBounds(0, 0, 1280 * 3, 720); //stops the camera from leaving the game area
+                this.physics.world.setBounds(0, 0, 1280 * 3, 720); //sets the game area where physics is applied
+
+                this.add.image(0, 0, 'back').setOrigin(0);
+                this.add.image(1280, 0, 'back').setOrigin(0);
+                this.add.image(1280 * 2, 0, 'back').setOrigin(0);
+                this.add.image(1280 * 3, 0, 'back').setOrigin(0);
 
                 this.flyingWeapon[0] = this.physics.add.sprite(50, 400, 'star').setCircle(20);
                 this.flyingWeapon[0].body.setGravityY(-300); //sets gravity to negative of the world gravity so the object cannot be moved by gravity
@@ -270,10 +687,19 @@
                 this.platforms.create(700, 380, 'plat');
                 this.platforms.create(900, 260, 'plat');
                 this.platforms.create(1000, 175, 'plat');
+                this.platforms.create(3700, 150, 'plat');
 
                 this.mplatforms[0] = this.physics.add.sprite(1600, 500, 'plat'); //creates a sprite for this.mplatforms[] This can move.
                 this.mplatforms[0].body.setGravityY(-300);
                 this.mplatforms[0].setImmovable(true); //the sprite can still move, but it cannot be moved by collision with other objects
+
+                this.mplatforms[1] = this.physics.add.sprite(3350, 200, 'plat'); //creates a sprite for this.mplatforms[] This can move.
+                this.mplatforms[1].body.setGravityY(-300);
+                this.mplatforms[1].setImmovable(true); //the sprite can still move, but it cannot be moved by collision with other objects
+
+                this.breakplatforms[0] = this.physics.add.sprite(2800, 500, 'plat'); //creates a sprite for this.mplatforms[] This can move.
+                this.breakplatforms[0].body.setGravityY(-300);
+                this.breakplatforms[0].setImmovable(true); //the sprite can still move, but it cannot be moved by collision with other objects
 
                 this.spike = this.physics.add.staticGroup();
                 this.spike.create(400, 453, 'spike');
@@ -309,36 +735,58 @@
                     loop: true
                 })
 
-                this.trophy = this.physics.add.sprite(2500, 200, 'trophy').setScale(0.3);
+                this.trophy = this.physics.add.sprite(3780, 50, 'trophy').setScale(0.3);
                 this.trophy.setCollideWorldBounds(true); //prevents the object from falling through the world
 
                 this.floor = this.physics.add.staticGroup();
                 this.floor.create(640, 670, 'floor').setScale(5, 0.5).refreshBody();
-                this.floor.create(2370, 670, 'floor');
+                this.floor.create(2370, 670, 'floor').setScale(5, 0.5).refreshBody();
+                this.floor.create(3500, 670, 'floor').setScale(5, 0.5).refreshBody();
 
                 this.player = this.physics.add.sprite(100, 470, 'cube').setScale(1.6);
                 this.player.setBounce(0.1);
                 this.player.setCollideWorldBounds(true);
                 this.player.body.setGravityY(900);
 
+                this.axe = this.physics.add.sprite(200, 470, 'axe');
+                this.axe.setCollideWorldBounds(true);
+                this.axe.body.setGravityY(-300);
+
                 this.physics.add.collider(this.player, this.platforms);
+                this.physics.add.collider(this.axe, this.platforms);
+                this.physics.add.collider(this.axe, this.mplatforms);
+                this.physics.add.collider(this.axe, this.floor);
+                this.physics.add.overlap(this.player, this.axe, this.pickup, null, this);
+                this.physics.add.overlap(this.axe, this.flyingWeapon, this.axeDestroy, null, this);
+                this.physics.add.overlap(this.axe, this.turret, this.axeDestroy, null, this);
+                this.physics.add.overlap(this.axe, this.spike, this.axeDestroy, null, this);
+                this.physics.add.collider(this.player, this.breakplatforms, this.break, null, this);
                 this.physics.add.collider(this.player, this.floor); //checks to see if the objects collide
                 this.physics.add.collider(this.player, this.mplatforms);
                 this.physics.add.collider(this.player, this.pillars);
                 this.physics.add.collider(this.floor, this.trophy);
+                this.physics.add.collider(this.platforms, this.trophy);
                 this.physics.add.collider(this.player, this.spike, this.hit, null, this); //checks to see if the objects collide, passes the objects to the function 'hit' if they do
                 this.physics.add.collider(this.player, this.flyingWeapon, this.hit, null, this);
                 this.physics.add.collider(this.player, this.bullet, this.hit, null, this);
                 this.physics.add.collider(this.player, this.turret, this.hit, null, this);
                 this.physics.add.overlap(this.player, this.trophy, this.win, null, this); //checks to see if the objects overlap, passes the objects to the function 'win' if they do
 
+                this.timerEvent = this.time.addEvent({delay: 100, callback: this.updateTime, callbackScope: this, loop: true})
+                this.timer = this.add.text(16, 16, '0: 00', { fontSize: '32px', fill: '#fff' });
+                this.timer.scrollFactorX = 0;
+
                 this.cursors = this.input.keyboard.createCursorKeys(); //creates inputs using the arrow keys
+                this.spacebar = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);//sets up the spacebar for input
                 this.cameras.main.startFollow(this.player, true, 0.05, 0.05); //makes the camera track the player. increasing the numbers makes the camera track faster
             },
 
             update: function() {
                 this.aiming = false;
                 this.groundCheck();
+                
+                this.controls();
+
                 this.aggrox = Phaser.Math.Difference(this.turret.x, this.player.x); //finds the positive x distance between the player and turret
                 this.aggroy = Phaser.Math.Difference(this.turret.y, this.player.y); //finds the positive y distance between the player and turret
 
@@ -371,6 +819,13 @@
                 } else if (this.mplatforms[0].x > 1860) {
                     this.mplatforms[0].setVelocityX(-100);
                 }
+
+                if (this.mplatforms[1].y<=200){
+                    this.mplatforms[1].setVelocityY(150);
+                }
+                else if (this.mplatforms[1].y>500){
+                    this.mplatforms[1].setVelocityY(-150);
+                }
                 //end of moving platforms
 
                 if (this.gameOver) //true if player is hit by lethal object, determined by function 'hit'
@@ -390,53 +845,11 @@
                     })
                 }
 
-                //PLayer Controls
-                if (!this.gameWin) {
-                    if (!this.cursors.up.isDown && this.isOnGround) {
-                        this.jumps = 2;
-                    }
-
-                    if (this.cursors.left.isDown && !this.cursors.right.isDown) {
-                        this.player.setVelocityX(-350);
-                    } else if (this.cursors.right.isDown && !this.cursors.left.isDown) {
-                        this.player.setVelocityX(350);
-                    } else {
-                        this.player.setVelocityX(0);
-                    }
-
-                    if (this.cursors.down.isDown) //flattens player if down arrow is pressed
-                    {
-                        this.player.setDisplaySize(100, 25);
-                    }
-
-
-                    if (Phaser.Input.Keyboard.JustDown(this.cursors.up) && this.jumps > 0) {
-                        if (!this.isOnGround) {
-                            this.jumps = 1;
-                        }
-
-                        if (this.player.body.touching.left) {
-                            this.player.setVelocityY(-630);
-                            this.player.setVelocityX(350)
-                            this.jumps = 1;
-                        }
-
-                        if (this.player.body.touching.right) {
-                            this.player.setVelocityY(-630);
-                            this.player.setVelocityX(-350);
-                            this.jumps = 1;
-                        }
-                        this.player.setVelocityY(-630);
-                        this.jumps--;
-                        // up arrow must be pressed each time the player wants to jump
-
-                        if (this.player.setDisplaySize(100, 25)) {
-                            this.player.setDisplaySize(30, 30).setScale(1.6);
-                        }
-                    }
-
+                if(this.axePower)
+                {
+                    this.axe.x = this.player.x+50;
+                    this.axe.y = this.player.y-55; 
                 }
-                // end of Player Controls
             },
             groundCheck: function() {
                 if (this.player.body.touching.down) {
@@ -449,6 +862,135 @@
                     this.jumps = 1;
                 }
 
+            },
+
+            controls: function()
+            {
+                if(!this.gameWin)
+                {
+                    if(Phaser.Input.Keyboard.JustDown(this.spacebar) && this.axePower)
+                    {
+                        this.axePower = false;
+                        this.axeTimer.reset();
+                        this.axeTimer = this.time.addEvent({delay: 5000, callback: this.axeDown, callbackScope: this, loop: false});
+                        if(this.cursors.left.isDown && !this.cursors.right.isDown)
+                        {
+                            this.axe.setVelocityX(-300);
+                        }
+
+                        else if (this.cursors.right.isDown && !this.cursors.left.isDown)
+                        {
+                            this.axe.setVelocityX(300);
+                        }
+
+                        else
+                        {
+                            this.axe.setVelocityY(-400);
+                        }
+                    }
+
+                    if(!this.cursors.up.isDown && this.isOnGround)
+                    {
+                        this.jumps = 2;
+                    }
+
+                    if (this.cursors.left.isDown && !this.cursors.right.isDown)
+                    {
+                        this.player.setVelocityX(-350);
+                    }
+                    else if (this.cursors.right.isDown && !this.cursors.left.isDown)
+                    {
+                        this.player.setVelocityX(350);                    
+                    }
+                    else
+                    {
+                        this.player.setVelocityX(0);
+                    }
+
+                    if (this.cursors.down.isDown) //flattens player if down arrow is pressed
+                    {
+                        this.player.setDisplaySize(100, 25);
+                    }
+
+
+                    if(Phaser.Input.Keyboard.JustDown(this.cursors.up) && this.jumps > 0)
+                    {
+                        if(!this.isOnGround)
+                        {
+                            this.jumps = 1;
+                        }
+
+                        if (this.player.body.touching.left)
+                        {
+                            this.player.setVelocityY(-630);
+                            this.player.setVelocityX(350)
+                        }
+
+                        else if(this.player.body.touching.right)
+                        { 
+                            this.player.setVelocityY(-630);
+                            this.player.setVelocityX(-350);
+                        }
+
+                        else
+                        {
+                            this.player.setVelocityY(-630);
+                        }
+                    
+                        this.jumps--;
+                        // up arrow must be pressed each time the player wants to jump
+                        
+                        if(this.player.setDisplaySize(100, 25))
+                        {
+                            this.player.setDisplaySize(30, 30).setScale(1.6);
+                        }
+                    }   
+                }
+            },
+
+            axeDestroy: function(axe, obst)
+            {
+                axe.destroy();
+                obst.destroy();
+            },
+
+            pickup: function(player, obst)
+            {
+                this.axePower = true;
+                this.axeTimer = this.time.addEvent({delay: 10000, callback: this.axeDown, callbackScope: this, loop: false});
+            },
+
+            axeDown: function()
+            {
+                this.axePower = false;
+                this.axe.destroy();
+            },
+
+            break: function(player, obst)
+            {
+                if(player.body.touching.down)
+                {
+                    this.time.addEvent({  
+                    delay: 250,
+                    loop: false,
+                    callback: () => {
+                        obst.setVisible(false);
+                        obst.body.enable = false;
+                    }
+                    
+                })
+
+                this.time.addEvent({  
+                    delay: 2500,
+                    loop: false,
+                    callback: () => {
+                        obst.setVisible(true);
+                        obst.body.enable = true;
+                    }
+                    
+                })
+                }
+                
             },
 
             shootBullet: function() {
@@ -501,11 +1043,6 @@
                         })
 
                     }, 1000);
-
-
-
-
-
 
                 }
 
@@ -706,7 +1243,7 @@
             },
 
             preload: function() {
-                this.load.image('back', 'testob/back.jpg');
+                this.load.image('menuback', 'testob/back.png');
                 this.load.image('tutorial', 'testob/tutorial.png');
                 this.load.image('level1', 'testob/level1.png');
                 this.load.image('level2', 'testob/level2.png');
@@ -714,7 +1251,7 @@
             },
 
             create: function() {
-                this.add.image(0, 0, 'back').setOrigin(0);
+                this.add.image(0, 0, 'menuback').setOrigin(0);
                 this.tutorialbt = this.add.image(360, 260, 'tutorial').setInteractive();
                 this.level1bt = this.add.image(840, 260, 'level1').setInteractive();
                 this.level2bt = this.add.image(360, 400, 'level2').setInteractive();
@@ -792,7 +1329,7 @@
                     debug: false //disables visible object outlines and paths
                 }
             },
-            scene: [StartScene, TutorialScene, GameOverScene, GameWinScene, LevelSelectScene]
+            scene: [StartScene, Level1Scene, TutorialScene, GameOverScene, GameWinScene, LevelSelectScene]
         };
 
         var game = new Phaser.Game(config);
