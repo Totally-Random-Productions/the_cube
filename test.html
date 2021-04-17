@@ -243,6 +243,7 @@
                 this.load.image('circ', 'testob/circle.png');
                 this.load.image('bullet', 'testob/bullet.png');
                 this.load.image('axe', 'testob/axe.png');
+                this.load.image('grass', 'testob/grass.png');
             },
 
             create: function() {
@@ -259,7 +260,7 @@
                 this.flyingWeapon[1].body.setGravityY(-300);
 
                 this.platforms = this.physics.add.staticGroup(); //creates a new group for this.platforms. They cannot move at all
-                this.platforms.create(400, 600, 'plat');
+                this.platforms.create(400, 590, 'plat');
 
                 this.mplatforms[0] = this.physics.add.sprite(1500, 500, 'plat'); //creates a sprite for this.mplatforms[] This can move.
                 this.mplatforms[0].body.setGravityY(-300);
@@ -274,20 +275,15 @@
                 this.breakplatforms[0].setImmovable(true); //the sprite can still move, but it cannot be moved by collision with other objects
 
                 this.spike = this.physics.add.staticGroup();
-                this.spike.create(700 - 150, 650, 'spike');
-                this.spike.create(700 - 100, 650, 'spike');
-                this.spike.create(700 - 50, 650, 'spike');
-                this.spike.create(700, 650, 'spike');
-                this.spike.create(700 + 50, 650, 'spike');
-                this.spike.create(700 + 100, 650, 'spike');
-                this.spike.create(700 + 300, 650, 'spike');
-                this.spike.create(700 + 350, 650, 'spike');
-                this.spike.create(700 + 400, 650, 'spike');
-                this.spike.create(700 + 450, 650, 'spike');
+                for(var i = 0; i<= 450; i+=50)
+                {
+                    this.spike.create(700 + i, 635, 'spike');
+                }
 
                 this.pillars = this.physics.add.staticGroup();
-                this.pillars.create(2100, 250, 'pil');
-                this.pillars.create(2400, 550, 'pil');
+                this.pillars.create(2100, 250, 'pil').setDisplaySize(100, 500).refreshBody();
+                this.pillars.rotate(3.14);
+                this.pillars.create(2400, 550, 'pil').setDisplaySize(100, 500).refreshBody();
 
                 this.base = this.physics.add.sprite(1970, 365, 'base').setOrigin(0, 0.5);
                 this.base.rotation = 1.57;
@@ -312,13 +308,11 @@
                 this.trophy.setCollideWorldBounds(true); //prevents the object from falling through the world
 
                 this.floor = this.physics.add.staticGroup();
+                for(i = 32; i< 2560; i+=50)
+                {
+                    this.floor.create(0 + i, 688, 'grass').setScale(0.25).refreshBody();
+                }
                 this.floor.create(1965, 300, 'floor').setScale(0.5, 0.5).refreshBody();
-                this.floor.create(640, 682, 'floor').setScale(5, 0.1).refreshBody();
-                this.floor.create(1920, 682, 'floor').setScale(5, 0.1).refreshBody();
-
-                this.ground = this.physics.add.staticGroup();
-                this.ground.create(640, 708, 'dirt').setScale(5, 0.1).refreshBody();
-                this.ground.create(1920, 708, 'dirt').setScale(5, 0.1).refreshBody();
 
                 this.player = this.physics.add.sprite(100, 470, 'cube').setScale(1.6);
                 this.player.setBounce(0.1);
@@ -381,7 +375,7 @@
                     fontSize: '24px',
                     fill: '#fff'
                 });
-                this.spikeText = this.add.text(700, 600, 'Spikes will also kill you', {
+                this.spikeText = this.add.text(700, 595, 'Spikes will also kill you', {
                     fontSize: '24px',
                     fill: '#fff'
                 });
