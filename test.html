@@ -53,7 +53,7 @@
                         <img src="assets/images/icons8-the-dragon-team-1024.png" alt="Mobirise" style="height: 3rem;">
                     </a>
                 </span>
-                    <span class="navbar-caption-wrap"><a class="navbar-caption text-black display-5" href="index.html#top">DRGN Stuidos</a></span>
+                    <span class="navbar-caption-wrap"><a class="navbar-caption text-black display-5" href="index.html#top">DRGN Studios</a></span>
                 </div>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
                 <div class="hamburger">
@@ -222,6 +222,8 @@
                 this.turretText;
                 this.WjumpText;
                 this.trophyText;
+                this.change;
+                this.allowedToChange = true;
                 level = 'tutorial';
             },
 
@@ -323,6 +325,13 @@
                 this.player.setCollideWorldBounds(true);
                 this.player.body.setGravityY(900);
 
+                this.change = this.physics.add.sprite(100, 470, 'cube');
+                this.change.setBounce(0.1);
+                this.change.setCollideWorldBounds(true);
+                this.change.body.setGravityY(-300);
+                this.change.setSize(100, 50, true);
+                this.change.setVisible(false);
+
                 this.physics.add.collider(this.player, this.platforms);
                 this.physics.add.collider(this.player, this.breakplatforms, this.break, null, this);
                 this.physics.add.collider(this.player, this.floor); //checks to see if the objects collide
@@ -335,6 +344,10 @@
                 this.physics.add.collider(this.player, this.bullet, this.hit, null, this);
                 this.physics.add.collider(this.player, this.turret, this.hit, null, this);
                 this.physics.add.overlap(this.player, this.trophy, this.win, null, this); //checks to see if the objects overlap, passes the objects to the function 'win' if they do
+                this.physics.add.overlap(this.change, this.platforms, this.changeTest, null, this);
+                this.physics.add.overlap(this.change, this.breakplatforms, this.changeTest, null, this);
+                this.physics.add.overlap(this.change, this.mplatforms, this.changeTest, null, this);
+                this.physics.add.overlap(this.change, this.pillars, this.changeTest, null, this);
 
                 this.timerEvent = this.time.addEvent({
                     delay: 100,
@@ -395,6 +408,7 @@
             },
 
             update: function() {
+                console.log(this.allowedToChange)
                 this.aiming = false;
                 this.groundCheck();
 
@@ -473,6 +487,8 @@
 
             controls: function() {
                 if (!this.gameWin) {
+                    this.change.x = this.player.x;
+                    this.change.y = this.player.y-15;
 
                     if (!this.cursors.up.isDown && this.isOnGround) {
                         this.jumps = 2;
@@ -486,7 +502,7 @@
                         this.player.setVelocityX(0);
                     }
 
-                    if (this.cursors.down.isDown) //flattens player if down arrow is pressed
+                    if (this.cursors.down.isDown && this.allowedToChange) //flattens player if down arrow is pressed
                     {
                         this.player.setDisplaySize(100, 25);
                     }
@@ -510,7 +526,7 @@
                         this.jumps--;
                         // up arrow must be pressed each time the player wants to jump
 
-                        if (this.player.setDisplaySize(100, 25)) {
+                        if (this.allowedToChange) {
                             this.player.setDisplaySize(30, 30).setScale(1.6);
                         }
                     }
@@ -540,6 +556,19 @@
                     })
                 }
 
+            },
+
+            changeTest: function() {
+                this.allowedToChange = false;
+
+                this.time.addEvent({
+                    delay: 500,
+                    loop: false,
+                    callback: () => {
+                        this.allowedToChange = true;
+                    }
+
+                })
             },
 
             shootBullet: function() {
