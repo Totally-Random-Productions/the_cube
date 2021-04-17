@@ -680,6 +680,10 @@
                 this.axePower;
                 this.axeTimer;
                 this.spacebar;
+                this.axeAngle;
+                this.aimer;
+                this.turretActive = true;
+                this.axeOverlap;
                 level = 'level1';
             },
 
@@ -699,6 +703,7 @@
                 this.load.image('circ', 'testob/circle.png');
                 this.load.image('bullet', 'testob/bullet.png');
                 this.load.image('axe', 'testob/axe.png');
+                this.load.image('arrow', 'testob/arrow.png');
             },
 
             create: function() {
@@ -785,13 +790,18 @@
                 this.axe.setCollideWorldBounds(true);
                 this.axe.body.setGravityY(-300);
 
+                this.aimer = this.add.image(this.axe.x, this.axe.y, 'arrow').setOrigin(0, 0.5);
+                this.aimer.setVisible(false);
+
                 this.physics.add.collider(this.player, this.platforms);
-                this.physics.add.collider(this.axe, this.platforms);
-                this.physics.add.collider(this.axe, this.mplatforms);
-                this.physics.add.collider(this.axe, this.floor);
-                this.physics.add.overlap(this.player, this.axe, this.pickup, null, this);
+                this.physics.add.collider(this.axe, this.platforms, this.axeStop, null, this);
+                this.physics.add.collider(this.axe, this.mplatforms, this.axeStop, null, this);
+                this.physics.add.collider(this.axe, this.floor, this.axeStop, null, this);
+                this.physics.add.collider(this.axe, this.pillars, this.axeStop, null, this);
+                this.physics.add.collider(this.axe, this.breakplatforms, this.axeStop, null, this);
+                this.axeOverlap = this.physics.add.overlap(this.player, this.axe, this.pickup, null, this);
                 this.physics.add.overlap(this.axe, this.flyingWeapon, this.axeDestroy, null, this);
-                this.physics.add.overlap(this.axe, this.turret, this.axeDestroy, null, this);
+                this.physics.add.overlap(this.axe, this.turret, this.turretDestroy, null, this);
                 this.physics.add.overlap(this.axe, this.spike, this.axeDestroy, null, this);
                 this.physics.add.collider(this.player, this.breakplatforms, this.break, null, this);
                 this.physics.add.collider(this.player, this.floor); //checks to see if the objects collide
@@ -831,13 +841,16 @@
                 this.aggrox = Phaser.Math.Difference(this.turret.x, this.player.x); //finds the positive x distance between the player and turret
                 this.aggroy = Phaser.Math.Difference(this.turret.y, this.player.y); //finds the positive y distance between the player and turret
 
-                if (this.aggrox <= 450 && this.aggroy <= 350) {
-                    this.target = Phaser.Math.Angle.BetweenPoints(this.turret, this.player); //finds the angle between the turret and player
-                    if (this.target > -1.5 && this.target < 1.5) {
-                        this.turret.rotation = this.target; // sets the turrets angle of rotation to the angle found above
-                        this.aiming = true;
+                if(this.turretActive) {
+                    if (this.aggrox <= 450 && this.aggroy <= 350) {
+                        this.target = Phaser.Math.Angle.BetweenPoints(this.turret, this.player); //finds the angle between the turret and player
+                        if (this.target > -1.5 && this.target < 1.5) {
+                            this.turret.rotation = this.target; // sets the turrets angle of rotation to the angle found above
+                            this.aiming = true;
+                        }
                     }
                 }
+                
 
                 this.flyingWeapon[0].rotation += 0.2; //sets rotation and velocity of moving obstacles
                 if (this.flyingWeapon[0].x > 300) {
@@ -884,11 +897,6 @@
                         }
                     })
                 }
-
-                if (this.axePower) {
-                    this.axe.x = this.player.x + 50;
-                    this.axe.y = this.player.y - 55;
-                }
             },
             groundCheck: function() {
                 if (this.player.body.touching.down) {
@@ -905,24 +913,7 @@
 
             controls: function() {
                 if (!this.gameWin) {
-                    if (Phaser.Input.Keyboard.JustDown(this.spacebar) && this.axePower) {
-                        this.axePower = false;
-                        this.axeTimer.reset();
-                        this.axeTimer = this.time.addEvent({
-                            delay: 5000,
-                            callback: this.axeDown,
-                            callbackScope: this,
-                            loop: false
-                        });
-                        if (this.cursors.left.isDown && !this.cursors.right.isDown) {
-                            this.axe.setVelocityX(-300);
-                        } else if (this.cursors.right.isDown && !this.cursors.left.isDown) {
-                            this.axe.setVelocityX(300);
-                        } else {
-                            this.axe.setVelocityY(-400);
-                        }
-                    }
-
+                
                     if (!this.cursors.up.isDown && this.isOnGround) {
                         this.jumps = 2;
                     }
@@ -964,25 +955,59 @@
                         }
                     }
                 }
+
+                if (this.axePower) {
+                    this.axe.x = this.player.x + 50;
+                    this.axe.y = this.player.y - 55;
+                    this.aimer.x = this.axe.x;
+                    this.aimer.y = this.axe.y;
+
+                    this.input.on('pointermove', function (pointer) {
+                        this.axeAngle = Phaser.Math.Angle.Between(this.axe.x, this.axe.y, pointer.worldX, pointer.worldY);
+                        this.aimer.rotation = this.axeAngle;
+                    }, this);   
+                }
+
+                this.input.on('pointerdown', function(pointer) {
+                        this.aimer.setVisible(false);    
+                        this.axePower=false;
+                        this.axeTimer = this.time.addEvent({
+                            delay: 10000,
+                            callback: this.axeDown,
+                            callbackScope: this,
+                            loop: false
+                        }); 
+                        this.physics.velocityFromRotation(this.aimer.rotation, 450, this.axe.body.velocity);
+                    }, this);
+            },
+
+            axeStop: function(axe, obst) {
+                axe.setVelocity(0);
+                this.axeOverlap.active = true;
             },
 
             axeDestroy: function(axe, obst) {
                 axe.destroy();
                 obst.destroy();
+                this.aimer.destroy();
+            },
+
+            turretDestroy: function(axe, obst) {
+                axe.destroy();
+                obst.destroy();
+                this.aimer.destroy();
+                this.turretActive = false;
             },
 
             pickup: function(player, obst) {
                 this.axePower = true;
-                this.axeTimer = this.time.addEvent({
-                    delay: 10000,
-                    callback: this.axeDown,
-                    callbackScope: this,
-                    loop: false
-                });
+                this.aimer.setVisible(true);
+                this.axeOverlap.active = false;
             },
 
             axeDown: function() {
                 this.axePower = false;
+                this.aimer.destroy();
                 this.axe.destroy();
             },
 
@@ -1026,6 +1051,7 @@
                 player.setDisplaySize(50, 50);
                 player.setTexture('death');
                 this.gameOver = true;
+                this.axePower = false;
             },
 
             win: function(player, obj) {
