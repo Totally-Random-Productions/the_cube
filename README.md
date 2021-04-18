@@ -2,7 +2,7 @@
 
 This is a CCW(Computer Coding Workshop) 2021 Group 
 
-<<<<<<<<<<<<<<<**IF YOU HAVE AND SUGGETIONS PLEASE FREE TO REACH OUT TO US TO IMPROVE THE GAME AND FUNCTIONALITY**>>>>>>>>>>>>>>>>>
+**IF YOU HAVE AND SUGGETIONS PLEASE FREE TO REACH OUT TO US TO IMPROVE THE GAME AND FUNCTIONALITY**
 
 We are  DRGNStudio trained by CCW and our project is this website with a little fun game made entirely by java script.
 We implimented everythig that we learnt thus far, a few examples are:
