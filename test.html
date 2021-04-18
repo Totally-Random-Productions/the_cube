@@ -260,17 +260,18 @@
                 this.flyingWeapon[1].body.setGravityY(-300);
 
                 this.platforms = this.physics.add.staticGroup(); //creates a new group for this.platforms. They cannot move at all
-                this.platforms.create(400, 590, 'plat');
-
-                this.mplatforms[0] = this.physics.add.sprite(1500, 500, 'plat'); //creates a sprite for this.mplatforms[] This can move.
+                this.platforms.create(400, 590, 'plat').setScale(1, 0.4).refreshBody();
+                
+                
+                this.mplatforms[0] = this.physics.add.sprite(1500, 500, 'plat').setScale(1, 0.4).refreshBody(); //creates a sprite for this.mplatforms[] This can move.
                 this.mplatforms[0].body.setGravityY(-300);
                 this.mplatforms[0].setImmovable(true); //the sprite can still move, but it cannot be moved by collision with other objects
 
-                this.mplatforms[1] = this.physics.add.sprite(1100, 200, 'plat'); //creates a sprite for this.mplatforms[] This can move.
+                this.mplatforms[1] = this.physics.add.sprite(1100, 200, 'plat').setScale(1, 0.4).refreshBody(); //creates a sprite for this.mplatforms[] This can move.
                 this.mplatforms[1].body.setGravityY(-300);
                 this.mplatforms[1].setImmovable(true); //the sprite can still move, but it cannot be moved by collision with other objects
 
-                this.breakplatforms[0] = this.physics.add.sprite(700, 300, 'plat'); //creates a sprite for this.mplatforms[] This can move.
+                this.breakplatforms[0] = this.physics.add.sprite(700, 300, 'plat').setScale(1, 0.4); //creates a sprite for this.mplatforms[] This can move.
                 this.breakplatforms[0].body.setGravityY(-300);
                 this.breakplatforms[0].setImmovable(true); //the sprite can still move, but it cannot be moved by collision with other objects
 
@@ -721,21 +722,17 @@
                 this.flyingWeapon[1].body.setGravityY(-300);
 
                 this.platforms = this.physics.add.staticGroup(); //creates a new group for this.platforms. They cannot move at all
-                this.platforms.create(400, 500, 'plat');
-                this.platforms.create(700, 380, 'plat');
-                this.platforms.create(900, 260, 'plat');
-                this.platforms.create(1000, 175, 'plat');
-                this.platforms.create(3700, 150, 'plat');
+                this.platforms.create(400, 500, 'plat').setScale(1, 0.4).refreshBody();
 
-                this.mplatforms[0] = this.physics.add.sprite(1600, 500, 'plat'); //creates a sprite for this.mplatforms[] This can move.
+                this.mplatforms[0] = this.physics.add.sprite(1600, 500, 'plat').setScale(1, 0.4); //creates a sprite for this.mplatforms[] This can move.
                 this.mplatforms[0].body.setGravityY(-300);
                 this.mplatforms[0].setImmovable(true); //the sprite can still move, but it cannot be moved by collision with other objects
 
-                this.mplatforms[1] = this.physics.add.sprite(3350, 200, 'plat'); //creates a sprite for this.mplatforms[] This can move.
+                this.mplatforms[1] = this.physics.add.sprite(3350, 200, 'plat').setScale(1, 0.4); //creates a sprite for this.mplatforms[] This can move.
                 this.mplatforms[1].body.setGravityY(-300);
                 this.mplatforms[1].setImmovable(true); //the sprite can still move, but it cannot be moved by collision with other objects
 
-                this.breakplatforms[0] = this.physics.add.sprite(2800, 500, 'plat'); //creates a sprite for this.mplatforms[] This can move.
+                this.breakplatforms[0] = this.physics.add.sprite(2800, 500, 'plat').setScale(1, 0.4); //creates a sprite for this.mplatforms[] This can move.
                 this.breakplatforms[0].body.setGravityY(-300);
                 this.breakplatforms[0].setImmovable(true); //the sprite can still move, but it cannot be moved by collision with other objects
 
