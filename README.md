@@ -4,7 +4,7 @@ This is a CCW 2021 Group
 
 <<<<<<<<<<<<<<<**IF YOU HAVE AND SUGGETIONS PLEASE FREE TO REACH OUT TO US TO IMPROVE THE GAME AND FUNCTIONALITY**>>>>>>>>>>>>>>>>>
 
-We are drgn Studio trained by CCW and our project is this website with a little fun game made entirely by jada script
+We are  DRGNStudio trained by CCW and our project is this website with a little fun game made entirely by jada script
 We implimented everythig that we learnt thus far, a few examples are:
 1.**Styling** - positioning, color, magin, padding, animation, viewports and media queries
 2.**Text** - The html web view aspect. How to output text to the website and add containers to make the site look neat
