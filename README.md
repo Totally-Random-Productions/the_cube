@@ -16,7 +16,7 @@ We implimented everythig that we learnt thus far, a few examples are:
 7. **Become and Web-Developer** - Most importantly we learnt and accomplished what we joined this amazing course for, building a website from scratch.
 
 
-<<GAME OBJECTIVE>>
+**GAME OBJECTIVE**
  Reach the end of the map to collect the golden trophy
  Speed run - there is a leaderboard and your time taken to beat the game will be placed on the leaderboard...Try to be the fastest
  Try not to die
@@ -24,7 +24,7 @@ We implimented everythig that we learnt thus far, a few examples are:
  As newbie developers try to understand how javascript works with games(this is for the team personally)
 
 
-<<GAME INSTRUCTIONS>>
+**GAME INSTRUCTIONS**
 Press right and left arrows to move
   Up arrow to jump and down arrow to role
 Dodge floating obstacles and try not to fall in the spikes
