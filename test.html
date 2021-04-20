@@ -91,6 +91,7 @@
     var music1IsPlaying = false;
     var volumeLev = 1;
     var trueVolumeLev = volumeLev.toPrecision(1);
+    var autoRestart = false;
 
         /*creates a new scene while extending the Phaser Scene Class 
                                                                                                                                                                                                                                                                                                                                                                         so that the default functions remain the same*/
@@ -131,10 +132,10 @@
                     bgmusic.play({
                         mute: false,
                         volume: volumeLev,
-                        loop: true
+                        loop: false
                     });
                 }
-                
+
                 this.add.image(0, 0, 'menuback').setOrigin(0);
                 this.startbutton = this.add.image(1280 / 2, 720 - 610, 'startbt').setInteractive({ cursor: 'pointer' });
                 this.settingsbutton = this.add.image(1280 / 2, 720 - 455, 'settings').setInteractive({ cursor: 'pointer' });
@@ -281,7 +282,7 @@
                     tutorialmusic.play({
                         mute: false,
                         volume: volumeLev,
-                        loop: true
+                        loop: false
                     })
                 }
 
@@ -487,18 +488,36 @@
                 if (this.gameOver) //true if player is hit by lethal object, determined by function 'hit'
                 {
                     //starts the GameOver Scene after set amount of time
-                    this.time.addEvent({
-                        delay: 1000,
-                        loop: false,
-                        callback: () => {
-                            this.scene.stop('tutorial');
-                            this.scene.start('over');
-                            /* setTimeout(() => {
-                                this.scene.stop('over')
-                                this.scene.start('start');
-                            }, 2000)*/
-                        }
-                    })
+                    if(!autoRestart)
+                    {
+                        this.time.addEvent({
+                            delay: 1000,
+                            loop: false,
+                            callback: () => {
+                                this.scene.stop(level);
+                                this.scene.start('over');
+                                /* setTimeout(() => {
+                                    this.scene.stop('over')
+                                    this.scene.start('start');
+                                }, 2000)*/
+                            }
+                        })
+                    }
+
+                    else if(autoRestart)
+                    {
+                        this.time.addEvent({
+                            delay: 250,
+                            loop: false,
+                            callback: () => {
+                                this.scene.stop(level);
+                                tutorialmusic.stop();
+                                tutorialmusicIsPlaying = false;
+                                this.scene.start(level);
+                            }
+                        })
+                    }
+
                 }
 
             },
@@ -1378,7 +1397,7 @@
                 {
                     bgmusicIsPlaying = true;
                     bgmusic.play({
-                        loop: true
+                        loop: false
                     });
                 }
 
@@ -1488,7 +1507,7 @@
             create: function() {
                 this.add.image(0, 0, 'menuback').setOrigin(0);
                 
-                this.mutebt = this.add.text(16, 16, 'Mute', {
+                this.mutebt = this.add.text(16, 16, '', {
                     fontSize: '32px',
                     fill: '#fff'
                 }).setInteractive({ cursor: 'pointer' });
@@ -1507,109 +1526,6 @@
                     fontSize: '32px',
                     fill: '#fff'
                 }).setInteractive({ cursor: 'pointer' });
-
-                this.mutebt.on('pointerdown', function() {
-                    if(!this.muted)
-                    {
-                        volumeLev = 0;
-                        trueVolumeLev = volumeLev.toPrecision(1);
-                        this.mutebt.setText('Unmute');
-                        this.volumebt.setText('Volume: ' + trueVolumeLev);
-                        this.muted = true;
-                        if(tutorialmusicIsPlaying)
-                        {
-                            tutorialmusic.setMute(false);
-                            tutorialmusic.setVolume(volumeLev);
-                        }
-                        
-                        if(music1IsPlaying)
-                        {
-                            music1.setMute(false);
-                            music1.setVolume(volumeLev);
-                        }
-
-                        if(bgmusicIsPlaying)
-                        {
-                            bgmusic.setMute(false);
-                            bgmusic.setVolume(volumeLev);
-                        }
-                    }
-
-                    else if(this.muted)
-                    {
-                        volumeLev = 1;
-                        trueVolumeLev = volumeLev.toPrecision(1);
-                        this.mutebt.setText('Mute')
-                        this.volumebt.setText('Volume: ' + trueVolumeLev);
-                        this.muted = false;
-                        if(tutorialmusicIsPlaying)
-                        {
-                            tutorialmusic.setMute(false);
-                            tutorialmusic.setVolume(volumeLev);
-                        }
-                        
-                        if(music1IsPlaying)
-                        {
-                            music1.setMute(false);
-                            music1.setVolume(volumeLev);
-                        }
-
-                        if(bgmusicIsPlaying)
-                        {
-                            bgmusic.setMute(false);
-                            bgmusic.setVolume(volumeLev);
-                        }
-                    }
-
-                }, this);
-                
-                this.volumePlus.on('pointerdown', function() {
-                    if(volumeLev < 1)
-                    {
-                        volumeLev+=0.1;
-                        trueVolumeLev = volumeLev.toPrecision(1);
-                        this.volumebt.setText('Volume: ' + trueVolumeLev);
-                        if(tutorialmusicIsPlaying)
-                        {
-                            tutorialmusic.setVolume(volumeLev);
-                        }
-                        
-                        if(music1IsPlaying)
-                        {
-                            music1.setVolume(volumeLev);
-                        }
-
-                        if(bgmusicIsPlaying)
-                        {
-                            bgmusic.setVolume(volumeLev);
-                        }
-                    }
-                }, this);
-
-                this.volumeMinus.on('pointerdown', function() {
-                    if(volumeLev > 0.1)
-                    {
-                        volumeLev-=0.1;
-                        trueVolumeLev = volumeLev.toPrecision(1);
-
-                        this.volumebt.setText('Volume: ' + trueVolumeLev);
-                        if(tutorialmusicIsPlaying)
-                        {
-                            tutorialmusic.setVolume(volumeLev);
-                        }
-                        
-                        if(music1IsPlaying)
-                        {
-                            music1.setVolume(volumeLev);
-                        }
-
-                        if(bgmusicIsPlaying)
-                        {
-                            bgmusic.setVolume(volumeLev);
-                        }
-                    }
-
-                }, this);
 
                 this.levelbt = this.add.image(1280 / 2, 720 - 300, 'levelSelect').setInteractive({ cursor: 'pointer' });
                 this.menubt = this.add.image(1280 / 2, 720 - 145, 'menuReturn').setInteractive({ cursor: 'pointer' });
@@ -1709,6 +1625,113 @@
                 this.menubt.on('pointerout', function(event) {
                     this.menubt.setScale(1);
                 }, this);
+            },
+
+            update: function() {
+                
+                if(!this.muted)
+                {
+                    trueVolumeLev = volumeLev.toPrecision(1);
+                    this.mutebt.setText('Mute');
+                    this.volumebt.setText('Volume: ' + trueVolumeLev);
+                    this.mutebt.on('pointerdown', function() {
+                        volumeLev = 0;
+                        this.muted = true;
+                        if(tutorialmusicIsPlaying)
+                        {
+                            tutorialmusic.setMute(true);
+                            tutorialmusic.setVolume(volumeLev);
+                        }
+                        
+                        if(music1IsPlaying)
+                        {
+                            music1.setMute(true);
+                            music1.setVolume(volumeLev);
+                        }
+
+                        if(bgmusicIsPlaying)
+                        {
+                            bgmusic.setMute(true);
+                            bgmusic.setVolume(volumeLev);
+                        }
+                    }, this);
+                }
+
+                else if(this.muted)
+                {
+                    trueVolumeLev = volumeLev.toPrecision(1);
+                    this.mutebt.setText('Unmute')
+                    this.volumebt.setText('Volume: ' + trueVolumeLev);
+                    this.mutebt.on('pointerdown', function() {
+                        volumeLev = 1;
+                        this.muted = false;
+                        if(tutorialmusicIsPlaying)
+                        {
+                            tutorialmusic.setMute(false);
+                            tutorialmusic.setVolume(volumeLev);
+                        }
+                        
+                        if(music1IsPlaying)
+                        {
+                            music1.setMute(false);
+                            music1.setVolume(volumeLev);
+                        }
+
+                        if(bgmusicIsPlaying)
+                        {
+                            bgmusic.setMute(false);
+                            bgmusic.setVolume(volumeLev);
+                        }
+                    }, this);
+                }
+
+                this.volumePlus.on('pointerdown', function() {
+                    if(volumeLev < 1)
+                    {
+                        volumeLev+=0.1;
+                        trueVolumeLev = volumeLev.toPrecision(1);
+                        this.volumebt.setText('Volume: ' + trueVolumeLev);
+                        if(tutorialmusicIsPlaying)
+                        {
+                            tutorialmusic.setVolume(volumeLev);
+                        }
+                        
+                        if(music1IsPlaying)
+                        {
+                            music1.setVolume(volumeLev);
+                        }
+
+                        if(bgmusicIsPlaying)
+                        {
+                            bgmusic.setVolume(volumeLev);
+                        }
+                    }
+                }, this);
+
+                this.volumeMinus.on('pointerdown', function() {
+                    if(volumeLev > 0.1)
+                    {
+                        volumeLev-=0.1;
+                        trueVolumeLev = volumeLev.toPrecision(1);
+
+                        this.volumebt.setText('Volume: ' + trueVolumeLev);
+                        if(tutorialmusicIsPlaying)
+                        {
+                            tutorialmusic.setVolume(volumeLev);
+                        }
+                        
+                        if(music1IsPlaying)
+                        {
+                            music1.setVolume(volumeLev);
+                        }
+
+                        if(bgmusicIsPlaying)
+                        {
+                            bgmusic.setVolume(volumeLev);
+                        }
+                    }
+
+                }, this);
             }
 
             });
@@ -1740,6 +1763,13 @@
             },
 
             create: function() {
+                if(!bgmusicIsPlaying)
+                {
+                    bgmusicIsPlaying = true;
+                    bgmusic.play({
+                        loop: false
+                    });
+                }
                 this.add.image(0, 0, 'menuback').setOrigin(0);
                 this.menubt = this.add.image(1280/2, 600, 'menu').setInteractive({ cursor: 'pointer' });
                 this.leaderText = this.add.text(16, 16, 'Team Leader: Aaron Hazzard', {
@@ -1760,7 +1790,7 @@
                 });
                 this.musicText = this.add.text(16, 256, 'Music: http://www.bensound.com/royalty-free-music', {
                     fontSize: '42px',
-                    fill: '#000'
+                    fill: '#000',
                 }).setInteractive({ cursor: 'pointer' });
 
                 this.musicText.on('pointerup', this.openLink, this);
@@ -1777,9 +1807,12 @@
                         music1IsPlaying = false;
                         music1.stop();
                     }
-                    this.scene.stop('pause');
-                    this.scene.stop(level);
-                    level = 'nothing';
+                    if(bgmusicIsPlaying)
+                    {
+                        bgmusic.stop();
+                        bgmusicIsPlaying = false;
+                    }
+                    this.scene.stop('credits');
                     this.scene.start('start');
                 }, this);
 
@@ -1809,6 +1842,230 @@
 
             });
 
+        var SettingsScene = new Phaser.Class({
+
+            Extends: Phaser.Scene,
+
+            initialize:
+
+                function SettingsScene() {
+                Phaser.Scene.call(this, {
+                    key: 'settings'
+                });
+            },
+
+            init: function() //called everytime the scene restarts. I use it to declare variables, 'this' is used so that the scope of the variables is only within this scene.
+                {
+                    this.menubt;
+                    this.mutebt;
+                    this.volumePlus;
+                    this.volumeMinus;
+                    this.volumebt;
+                    this.muted;
+                    this.autoRestartbt;
+                },
+
+            preload: function() {
+                this.load.image('menuReturn', 'testob/returnmenu.png');
+                this.load.image('menuback', 'testob/back.png');
+            },
+
+            create: function() {
+                this.add.image(0, 0, 'menuback').setOrigin(0);
+
+                if(!bgmusicIsPlaying)
+                {
+                    bgmusicIsPlaying = true;
+                    bgmusic.play({
+                        loop: false
+                    });
+                }
+                
+                this.autoRestartbt = this.add.text(16, 136, '', {
+                        fontSize: '32px',
+                        fill: '#fff'
+                    }).setInteractive({ cursor: 'pointer' });
+
+                this.mutebt = this.add.text(16, 16, '', {
+                    fontSize: '32px',
+                    fill: '#fff'
+                }).setInteractive({ cursor: 'pointer' });
+
+                this.volumebt = this.add.text(16, 46, 'Volume: ' + trueVolumeLev, {
+                    fontSize: '32px',
+                    fill: '#fff'
+                }).setInteractive({ cursor: 'pointer' });
+
+                this.volumePlus = this.add.text(16, 76, '+', {
+                    fontSize: '32px',
+                    fill: '#fff'
+                }).setInteractive({ cursor: 'pointer' });
+
+                this.volumeMinus = this.add.text(36, 76, '-', {
+                    fontSize: '32px',
+                    fill: '#fff'
+                }).setInteractive({ cursor: 'pointer' });
+
+                this.menubt = this.add.image(1280 / 2, 720 - 145, 'menuReturn').setInteractive({ cursor: 'pointer' });
+
+                this.menubt.on('pointerdown', function() {
+                    if(tutorialmusicIsPlaying)
+                    {
+                        tutorialmusicIsPlaying = false;
+                        tutorialmusic.stop();
+                    }
+                    
+                    if(music1IsPlaying)
+                    {
+                        music1IsPlaying = false;
+                        music1.stop();
+                    }
+                    if(bgmusicIsPlaying)
+                    {
+                        bgmusic.stop();
+                        bgmusicIsPlaying = false;
+                    }
+                    this.scene.stop('settings');
+                    this.scene.start('start');
+                }, this);
+
+                this.menubt.on('pointerover', function() {
+                    this.menubt.setScale(1.2);
+                }, this);
+
+                this.menubt.on('pointerout', function(event) {
+                    this.menubt.setScale(1);
+                }, this);
+
+            },
+
+            update: function() {
+                if(!autoRestart)
+                {
+                    this.autoRestartbt.setText('Enable Auto Restart');
+                    this.autoRestartbt.on('pointerdown', function() {
+                        autoRestart = true;
+                        this.autoRestartbt.setText('Disable Auto Restart');
+                    }, this);
+                }
+
+                else if(autoRestart)
+                {
+                    this.autoRestartbt.setText('Disable Auto Restart');
+                    this.autoRestartbt.on('pointerdown', function() {
+                        autoRestart = false;
+                        this.autoRestartbt.setText('Enable Auto Restart');
+                    }, this);
+                }
+
+                if(!this.muted)
+                {
+                    trueVolumeLev = volumeLev.toPrecision(1);
+                    this.mutebt.setText('Mute');
+                    this.volumebt.setText('Volume: ' + trueVolumeLev);
+                    this.mutebt.on('pointerdown', function() {
+                        volumeLev = 0;
+                        this.muted = true;
+                        if(tutorialmusicIsPlaying)
+                        {
+                            tutorialmusic.setMute(true);
+                            tutorialmusic.setVolume(volumeLev);
+                        }
+                        
+                        if(music1IsPlaying)
+                        {
+                            music1.setMute(true);
+                            music1.setVolume(volumeLev);
+                        }
+
+                        if(bgmusicIsPlaying)
+                        {
+                            bgmusic.setMute(true);
+                            bgmusic.setVolume(volumeLev);
+                        }
+                    }, this);
+                }
+
+                else if(this.muted)
+                {
+                    trueVolumeLev = volumeLev.toPrecision(1);
+                    this.mutebt.setText('Unmute')
+                    this.volumebt.setText('Volume: ' + trueVolumeLev);
+                    this.mutebt.on('pointerdown', function() {
+                        volumeLev = 1;
+                        this.muted = false;
+                        if(tutorialmusicIsPlaying)
+                        {
+                            tutorialmusic.setMute(false);
+                            tutorialmusic.setVolume(volumeLev);
+                        }
+                        
+                        if(music1IsPlaying)
+                        {
+                            music1.setMute(false);
+                            music1.setVolume(volumeLev);
+                        }
+
+                        if(bgmusicIsPlaying)
+                        {
+                            bgmusic.setMute(false);
+                            bgmusic.setVolume(volumeLev);
+                        }
+                    }, this);
+                }
+
+                this.volumePlus.on('pointerdown', function() {
+                    if(volumeLev < 1)
+                    {
+                        volumeLev+=0.1;
+                        trueVolumeLev = volumeLev.toPrecision(1);
+                        this.volumebt.setText('Volume: ' + trueVolumeLev);
+                        if(tutorialmusicIsPlaying)
+                        {
+                            tutorialmusic.setVolume(volumeLev);
+                        }
+                        
+                        if(music1IsPlaying)
+                        {
+                            music1.setVolume(volumeLev);
+                        }
+
+                        if(bgmusicIsPlaying)
+                        {
+                            bgmusic.setVolume(volumeLev);
+                        }
+                    }
+                }, this);
+
+                this.volumeMinus.on('pointerdown', function() {
+                    if(volumeLev > 0.1)
+                    {
+                        volumeLev-=0.1;
+                        trueVolumeLev = volumeLev.toPrecision(1);
+
+                        this.volumebt.setText('Volume: ' + trueVolumeLev);
+                        if(tutorialmusicIsPlaying)
+                        {
+                            tutorialmusic.setVolume(volumeLev);
+                        }
+                        
+                        if(music1IsPlaying)
+                        {
+                            music1.setVolume(volumeLev);
+                        }
+
+                        if(bgmusicIsPlaying)
+                        {
+                            bgmusic.setVolume(volumeLev);
+                        }
+                    }
+
+                }, this);
+
+            }
+
+            });
+
         var config = {
             type: Phaser.AUTO,
             width: 1280,
@@ -1822,7 +2079,7 @@
                     debug: false //disables visible object outlines and paths
                 }
             },
-            scene: [StartScene, Level1Scene, TutorialScene, GameOverScene, GameWinScene, LevelSelectScene, PauseScene, CreditsScene]
+            scene: [StartScene, Level1Scene, TutorialScene, GameOverScene, GameWinScene, LevelSelectScene, PauseScene, CreditsScene, SettingsScene]
         };
 
         var game = new Phaser.Game(config);
