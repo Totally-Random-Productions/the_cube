@@ -82,7 +82,17 @@
 
 
     <script type="text/javascript">
-    var level;
+    var level = 'nothing';
+    var bgmusic;
+    var tutorialmusic;
+    var music1;
+    var bgmusicIsPlaying = false;
+    var tutorialmusicIsPlaying = false;
+    var music1IsPlaying = false;
+    var volumeLev = 1;
+    var trueVolumeLev = volumeLev.toPrecision(1);
+    var autoRestart = false;
+
         /*creates a new scene while extending the Phaser Scene Class 
                                                                                                                                                                                                                                                                                                                                                                         so that the default functions remain the same*/
         var StartScene = new Phaser.Class({
@@ -111,14 +121,26 @@
                 this.load.image('leader', 'testob/menuleader.png');
                 this.load.image('credit', 'testob/menucredits.png');
                 this.load.image('settings', 'testob/menusettings.png');
+                this.load.audio('bg', 'music/bensound-memories.mp3');
             },
 
             create: function() {
+                bgmusic = this.sound.add('bg');
+                if(!bgmusicIsPlaying)
+                {
+                    bgmusicIsPlaying = true;
+                    bgmusic.play({
+                        mute: false,
+                        volume: volumeLev,
+                        loop: false
+                    });
+                }
+
                 this.add.image(0, 0, 'menuback').setOrigin(0);
-                this.startbutton = this.add.image(1280 / 2, 720 - 610, 'startbt').setInteractive();
-                this.settingsbutton = this.add.image(1280 / 2, 720 - 455, 'settings').setInteractive();
-                this.leaderbutton = this.add.image(1280 / 2, 720 - 300, 'leader').setInteractive();
-                this.creditsbutton = this.add.image(1280 / 2, 720 - 145, 'credit').setInteractive();
+                this.startbutton = this.add.image(1280 / 2, 720 - 610, 'startbt').setInteractive({ cursor: 'pointer' });
+                this.settingsbutton = this.add.image(1280 / 2, 720 - 455, 'settings').setInteractive({ cursor: 'pointer' });
+                this.leaderbutton = this.add.image(1280 / 2, 720 - 300, 'leader').setInteractive({ cursor: 'pointer' });
+                this.creditsbutton = this.add.image(1280 / 2, 720 - 145, 'credit').setInteractive({ cursor: 'pointer' });
 
                 this.startbutton.on('pointerdown', function() {
                     this.scene.stop('start');
@@ -224,6 +246,7 @@
                 this.trophyText;
                 this.change;
                 this.allowedToChange = true;
+                this.esc;
                 level = 'tutorial';
             },
 
@@ -244,11 +267,24 @@
                 this.load.image('bullet', 'testob/bullet.png');
                 this.load.image('axe', 'testob/axe.png');
                 this.load.image('grass', 'testob/grass.png');
+                this.load.audio('tutorialSound', 'music/bensound-dreams.mp3');
             },
 
             create: function() {
                 this.cameras.main.setBounds(0, 0, 1280 * 2, 720); //stops the camera from leaving the game area
                 this.physics.world.setBounds(0, 0, 1280 * 2, 720); //sets the game area where physics is applied
+
+                tutorialmusic = this.sound.add('tutorialSound');
+
+                if(!tutorialmusicIsPlaying)
+                {
+                    tutorialmusicIsPlaying = true;
+                    tutorialmusic.play({
+                        mute: false,
+                        volume: volumeLev,
+                        loop: false
+                    })
+                }
 
                 this.add.image(0, 0, 'back').setOrigin(0);
                 this.add.image(1280, 0, 'back').setOrigin(0);
@@ -260,17 +296,18 @@
                 this.flyingWeapon[1].body.setGravityY(-300);
 
                 this.platforms = this.physics.add.staticGroup(); //creates a new group for this.platforms. They cannot move at all
-                this.platforms.create(400, 590, 'plat');
-
-                this.mplatforms[0] = this.physics.add.sprite(1500, 500, 'plat'); //creates a sprite for this.mplatforms[] This can move.
+                this.platforms.create(400, 590, 'plat').setScale(1, 0.7).refreshBody();
+                
+                
+                this.mplatforms[0] = this.physics.add.sprite(1500, 500, 'plat').setScale(1, 0.7).refreshBody(); //creates a sprite for this.mplatforms[] This can move.
                 this.mplatforms[0].body.setGravityY(-300);
                 this.mplatforms[0].setImmovable(true); //the sprite can still move, but it cannot be moved by collision with other objects
 
-                this.mplatforms[1] = this.physics.add.sprite(1100, 200, 'plat'); //creates a sprite for this.mplatforms[] This can move.
+                this.mplatforms[1] = this.physics.add.sprite(1100, 200, 'plat').setScale(1, 0.7).refreshBody(); //creates a sprite for this.mplatforms[] This can move.
                 this.mplatforms[1].body.setGravityY(-300);
                 this.mplatforms[1].setImmovable(true); //the sprite can still move, but it cannot be moved by collision with other objects
 
-                this.breakplatforms[0] = this.physics.add.sprite(700, 300, 'plat'); //creates a sprite for this.mplatforms[] This can move.
+                this.breakplatforms[0] = this.physics.add.sprite(700, 300, 'plat').setScale(1, 0.4); //creates a sprite for this.mplatforms[] This can move.
                 this.breakplatforms[0].body.setGravityY(-300);
                 this.breakplatforms[0].setImmovable(true); //the sprite can still move, but it cannot be moved by collision with other objects
 
@@ -397,7 +434,7 @@
                 });
 
                 this.cursors = this.input.keyboard.createCursorKeys(); //creates inputs using the arrow keys
-                this.spacebar = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE); //sets up the spacebar for input
+                this.esc = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC); //sets up the escape button for input
                 this.cameras.main.startFollow(this.player, true, 0.05, 0.05); //makes the camera track the player. increasing the numbers makes the camera track faster
             },
 
@@ -451,18 +488,36 @@
                 if (this.gameOver) //true if player is hit by lethal object, determined by function 'hit'
                 {
                     //starts the GameOver Scene after set amount of time
-                    this.time.addEvent({
-                        delay: 1000,
-                        loop: false,
-                        callback: () => {
-                            this.scene.stop('tutorial');
-                            this.scene.start('over');
-                            /* setTimeout(() => {
-                                this.scene.stop('over')
-                                this.scene.start('start');
-                            }, 2000)*/
-                        }
-                    })
+                    if(!autoRestart)
+                    {
+                        this.time.addEvent({
+                            delay: 1000,
+                            loop: false,
+                            callback: () => {
+                                this.scene.stop(level);
+                                this.scene.start('over');
+                                /* setTimeout(() => {
+                                    this.scene.stop('over')
+                                    this.scene.start('start');
+                                }, 2000)*/
+                            }
+                        })
+                    }
+
+                    else if(autoRestart)
+                    {
+                        this.time.addEvent({
+                            delay: 250,
+                            loop: false,
+                            callback: () => {
+                                this.scene.stop(level);
+                                tutorialmusic.stop();
+                                tutorialmusicIsPlaying = false;
+                                this.scene.start(level);
+                            }
+                        })
+                    }
+
                 }
 
             },
@@ -483,6 +538,11 @@
                 if (!this.gameWin) {
                     this.change.x = this.player.x;
                     this.change.y = this.player.y-15;
+
+                    if(Phaser.Input.Keyboard.JustDown(this.esc)) {
+                        this.scene.pause();
+                        this.scene.launch('pause')
+                    }
 
                     if (!this.cursors.up.isDown && this.isOnGround) {
                         this.jumps = 2;
@@ -506,7 +566,7 @@
                         if (!this.isOnGround) {
                             this.jumps = 1;
                         }
-
+                        
                         if (this.player.body.touching.left) {
                             this.player.setVelocityY(-630);
                             this.player.setVelocityX(350)
@@ -679,7 +739,10 @@
                 this.axe;
                 this.axePower;
                 this.axeTimer;
-                this.spacebar;
+                this.axeAngle;
+                this.aimer;
+                this.turretActive = true;
+                this.axeOverlap;
                 level = 'level1';
             },
 
@@ -699,9 +762,24 @@
                 this.load.image('circ', 'testob/circle.png');
                 this.load.image('bullet', 'testob/bullet.png');
                 this.load.image('axe', 'testob/axe.png');
+                this.load.image('arrow', 'testob/arrow.png');
+                this.load.audio('level1Sound', 'music/bensound-rumble.mp3');
             },
 
             create: function() {
+
+                music1 = this.sound.add('level1Sound');
+                
+                if(!music1IsPlaying)
+                {
+                    music1IsPlaying = true;
+                    music1.play({
+                        mute: false,
+                        volume: volumeLev,
+                        loop: true
+                    })
+                }
+
                 this.cameras.main.setBounds(0, 0, 1280 * 3, 720); //stops the camera from leaving the game area
                 this.physics.world.setBounds(0, 0, 1280 * 3, 720); //sets the game area where physics is applied
 
@@ -716,21 +794,17 @@
                 this.flyingWeapon[1].body.setGravityY(-300);
 
                 this.platforms = this.physics.add.staticGroup(); //creates a new group for this.platforms. They cannot move at all
-                this.platforms.create(400, 500, 'plat');
-                this.platforms.create(700, 380, 'plat');
-                this.platforms.create(900, 260, 'plat');
-                this.platforms.create(1000, 175, 'plat');
-                this.platforms.create(3700, 150, 'plat');
+                this.platforms.create(400, 500, 'plat').setScale(1, 0.7).refreshBody();
 
-                this.mplatforms[0] = this.physics.add.sprite(1600, 500, 'plat'); //creates a sprite for this.mplatforms[] This can move.
+                this.mplatforms[0] = this.physics.add.sprite(1600, 500, 'plat').setScale(1, 0.7); //creates a sprite for this.mplatforms[] This can move.
                 this.mplatforms[0].body.setGravityY(-300);
                 this.mplatforms[0].setImmovable(true); //the sprite can still move, but it cannot be moved by collision with other objects
 
-                this.mplatforms[1] = this.physics.add.sprite(3350, 200, 'plat'); //creates a sprite for this.mplatforms[] This can move.
+                this.mplatforms[1] = this.physics.add.sprite(3350, 200, 'plat').setScale(1, 0.7); //creates a sprite for this.mplatforms[] This can move.
                 this.mplatforms[1].body.setGravityY(-300);
                 this.mplatforms[1].setImmovable(true); //the sprite can still move, but it cannot be moved by collision with other objects
 
-                this.breakplatforms[0] = this.physics.add.sprite(2800, 500, 'plat'); //creates a sprite for this.mplatforms[] This can move.
+                this.breakplatforms[0] = this.physics.add.sprite(2800, 500, 'plat').setScale(1, 0.7); //creates a sprite for this.mplatforms[] This can move.
                 this.breakplatforms[0].body.setGravityY(-300);
                 this.breakplatforms[0].setImmovable(true); //the sprite can still move, but it cannot be moved by collision with other objects
 
@@ -785,13 +859,18 @@
                 this.axe.setCollideWorldBounds(true);
                 this.axe.body.setGravityY(-300);
 
+                this.aimer = this.add.image(this.axe.x, this.axe.y, 'arrow').setOrigin(0, 0.5);
+                this.aimer.setVisible(false);
+
                 this.physics.add.collider(this.player, this.platforms);
-                this.physics.add.collider(this.axe, this.platforms);
-                this.physics.add.collider(this.axe, this.mplatforms);
-                this.physics.add.collider(this.axe, this.floor);
-                this.physics.add.overlap(this.player, this.axe, this.pickup, null, this);
+                this.physics.add.collider(this.axe, this.platforms, this.axeStop, null, this);
+                this.physics.add.collider(this.axe, this.mplatforms, this.axeStop, null, this);
+                this.physics.add.collider(this.axe, this.floor, this.axeStop, null, this);
+                this.physics.add.collider(this.axe, this.pillars, this.axeStop, null, this);
+                this.physics.add.collider(this.axe, this.breakplatforms, this.axeStop, null, this);
+                this.axeOverlap = this.physics.add.overlap(this.player, this.axe, this.pickup, null, this);
                 this.physics.add.overlap(this.axe, this.flyingWeapon, this.axeDestroy, null, this);
-                this.physics.add.overlap(this.axe, this.turret, this.axeDestroy, null, this);
+                this.physics.add.overlap(this.axe, this.turret, this.turretDestroy, null, this);
                 this.physics.add.overlap(this.axe, this.spike, this.axeDestroy, null, this);
                 this.physics.add.collider(this.player, this.breakplatforms, this.break, null, this);
                 this.physics.add.collider(this.player, this.floor); //checks to see if the objects collide
@@ -818,7 +897,6 @@
                 this.timer.scrollFactorX = 0;
 
                 this.cursors = this.input.keyboard.createCursorKeys(); //creates inputs using the arrow keys
-                this.spacebar = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE); //sets up the spacebar for input
                 this.cameras.main.startFollow(this.player, true, 0.05, 0.05); //makes the camera track the player. increasing the numbers makes the camera track faster
             },
 
@@ -831,13 +909,16 @@
                 this.aggrox = Phaser.Math.Difference(this.turret.x, this.player.x); //finds the positive x distance between the player and turret
                 this.aggroy = Phaser.Math.Difference(this.turret.y, this.player.y); //finds the positive y distance between the player and turret
 
-                if (this.aggrox <= 450 && this.aggroy <= 350) {
-                    this.target = Phaser.Math.Angle.BetweenPoints(this.turret, this.player); //finds the angle between the turret and player
-                    if (this.target > -1.5 && this.target < 1.5) {
-                        this.turret.rotation = this.target; // sets the turrets angle of rotation to the angle found above
-                        this.aiming = true;
+                if(this.turretActive) {
+                    if (this.aggrox <= 450 && this.aggroy <= 350) {
+                        this.target = Phaser.Math.Angle.BetweenPoints(this.turret, this.player); //finds the angle between the turret and player
+                        if (this.target > -1.5 && this.target < 1.5) {
+                            this.turret.rotation = this.target; // sets the turrets angle of rotation to the angle found above
+                            this.aiming = true;
+                        }
                     }
                 }
+                
 
                 this.flyingWeapon[0].rotation += 0.2; //sets rotation and velocity of moving obstacles
                 if (this.flyingWeapon[0].x > 300) {
@@ -884,11 +965,6 @@
                         }
                     })
                 }
-
-                if (this.axePower) {
-                    this.axe.x = this.player.x + 50;
-                    this.axe.y = this.player.y - 55;
-                }
             },
             groundCheck: function() {
                 if (this.player.body.touching.down) {
@@ -905,24 +981,7 @@
 
             controls: function() {
                 if (!this.gameWin) {
-                    if (Phaser.Input.Keyboard.JustDown(this.spacebar) && this.axePower) {
-                        this.axePower = false;
-                        this.axeTimer.reset();
-                        this.axeTimer = this.time.addEvent({
-                            delay: 5000,
-                            callback: this.axeDown,
-                            callbackScope: this,
-                            loop: false
-                        });
-                        if (this.cursors.left.isDown && !this.cursors.right.isDown) {
-                            this.axe.setVelocityX(-300);
-                        } else if (this.cursors.right.isDown && !this.cursors.left.isDown) {
-                            this.axe.setVelocityX(300);
-                        } else {
-                            this.axe.setVelocityY(-400);
-                        }
-                    }
-
+                
                     if (!this.cursors.up.isDown && this.isOnGround) {
                         this.jumps = 2;
                     }
@@ -964,25 +1023,59 @@
                         }
                     }
                 }
+
+                if (this.axePower) {
+                    this.axe.x = this.player.x + 50;
+                    this.axe.y = this.player.y - 55;
+                    this.aimer.x = this.axe.x;
+                    this.aimer.y = this.axe.y;
+
+                    this.input.on('pointermove', function (pointer) {
+                        this.axeAngle = Phaser.Math.Angle.Between(this.axe.x, this.axe.y, pointer.worldX, pointer.worldY);
+                        this.aimer.rotation = this.axeAngle;
+                    }, this);   
+                }
+
+                this.input.on('pointerdown', function(pointer) {
+                        this.aimer.setVisible(false);    
+                        this.axePower=false;
+                        this.axeTimer = this.time.addEvent({
+                            delay: 10000,
+                            callback: this.axeDown,
+                            callbackScope: this,
+                            loop: false
+                        }); 
+                        this.physics.velocityFromRotation(this.aimer.rotation, 450, this.axe.body.velocity);
+                    }, this);
+            },
+
+            axeStop: function(axe, obst) {
+                axe.setVelocity(0);
+                this.axeOverlap.active = true;
             },
 
             axeDestroy: function(axe, obst) {
                 axe.destroy();
                 obst.destroy();
+                this.aimer.destroy();
+            },
+
+            turretDestroy: function(axe, obst) {
+                axe.destroy();
+                obst.destroy();
+                this.aimer.destroy();
+                this.turretActive = false;
             },
 
             pickup: function(player, obst) {
                 this.axePower = true;
-                this.axeTimer = this.time.addEvent({
-                    delay: 10000,
-                    callback: this.axeDown,
-                    callbackScope: this,
-                    loop: false
-                });
+                this.aimer.setVisible(true);
+                this.axeOverlap.active = false;
             },
 
             axeDown: function() {
                 this.axePower = false;
+                this.aimer.destroy();
                 this.axe.destroy();
             },
 
@@ -1026,6 +1119,7 @@
                 player.setDisplaySize(50, 50);
                 player.setTexture('death');
                 this.gameOver = true;
+                this.axePower = false;
             },
 
             win: function(player, obj) {
@@ -1111,10 +1205,22 @@
             },
 
             create: function() {
+                if(tutorialmusicIsPlaying)
+                {
+                    tutorialmusicIsPlaying = false;
+                    tutorialmusic.stop();
+                }
+                
+                if(music1IsPlaying)
+                {
+                    music1IsPlaying = false;
+                    music1.stop();
+                }
+                
                 this.cameras.main.fadeIn(3000);
                 this.add.image(0, 0, 'die').setOrigin(0); //Dark Souls end screen, will have to change but its a good placeholder
 
-                this.retrybt = this.add.image(250, 600, 'retry').setInteractive();
+                this.retrybt = this.add.image(250, 600, 'retry').setInteractive({ cursor: 'pointer' });
                 this.retrybt.on('pointerdown', function() {
                     this.scene.stop('over');
                     this.scene.start(level);
@@ -1128,7 +1234,7 @@
                     this.retrybt.setScale(1);
                 }, this);
 
-                this.nextbt = this.add.image(650, 600, 'next').setInteractive();
+                this.nextbt = this.add.image(650, 600, 'next').setInteractive({ cursor: 'pointer' });
                 this.nextbt.on('pointerdown', function() {
                     this.scene.stop('over');
                     this.scene.start('levels');
@@ -1142,7 +1248,7 @@
                     this.nextbt.setScale(1);
                 }, this);
 
-                this.menubutton = this.add.image(1050, 600, 'menu').setInteractive();
+                this.menubutton = this.add.image(1050, 600, 'menu').setInteractive({ cursor: 'pointer' });
                 this.menubutton.on('pointerdown', function() {
                     this.scene.stop('over');
                     this.scene.start('start');
@@ -1189,10 +1295,22 @@
             },
 
             create: function() {
+                if(tutorialmusicIsPlaying)
+                {
+                    tutorialmusicIsPlaying = false;
+                    tutorialmusic.stop();
+                }
+                
+                if(music1IsPlaying)
+                {
+                    music1IsPlaying = false;
+                    music1.stop();
+                }
+
                 this.cameras.main.fadeIn(3000);
                 this.add.image(0, 0, 'winner').setOrigin(0); //Dark Souls end screen, will have to change but its a good placeholder
 
-                this.retrybt = this.add.image(250, 600, 'retry').setInteractive();
+                this.retrybt = this.add.image(250, 600, 'retry').setInteractive({ cursor: 'pointer' });
                 this.retrybt.on('pointerdown', function() {
                     this.scene.stop('win');
                     this.scene.start(level);
@@ -1206,7 +1324,7 @@
                     this.retrybt.setScale(1);
                 }, this);
 
-                this.nextbt = this.add.image(650, 600, 'next').setInteractive();
+                this.nextbt = this.add.image(650, 600, 'next').setInteractive({ cursor: 'pointer' });
                 this.nextbt.on('pointerdown', function() {
                     this.scene.stop('win');
                     this.scene.start('levels');
@@ -1220,7 +1338,7 @@
                     this.nextbt.setScale(1);
                 }, this);
 
-                this.menubutton = this.add.image(1050, 600, 'menu').setInteractive();
+                this.menubutton = this.add.image(1050, 600, 'menu').setInteractive({ cursor: 'pointer' });
                 this.menubutton.on('pointerdown', function() {
                     this.scene.stop('win');
                     this.scene.start('start');
@@ -1270,12 +1388,26 @@
 
             create: function() {
                 this.add.image(0, 0, 'menuback').setOrigin(0);
-                this.tutorialbt = this.add.image(360, 260, 'tutorial').setInteractive();
-                this.level1bt = this.add.image(840, 260, 'level1').setInteractive();
-                this.level2bt = this.add.image(360, 400, 'level2').setInteractive();
-                this.level3bt = this.add.image(840, 400, 'level3').setInteractive();
+                this.tutorialbt = this.add.image(360, 260, 'tutorial').setInteractive({ cursor: 'pointer' });
+                this.level1bt = this.add.image(840, 260, 'level1').setInteractive({ cursor: 'pointer' });
+                this.level2bt = this.add.image(360, 400, 'level2').setInteractive({ cursor: 'pointer' });
+                this.level3bt = this.add.image(840, 400, 'level3').setInteractive({ cursor: 'pointer' });
+
+                if(!bgmusicIsPlaying)
+                {
+                    bgmusicIsPlaying = true;
+                    bgmusic.play({
+                        loop: false
+                    });
+                }
 
                 this.tutorialbt.on('pointerdown', function() {
+                    if(bgmusicIsPlaying)
+                    {
+                        bgmusic.stop();
+                        bgmusicIsPlaying = false;
+                    }
+                    
                     this.scene.stop('levels');
                     this.scene.start('tutorial');
                 }, this);
@@ -1289,6 +1421,11 @@
                 }, this);
 
                 this.level1bt.on('pointerdown', function() {
+                    if(bgmusicIsPlaying)
+                    {
+                        bgmusic.stop();
+                        bgmusicIsPlaying = false;
+                    }
                     this.scene.stop('levels');
                     this.scene.start('level1');
                 }, this);
@@ -1334,6 +1471,601 @@
 
         });
 
+        var PauseScene = new Phaser.Class({
+
+            Extends: Phaser.Scene,
+
+            initialize:
+
+                function PauseScene() {
+                Phaser.Scene.call(this, {
+                    key: 'pause'
+                });
+            },
+
+            init: function() //called everytime the scene restarts. I use it to declare variables, 'this' is used so that the scope of the variables is only within this scene.
+                {
+                    this.returnbt;
+                    this.levelbt;
+                    this.menubt;
+                    this.restartbt;
+                    this.mutebt;
+                    this.volumePlus;
+                    this.volumeMinus;
+                    this.volumebt;
+                    this.muted;
+                },
+
+            preload: function() {
+                this.load.image('gameReturn', 'testob/returngame.png');
+                this.load.image('gameRestart', 'testob/gamerestart.png');
+                this.load.image('menuReturn', 'testob/returnmenu.png');
+                this.load.image('levelSelect', 'testob/nextlevel.png');
+                this.load.image('menuback', 'testob/back.png');
+            },
+
+            create: function() {
+                this.add.image(0, 0, 'menuback').setOrigin(0);
+                
+                this.mutebt = this.add.text(16, 16, '', {
+                    fontSize: '32px',
+                    fill: '#fff'
+                }).setInteractive({ cursor: 'pointer' });
+
+                this.volumebt = this.add.text(16, 46, 'Volume: ' + trueVolumeLev, {
+                    fontSize: '32px',
+                    fill: '#fff'
+                }).setInteractive({ cursor: 'pointer' });
+
+                this.volumePlus = this.add.text(16, 76, '+', {
+                    fontSize: '32px',
+                    fill: '#fff'
+                }).setInteractive({ cursor: 'pointer' });
+
+                this.volumeMinus = this.add.text(36, 76, '-', {
+                    fontSize: '32px',
+                    fill: '#fff'
+                }).setInteractive({ cursor: 'pointer' });
+
+                this.levelbt = this.add.image(1280 / 2, 720 - 300, 'levelSelect').setInteractive({ cursor: 'pointer' });
+                this.menubt = this.add.image(1280 / 2, 720 - 145, 'menuReturn').setInteractive({ cursor: 'pointer' });
+
+                if(level != 'nothing')
+                {
+                    this.returnbt = this.add.image(1280 / 2, 720 - 610, 'gameReturn').setInteractive({ cursor: 'pointer' });
+
+                    this.returnbt.on('pointerdown', function() {
+                        this.scene.stop('pause');
+                        this.scene.resume(level);
+                    }, this);
+
+                    this.returnbt.on('pointerover', function() {
+                        this.returnbt.setScale(1.2);
+                    }, this);
+
+                    this.returnbt.on('pointerout', function() {
+                        this.returnbt.setScale(1);
+                    }, this);
+
+                    this.restartbt = this.add.image(1280 / 2, 720 - 455, 'gameRestart').setInteractive({ cursor: 'pointer' });
+
+                    this.restartbt.on('pointerdown', function() {
+                        if(tutorialmusicIsPlaying)
+                        {
+                            tutorialmusicIsPlaying = false;
+                            tutorialmusic.stop();
+                        }
+                        
+                        if(music1IsPlaying)
+                        {
+                            music1IsPlaying = false;
+                            music1.stop();
+                        }
+                        this.scene.stop('pause');
+                        this.scene.stop(level);
+                        this.scene.start(level);
+                    }, this);
+
+                    this.restartbt.on('pointerover', function() {
+                        this.restartbt.setScale(1.2);
+                    }, this);
+
+                    this.restartbt.on('pointerout', function() {
+                        this.restartbt.setScale(1);
+                    }, this);
+                }
+                
+                this.levelbt.on('pointerdown', function() {
+                    if(tutorialmusicIsPlaying)
+                    {
+                        tutorialmusicIsPlaying = false;
+                        tutorialmusic.stop();
+                    }
+                    
+                    if(music1IsPlaying)
+                    {
+                        music1IsPlaying = false;
+                        music1.stop();
+                    }
+                    this.scene.stop('pause');
+                    this.scene.stop(level);
+                    this.scene.start('levels');
+                }, this);
+
+                this.levelbt.on('pointerover', function() {
+                    this.levelbt.setScale(1.2);
+                }, this);
+
+                this.levelbt.on('pointerout', function() {
+                    this.levelbt.setScale(1);
+                }, this);
+
+                this.menubt.on('pointerdown', function() {
+                    if(tutorialmusicIsPlaying)
+                    {
+                        tutorialmusicIsPlaying = false;
+                        tutorialmusic.stop();
+                    }
+                    
+                    if(music1IsPlaying)
+                    {
+                        music1IsPlaying = false;
+                        music1.stop();
+                    }
+                    this.scene.stop('pause');
+                    this.scene.stop(level);
+                    level = 'nothing';
+                    this.scene.start('start');
+                }, this);
+
+                this.menubt.on('pointerover', function() {
+                    this.menubt.setScale(1.2);
+                }, this);
+
+                this.menubt.on('pointerout', function(event) {
+                    this.menubt.setScale(1);
+                }, this);
+            },
+
+            update: function() {
+                
+                if(!this.muted)
+                {
+                    trueVolumeLev = volumeLev.toPrecision(1);
+                    this.mutebt.setText('Mute');
+                    this.volumebt.setText('Volume: ' + trueVolumeLev);
+                    this.mutebt.on('pointerdown', function() {
+                        volumeLev = 0;
+                        this.muted = true;
+                        if(tutorialmusicIsPlaying)
+                        {
+                            tutorialmusic.setMute(true);
+                            tutorialmusic.setVolume(volumeLev);
+                        }
+                        
+                        if(music1IsPlaying)
+                        {
+                            music1.setMute(true);
+                            music1.setVolume(volumeLev);
+                        }
+
+                        if(bgmusicIsPlaying)
+                        {
+                            bgmusic.setMute(true);
+                            bgmusic.setVolume(volumeLev);
+                        }
+                    }, this);
+                }
+
+                else if(this.muted)
+                {
+                    trueVolumeLev = volumeLev.toPrecision(1);
+                    this.mutebt.setText('Unmute')
+                    this.volumebt.setText('Volume: ' + trueVolumeLev);
+                    this.mutebt.on('pointerdown', function() {
+                        volumeLev = 1;
+                        this.muted = false;
+                        if(tutorialmusicIsPlaying)
+                        {
+                            tutorialmusic.setMute(false);
+                            tutorialmusic.setVolume(volumeLev);
+                        }
+                        
+                        if(music1IsPlaying)
+                        {
+                            music1.setMute(false);
+                            music1.setVolume(volumeLev);
+                        }
+
+                        if(bgmusicIsPlaying)
+                        {
+                            bgmusic.setMute(false);
+                            bgmusic.setVolume(volumeLev);
+                        }
+                    }, this);
+                }
+
+                this.volumePlus.on('pointerdown', function() {
+                    if(volumeLev < 1)
+                    {
+                        volumeLev+=0.1;
+                        trueVolumeLev = volumeLev.toPrecision(1);
+                        this.volumebt.setText('Volume: ' + trueVolumeLev);
+                        if(tutorialmusicIsPlaying)
+                        {
+                            tutorialmusic.setVolume(volumeLev);
+                        }
+                        
+                        if(music1IsPlaying)
+                        {
+                            music1.setVolume(volumeLev);
+                        }
+
+                        if(bgmusicIsPlaying)
+                        {
+                            bgmusic.setVolume(volumeLev);
+                        }
+                    }
+                }, this);
+
+                this.volumeMinus.on('pointerdown', function() {
+                    if(volumeLev > 0.1)
+                    {
+                        volumeLev-=0.1;
+                        trueVolumeLev = volumeLev.toPrecision(1);
+
+                        this.volumebt.setText('Volume: ' + trueVolumeLev);
+                        if(tutorialmusicIsPlaying)
+                        {
+                            tutorialmusic.setVolume(volumeLev);
+                        }
+                        
+                        if(music1IsPlaying)
+                        {
+                            music1.setVolume(volumeLev);
+                        }
+
+                        if(bgmusicIsPlaying)
+                        {
+                            bgmusic.setVolume(volumeLev);
+                        }
+                    }
+
+                }, this);
+            }
+
+            });
+
+        var CreditsScene = new Phaser.Class({
+
+            Extends: Phaser.Scene,
+
+            initialize:
+
+                function CreditsScene() {
+                Phaser.Scene.call(this, {
+                    key: 'credits'
+                });
+            },
+
+            init: function() {
+                this.leaderText;
+                this.gameDevText;
+                this.gameDesignText;
+                this.webDevText;
+                this.musicText;
+                this.menubt;
+            },
+
+            preload: function() {
+                this.load.image('menuback', 'testob/back.png');
+                this.load.image('menu', 'testob/returnmenu.png');
+            },
+
+            create: function() {
+                if(!bgmusicIsPlaying)
+                {
+                    bgmusicIsPlaying = true;
+                    bgmusic.play({
+                        loop: false
+                    });
+                }
+                this.add.image(0, 0, 'menuback').setOrigin(0);
+                this.menubt = this.add.image(1280/2, 600, 'menu').setInteractive({ cursor: 'pointer' });
+                this.leaderText = this.add.text(16, 16, 'Team Leader: Aaron Hazzard', {
+                    fontSize: '42px',
+                    fill: '#000'
+                });
+                this.gameDesignText = this.add.text(16, 76, 'Game Art Designer: Aaron Hazzard', {
+                    fontSize: '42px',
+                    fill: '#000'
+                });
+                this.gameDevText = this.add.text(16, 136, 'Game Developer: Mallet Marie', {
+                    fontSize: '42px',
+                    fill: '#000'
+                });
+                this.webDevText = this.add.text(16, 196, 'Web Developer: Romaine Carter', {
+                    fontSize: '42px',
+                    fill: '#000'
+                });
+                this.musicText = this.add.text(16, 256, 'Music: http://www.bensound.com/royalty-free-music', {
+                    fontSize: '42px',
+                    fill: '#000',
+                }).setInteractive({ cursor: 'pointer' });
+
+                this.musicText.on('pointerup', this.openLink, this);
+
+                this.menubt.on('pointerdown', function() {
+                    if(tutorialmusicIsPlaying)
+                    {
+                        tutorialmusicIsPlaying = false;
+                        tutorialmusic.stop();
+                    }
+                    
+                    if(music1IsPlaying)
+                    {
+                        music1IsPlaying = false;
+                        music1.stop();
+                    }
+                    if(bgmusicIsPlaying)
+                    {
+                        bgmusic.stop();
+                        bgmusicIsPlaying = false;
+                    }
+                    this.scene.stop('credits');
+                    this.scene.start('start');
+                }, this);
+
+                this.menubt.on('pointerover', function() {
+                    this.menubt.setScale(1.2);
+                }, this);
+
+                this.menubt.on('pointerout', function(event) {
+                    this.menubt.setScale(1);
+                }, this);
+            },
+
+            openLink: function() {
+                var url = 'http://www.bensound.com/royalty-free-music';
+
+                var s = window.open(url, '_blank');
+
+                if (s && s.focus)
+                {
+                    s.focus();
+                }
+                else if (!s)
+                {
+                    window.location.href = url;
+                }
+            }
+
+            });
+
+        var SettingsScene = new Phaser.Class({
+
+            Extends: Phaser.Scene,
+
+            initialize:
+
+                function SettingsScene() {
+                Phaser.Scene.call(this, {
+                    key: 'settings'
+                });
+            },
+
+            init: function() //called everytime the scene restarts. I use it to declare variables, 'this' is used so that the scope of the variables is only within this scene.
+                {
+                    this.menubt;
+                    this.mutebt;
+                    this.volumePlus;
+                    this.volumeMinus;
+                    this.volumebt;
+                    this.muted;
+                    this.autoRestartbt;
+                },
+
+            preload: function() {
+                this.load.image('menuReturn', 'testob/returnmenu.png');
+                this.load.image('menuback', 'testob/back.png');
+            },
+
+            create: function() {
+                this.add.image(0, 0, 'menuback').setOrigin(0);
+
+                if(!bgmusicIsPlaying)
+                {
+                    bgmusicIsPlaying = true;
+                    bgmusic.play({
+                        loop: false
+                    });
+                }
+                
+                this.autoRestartbt = this.add.text(16, 136, '', {
+                        fontSize: '32px',
+                        fill: '#fff'
+                    }).setInteractive({ cursor: 'pointer' });
+
+                this.mutebt = this.add.text(16, 16, '', {
+                    fontSize: '32px',
+                    fill: '#fff'
+                }).setInteractive({ cursor: 'pointer' });
+
+                this.volumebt = this.add.text(16, 46, 'Volume: ' + trueVolumeLev, {
+                    fontSize: '32px',
+                    fill: '#fff'
+                }).setInteractive({ cursor: 'pointer' });
+
+                this.volumePlus = this.add.text(16, 76, '+', {
+                    fontSize: '32px',
+                    fill: '#fff'
+                }).setInteractive({ cursor: 'pointer' });
+
+                this.volumeMinus = this.add.text(36, 76, '-', {
+                    fontSize: '32px',
+                    fill: '#fff'
+                }).setInteractive({ cursor: 'pointer' });
+
+                this.menubt = this.add.image(1280 / 2, 720 - 145, 'menuReturn').setInteractive({ cursor: 'pointer' });
+
+                this.menubt.on('pointerdown', function() {
+                    if(tutorialmusicIsPlaying)
+                    {
+                        tutorialmusicIsPlaying = false;
+                        tutorialmusic.stop();
+                    }
+                    
+                    if(music1IsPlaying)
+                    {
+                        music1IsPlaying = false;
+                        music1.stop();
+                    }
+                    if(bgmusicIsPlaying)
+                    {
+                        bgmusic.stop();
+                        bgmusicIsPlaying = false;
+                    }
+                    this.scene.stop('settings');
+                    this.scene.start('start');
+                }, this);
+
+                this.menubt.on('pointerover', function() {
+                    this.menubt.setScale(1.2);
+                }, this);
+
+                this.menubt.on('pointerout', function(event) {
+                    this.menubt.setScale(1);
+                }, this);
+
+            },
+
+            update: function() {
+                if(!autoRestart)
+                {
+                    this.autoRestartbt.setText('Enable Auto Restart');
+                    this.autoRestartbt.on('pointerdown', function() {
+                        autoRestart = true;
+                        this.autoRestartbt.setText('Disable Auto Restart');
+                    }, this);
+                }
+
+                else if(autoRestart)
+                {
+                    this.autoRestartbt.setText('Disable Auto Restart');
+                    this.autoRestartbt.on('pointerdown', function() {
+                        autoRestart = false;
+                        this.autoRestartbt.setText('Enable Auto Restart');
+                    }, this);
+                }
+
+                if(!this.muted)
+                {
+                    trueVolumeLev = volumeLev.toPrecision(1);
+                    this.mutebt.setText('Mute');
+                    this.volumebt.setText('Volume: ' + trueVolumeLev);
+                    this.mutebt.on('pointerdown', function() {
+                        volumeLev = 0;
+                        this.muted = true;
+                        if(tutorialmusicIsPlaying)
+                        {
+                            tutorialmusic.setMute(true);
+                            tutorialmusic.setVolume(volumeLev);
+                        }
+                        
+                        if(music1IsPlaying)
+                        {
+                            music1.setMute(true);
+                            music1.setVolume(volumeLev);
+                        }
+
+                        if(bgmusicIsPlaying)
+                        {
+                            bgmusic.setMute(true);
+                            bgmusic.setVolume(volumeLev);
+                        }
+                    }, this);
+                }
+
+                else if(this.muted)
+                {
+                    trueVolumeLev = volumeLev.toPrecision(1);
+                    this.mutebt.setText('Unmute')
+                    this.volumebt.setText('Volume: ' + trueVolumeLev);
+                    this.mutebt.on('pointerdown', function() {
+                        volumeLev = 1;
+                        this.muted = false;
+                        if(tutorialmusicIsPlaying)
+                        {
+                            tutorialmusic.setMute(false);
+                            tutorialmusic.setVolume(volumeLev);
+                        }
+                        
+                        if(music1IsPlaying)
+                        {
+                            music1.setMute(false);
+                            music1.setVolume(volumeLev);
+                        }
+
+                        if(bgmusicIsPlaying)
+                        {
+                            bgmusic.setMute(false);
+                            bgmusic.setVolume(volumeLev);
+                        }
+                    }, this);
+                }
+
+                this.volumePlus.on('pointerdown', function() {
+                    if(volumeLev < 1)
+                    {
+                        volumeLev+=0.1;
+                        trueVolumeLev = volumeLev.toPrecision(1);
+                        this.volumebt.setText('Volume: ' + trueVolumeLev);
+                        if(tutorialmusicIsPlaying)
+                        {
+                            tutorialmusic.setVolume(volumeLev);
+                        }
+                        
+                        if(music1IsPlaying)
+                        {
+                            music1.setVolume(volumeLev);
+                        }
+
+                        if(bgmusicIsPlaying)
+                        {
+                            bgmusic.setVolume(volumeLev);
+                        }
+                    }
+                }, this);
+
+                this.volumeMinus.on('pointerdown', function() {
+                    if(volumeLev > 0.1)
+                    {
+                        volumeLev-=0.1;
+                        trueVolumeLev = volumeLev.toPrecision(1);
+
+                        this.volumebt.setText('Volume: ' + trueVolumeLev);
+                        if(tutorialmusicIsPlaying)
+                        {
+                            tutorialmusic.setVolume(volumeLev);
+                        }
+                        
+                        if(music1IsPlaying)
+                        {
+                            music1.setVolume(volumeLev);
+                        }
+
+                        if(bgmusicIsPlaying)
+                        {
+                            bgmusic.setVolume(volumeLev);
+                        }
+                    }
+
+                }, this);
+
+            }
+
+            });
+
         var config = {
             type: Phaser.AUTO,
             width: 1280,
@@ -1347,7 +2079,7 @@
                     debug: false //disables visible object outlines and paths
                 }
             },
-            scene: [StartScene, Level1Scene, TutorialScene, GameOverScene, GameWinScene, LevelSelectScene]
+            scene: [StartScene, Level1Scene, TutorialScene, GameOverScene, GameWinScene, LevelSelectScene, PauseScene, CreditsScene, SettingsScene]
         };
 
         var game = new Phaser.Game(config);
