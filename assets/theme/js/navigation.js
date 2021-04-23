@@ -14,3 +14,11 @@ function openPage(pageName, elmnt, color) {
 
 // Get the element with id="defaultOpen" and click on it
 document.getElementById("defaultOpen").click();
+
+function projectK() {
+    alert("Coming Soon! Project K releases Summer 2022!");
+}
+
+function projectZ() {
+    alert("Coming Soon! Project Z releases Winter 2023!");
+}

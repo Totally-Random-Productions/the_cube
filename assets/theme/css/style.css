@@ -833,7 +833,7 @@ body {
     height: auto;
     padding: 0.6rem 1.2rem;
     transition: border-color 0.25s ease 0s;
-    border: 1px solid transparent !important;
+    border: 1px solid black !important;
     border-radius: 4px;
     box-shadow: rgba(0, 0, 0, 0.07) 0px 1px 1px 0px, rgba(0, 0, 0, 0.07) 0px 1px 3px 0px, rgba(0, 0, 0, 0.03) 0px 0px 0px 1px;
 }
@@ -992,7 +992,7 @@ blockquote {
 /* width */
 
 ::-webkit-scrollbar {
-    width: 5px !important;
+    width: 15px;
     background-color: transparent;
 }
 
@@ -1009,6 +1009,8 @@ blockquote {
 
 ::-webkit-scrollbar-thumb {
     background: #c765e6;
+    border-radius: 20px;
+    border: 3px solid transparent;
     background-clip: content-box;
 }
 
@@ -1017,6 +1019,8 @@ blockquote {
 
 ::-webkit-scrollbar-thumb:hover {
     background: purple;
+    border-radius: 20px;
+    border: 3px solid transparent;
     background-clip: content-box;
 }
 

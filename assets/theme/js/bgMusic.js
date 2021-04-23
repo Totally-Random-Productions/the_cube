@@ -7,7 +7,7 @@ function showVideo() {
 }
 
 function enableAutoPlay() {
-    x.volume = 0.01;
+    x.volume = 0.1;
     x.autoplay = true;
     x.load();
 }
