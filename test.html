@@ -83,6 +83,8 @@
 
     <script type="text/javascript">
     var level = 'nothing';
+    var winSound;
+    var deathSound;
     var bgmusic;
     var tutorialmusic;
     var music1;
@@ -142,7 +144,7 @@
                 this.load.image('leader', 'testob/menuleader.png');
                 this.load.image('credit', 'testob/menucredits.png');
                 this.load.image('settings', 'testob/menusettings.png');
-                this.load.audio('bg', 'music/bensound-memories.mp3');
+                this.load.audio('bg', 'music/Monplaisir - Soundtrack.mp3');
             },
 
             create: function() {
@@ -309,7 +311,7 @@
                 this.load.image('bullet', 'testob/bullet.png');
                 this.load.image('axe', 'testob/axe.png');
                 this.load.image('grass', 'testob/grass.png');
-                this.load.audio('tutorialSound', 'music/bensound-dreams.mp3');
+                this.load.audio('tutorialSound', 'music/Kubbi - Up In My Jam.mp3');
             },
 
             create: function() {
@@ -829,7 +831,7 @@
                 this.load.image('axe', 'testob/axe.png');
                 this.load.image('arrow', 'testob/arrow.png');
                 this.load.image('grass', 'testob/grass.png');
-                this.load.audio('level1Sound', 'music/bensound-rumble.mp3');
+                this.load.audio('level1Sound', 'music/Joshua McLean - Mountain Trials.mp3');
             },
 
             create: function() {
@@ -1344,31 +1346,10 @@
             },
 
             preload: function() {
-                var progressbar = this.add.graphics();
-                var percent = this.add.text(100, 430, '%', {
-                        fontSize: '32px',
-                        fill: '#fff'
-                    });
-
-                this.load.on('progress', function (value) {   
-                    progressbar.clear();
-                    percent.setText(value*100 + '%');
-                    progressbar.fillStyle(0x355f76, 1);
-                    progressbar.fillRect(100, 360, 1080 * value, 60);
-
-                });
-
-                this.load.on('complete', function () {
-
-                    progressbar.destroy();
-                    percent.destroy();
-
-                });
-
                 this.load.image('die', 'testob/die.png');
                 this.load.image('retry', 'testob/playagain.png');
                 this.load.image('next', 'testob/nextlevel.png');
-                this.load.image('menu', 'testob/returnmenu.png');
+                this.load.audio('dead', 'music/mixkit-player-losing-or-failing-2042.wav');
             },
 
             create: function() {
@@ -1383,6 +1364,13 @@
                     music1IsPlaying = false;
                     music1.stop();
                 }
+                
+                deathSound = this.sound.add('dead');
+                deathSound.play({
+                    mute: false,
+                    volume: volumeLev,
+                    loop: false
+                });
                 
                 this.cameras.main.fadeIn(3000);
                 this.add.image(0, 0, 'die').setOrigin(0); //Dark Souls end screen, will have to change but its a good placeholder
@@ -1455,31 +1443,11 @@
             },
 
             preload: function() {
-                var progressbar = this.add.graphics();
-                var percent = this.add.text(100, 430, '%', {
-                        fontSize: '32px',
-                        fill: '#fff'
-                    });
-
-                this.load.on('progress', function (value) {   
-                    progressbar.clear();
-                    percent.setText(value*100 + '%');
-                    progressbar.fillStyle(0x355f76, 1);
-                    progressbar.fillRect(100, 360, 1080 * value, 60);
-
-                });
-
-                this.load.on('complete', function () {
-
-                    progressbar.destroy();
-                    percent.destroy();
-
-                });
-
                 this.load.image('winner', 'testob/win.png');
                 this.load.image('retry', 'testob/playagain.png');
                 this.load.image('next', 'testob/nextlevel.png');
                 this.load.image('menu', 'testob/returnmenu.png');
+                this.load.audio('winner', 'music/mixkit-completion-of-a-level-2063.wav');
             },
 
             create: function() {
@@ -1494,6 +1462,13 @@
                     music1IsPlaying = false;
                     music1.stop();
                 }
+
+                winSound = this.sound.add('winner');
+                winSound.play({
+                    mute: false,
+                    volume: volumeLev,
+                    loop: false
+                });
 
                 this.cameras.main.fadeIn(3000);
                 this.add.image(0, 0, 'winner').setOrigin(0); //Dark Souls end screen, will have to change but its a good placeholder
@@ -1726,6 +1701,7 @@
 
             init: function() //called everytime the scene restarts. I use it to declare variables, 'this' is used so that the scope of the variables is only within this scene.
                 {
+                    this.autoRestartbt;
                     this.returnbt;
                     this.levelbt;
                     this.menubt;
@@ -1747,7 +1723,7 @@
 
             create: function() {
                 this.add.image(0, 0, 'menuback').setOrigin(0);
-                
+
                 this.mutebt = this.add.text(16, 16, '', {
                     fontSize: '32px',
                     fill: '#fff'
@@ -1767,6 +1743,11 @@
                     fontSize: '32px',
                     fill: '#fff'
                 }).setInteractive({ cursor: 'pointer' });
+
+                this.autoRestartbt = this.add.text(16, 136, '', {
+                        fontSize: '32px',
+                        fill: '#fff'
+                    }).setInteractive({ cursor: 'pointer' });
 
                 this.levelbt = this.add.image(1280 / 2, 720 - 300, 'levelSelect').setInteractive({ cursor: 'pointer' });
                 this.menubt = this.add.image(1280 / 2, 720 - 145, 'menuReturn').setInteractive({ cursor: 'pointer' });
@@ -1869,7 +1850,24 @@
             },
 
             update: function() {
-                
+                if(!autoRestart)
+                {
+                    this.autoRestartbt.setText('Enable Auto Restart');
+                    this.autoRestartbt.on('pointerdown', function() {
+                        autoRestart = true;
+                        this.autoRestartbt.setText('Disable Auto Restart');
+                    }, this);
+                }
+
+                else if(autoRestart)
+                {
+                    this.autoRestartbt.setText('Disable Auto Restart');
+                    this.autoRestartbt.on('pointerdown', function() {
+                        autoRestart = false;
+                        this.autoRestartbt.setText('Enable Auto Restart');
+                    }, this);
+                }
+
                 if(!this.muted)
                 {
                     trueVolumeLev = volumeLev.toPrecision(1);
@@ -1994,7 +1992,10 @@
                 this.gameDevText;
                 this.gameDesignText;
                 this.webDevText;
-                this.musicText;
+                this.musicText1;
+                this.musicText2;
+                this.musicText3;
+                this.fxText;
                 this.menubt;
             },
 
@@ -2050,12 +2051,30 @@
                     fontSize: '42px',
                     fill: '#000'
                 });
-                this.musicText = this.add.text(16, 256, 'Music: http://www.bensound.com/royalty-free-music', {
+                this.musicText1 = this.add.text(16, 256, 'Music: https://loyaltyfreakmusic.com/music/', {
+                    fontSize: '42px',
+                    fill: '#000',
+                }).setInteractive({ cursor: 'pointer' });
+                
+                this.musicText2 = this.add.text(16, 316, '       https://mrjoshuamclean.com', {
                     fontSize: '42px',
                     fill: '#000',
                 }).setInteractive({ cursor: 'pointer' });
 
-                this.musicText.on('pointerup', this.openLink, this);
+                this.musicText3 = this.add.text(16, 376, '       https://kubbimusic.com/', {
+                    fontSize: '42px',
+                    fill: '#000',
+                }).setInteractive({ cursor: 'pointer' });
+
+                this.fxText = this.add.text(16, 436, 'SFX: https://mixkit.co/free-sound-effects/', {
+                    fontSize: '42px',
+                    fill: '#000',
+                }).setInteractive({ cursor: 'pointer' });
+
+                this.musicText1.on('pointerup', this.musicLink1, this);
+                this.musicText2.on('pointerup', this.musicLink2, this);
+                this.musicText3.on('pointerup', this.musicLink3, this);
+                this.fxText.on('pointerup', this.fxLink, this);
 
                 this.menubt.on('pointerdown', function() {
                     if(tutorialmusicIsPlaying)
@@ -2087,18 +2106,59 @@
                 }, this);
             },
 
-            openLink: function() {
-                var url = 'http://www.bensound.com/royalty-free-music';
-
-                var s = window.open(url, '_blank');
-
-                if (s && s.focus)
+            musicLink1: function() {
+                var url1 = 'https://loyaltyfreakmusic.com/music/';
+                var s1 = window.open(url1, '_blank');
+                
+                if (s1 && s1.focus)
                 {
-                    s.focus();
+                    s1.focus();
                 }
-                else if (!s)
+                else if (!s1)
                 {
                     window.location.href = url;
+                }
+            },
+
+            musicLink2: function() {
+                var url2 = 'https://mrjoshuamclean.com/';
+                var s2 = window.open(url2, '_blank');
+
+                if (s2 && s2.focus)
+                {
+                    s2.focus();
+                }
+                else if (!s2)
+                {
+                    window.location.href = url2;
+                }
+            },
+
+            musicLink3: function() {
+                var url3 = 'https://kubbimusic.com/';
+                var s3 = window.open(url3, '_blank');
+
+                if (s3 && s3.focus)
+                {
+                    s3.focus();
+                }
+                else if (!s3)
+                {
+                    window.location.href = url3;
+                }
+            },
+
+            fxLink: function() {
+                var url4 = 'https://mixkit.co/free-sound-effects/';
+                var s4 = window.open(url4, '_blank');
+
+                if (s4 && s4.focus)
+                {
+                    s4.focus();
+                }
+                else if (!s4)
+                {
+                    window.location.href = url4;
                 }
             }
 
