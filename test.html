@@ -1216,6 +1216,7 @@
             },
 
             turretDestroy: function(axe, obst) {
+                this.bullet.destroy();
                 axe.destroy();
                 obst.destroy();
                 this.aimer.destroy();
