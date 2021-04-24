@@ -92,8 +92,9 @@
         var tutorialmusicIsPlaying = false;
         var music1IsPlaying = false;
         var volumeLev = 1;
-        var trueVolumeLev = volumeLev.toPrecision(1);
+        var trueVolumeLev = volumeLev.toFixed(1);
         var autoRestart = false;
+        var touchInput = false;
 
         /*creates a new scene while extending the Phaser Scene Class 
                                                                                                                                                                                                                                                                                                                                                                         so that the default functions remain the same*/
@@ -126,7 +127,7 @@
 
                 this.load.on('progress', function(value) {
                     progressbar.clear();
-                    percent.setText(value * 100 + '%');
+                    percent.setText(value.toFixed(0) * 100 + '%');
                     progressbar.fillStyle(0x355f76, 1);
                     progressbar.fillRect(100, 360, 1080 * value, 60);
 
@@ -159,6 +160,9 @@
                 }
 
                 this.add.image(0, 0, 'menuback').setOrigin(0);
+                window.addEventListener('touchstart', function() {
+                    touchInput = true;
+                })
                 this.startbutton = this.add.image(1280 / 2, 720 - 610, 'startbt').setInteractive({
                     cursor: 'pointer'
                 });
@@ -292,7 +296,7 @@
 
                 this.load.on('progress', function(value) {
                     progressbar.clear();
-                    percent.setText(value * 100 + '%');
+                    percent.setText(value.toFixed(0) * 100 + '%');
                     progressbar.fillStyle(0x355f76, 1);
                     progressbar.fillRect(100, 360, 1080 * value, 60);
 
@@ -503,7 +507,6 @@
                 this.groundCheck();
 
                 this.controls();
-
                 this.aggrox = Phaser.Math.Difference(this.turret.x, this.player.x); //finds the positive x distance between the player and turret
                 this.aggroy = Phaser.Math.Difference(this.turret.y, this.player.y); //finds the positive y distance between the player and turret
 
@@ -814,7 +817,7 @@
 
                 this.load.on('progress', function(value) {
                     progressbar.clear();
-                    percent.setText(value * 100 + '%');
+                    percent.setText(value.toFixed(0) * 100 + '%');
                     progressbar.fillStyle(0x355f76, 1);
                     progressbar.fillRect(100, 360, 1080 * value, 60);
 
@@ -1579,7 +1582,7 @@
 
                 this.load.on('progress', function(value) {
                     progressbar.clear();
-                    percent.setText(value * 100 + '%');
+                    percent.setText(value.toFixed(0) * 100 + '%');
                     progressbar.fillStyle(0x355f76, 1);
                     progressbar.fillRect(100, 360, 1080 * value, 60);
 
@@ -1890,6 +1893,46 @@
                 this.menubt.on('pointerout', function(event) {
                     this.menubt.setScale(1);
                 }, this);
+
+                this.volumePlus.on('pointerdown', function() {
+                    if (volumeLev < 1) {
+                        volumeLev += 0.1;
+                        trueVolumeLev = volumeLev.toFixed(1);
+                        this.volumebt.setText('Volume: ' + trueVolumeLev);
+                        if (tutorialmusicIsPlaying) {
+                            tutorialmusic.setVolume(volumeLev);
+                        }
+
+                        if (music1IsPlaying) {
+                            music1.setVolume(volumeLev);
+                        }
+
+                        if (bgmusicIsPlaying) {
+                            bgmusic.setVolume(volumeLev);
+                        }
+                    }
+                }, this);
+
+                this.volumeMinus.on('pointerdown', function() {
+                    if (volumeLev > 0.1) {
+                        volumeLev -= 0.1;
+                        trueVolumeLev = volumeLev.toFixed(1);
+
+                        this.volumebt.setText('Volume: ' + trueVolumeLev);
+                        if (tutorialmusicIsPlaying) {
+                            tutorialmusic.setVolume(volumeLev);
+                        }
+
+                        if (music1IsPlaying) {
+                            music1.setVolume(volumeLev);
+                        }
+
+                        if (bgmusicIsPlaying) {
+                            bgmusic.setVolume(volumeLev);
+                        }
+                    }
+
+                }, this);
             },
 
             update: function() {
@@ -1908,7 +1951,7 @@
                 }
 
                 if (!this.muted) {
-                    trueVolumeLev = volumeLev.toPrecision(1);
+                    trueVolumeLev = volumeLev.toFixed(1);
                     this.mutebt.setText('Mute');
                     this.volumebt.setText('Volume: ' + trueVolumeLev);
                     this.mutebt.on('pointerdown', function() {
@@ -1930,7 +1973,7 @@
                         }
                     }, this);
                 } else if (this.muted) {
-                    trueVolumeLev = volumeLev.toPrecision(1);
+                    trueVolumeLev = volumeLev.toFixed(1);
                     this.mutebt.setText('Unmute')
                     this.volumebt.setText('Volume: ' + trueVolumeLev);
                     this.mutebt.on('pointerdown', function() {
@@ -1952,46 +1995,6 @@
                         }
                     }, this);
                 }
-
-                this.volumePlus.on('pointerdown', function() {
-                    if (volumeLev < 1) {
-                        volumeLev += 0.1;
-                        trueVolumeLev = volumeLev.toPrecision(1);
-                        this.volumebt.setText('Volume: ' + trueVolumeLev);
-                        if (tutorialmusicIsPlaying) {
-                            tutorialmusic.setVolume(volumeLev);
-                        }
-
-                        if (music1IsPlaying) {
-                            music1.setVolume(volumeLev);
-                        }
-
-                        if (bgmusicIsPlaying) {
-                            bgmusic.setVolume(volumeLev);
-                        }
-                    }
-                }, this);
-
-                this.volumeMinus.on('pointerdown', function() {
-                    if (volumeLev > 0.1) {
-                        volumeLev -= 0.1;
-                        trueVolumeLev = volumeLev.toPrecision(1);
-
-                        this.volumebt.setText('Volume: ' + trueVolumeLev);
-                        if (tutorialmusicIsPlaying) {
-                            tutorialmusic.setVolume(volumeLev);
-                        }
-
-                        if (music1IsPlaying) {
-                            music1.setVolume(volumeLev);
-                        }
-
-                        if (bgmusicIsPlaying) {
-                            bgmusic.setVolume(volumeLev);
-                        }
-                    }
-
-                }, this);
             }
 
         });
@@ -2029,7 +2032,7 @@
 
                 this.load.on('progress', function(value) {
                     progressbar.clear();
-                    percent.setText(value * 100 + '%');
+                    percent.setText(value.toFixed(0) * 100 + '%');
                     progressbar.fillStyle(0x355f76, 1);
                     progressbar.fillRect(100, 360, 1080 * value, 60);
 
@@ -2211,7 +2214,7 @@
 
                 this.load.on('progress', function(value) {
                     progressbar.clear();
-                    percent.setText(value * 100 + '%');
+                    percent.setText(value.toFixed(0) * 100 + '%');
                     progressbar.fillStyle(0x355f76, 1);
                     progressbar.fillRect(100, 360, 1080 * value, 60);
 
@@ -2303,6 +2306,47 @@
                     this.menubt.setScale(1);
                 }, this);
 
+                this.volumePlus.on('pointerdown', function() {
+                    if (volumeLev < 1) {
+                        volumeLev += 0.1;
+                        trueVolumeLev = volumeLev.toFixed(1);
+                        console.log(volumeLev)
+                        console.log(trueVolumeLev)
+                        this.volumebt.setText('Volume: ' + trueVolumeLev);
+                        if (tutorialmusicIsPlaying) {
+                            tutorialmusic.setVolume(volumeLev);
+                        }
+
+                        if (music1IsPlaying) {
+                            music1.setVolume(volumeLev);
+                        }
+
+                        if (bgmusicIsPlaying) {
+                            bgmusic.setVolume(volumeLev);
+                        }
+                    }
+                }, this);
+
+                this.volumeMinus.on('pointerdown', function() {
+                    if (volumeLev > 0.1) {
+                        volumeLev -= 0.1;
+                        trueVolumeLev = volumeLev.toFixed(1);
+
+                        this.volumebt.setText('Volume: ' + trueVolumeLev);
+                        if (tutorialmusicIsPlaying) {
+                            tutorialmusic.setVolume(volumeLev);
+                        }
+
+                        if (music1IsPlaying) {
+                            music1.setVolume(volumeLev);
+                        }
+
+                        if (bgmusicIsPlaying) {
+                            bgmusic.setVolume(volumeLev);
+                        }
+                    }
+
+                }, this);
             },
 
             update: function() {
@@ -2321,7 +2365,7 @@
                 }
 
                 if (!this.muted) {
-                    trueVolumeLev = volumeLev.toPrecision(1);
+                    trueVolumeLev = volumeLev.toFixed(1);
                     this.mutebt.setText('Mute');
                     this.volumebt.setText('Volume: ' + trueVolumeLev);
                     this.mutebt.on('pointerdown', function() {
@@ -2343,7 +2387,7 @@
                         }
                     }, this);
                 } else if (this.muted) {
-                    trueVolumeLev = volumeLev.toPrecision(1);
+                    trueVolumeLev = volumeLev.toFixed(1);
                     this.mutebt.setText('Unmute')
                     this.volumebt.setText('Volume: ' + trueVolumeLev);
                     this.mutebt.on('pointerdown', function() {
@@ -2365,47 +2409,6 @@
                         }
                     }, this);
                 }
-
-                this.volumePlus.on('pointerdown', function() {
-                    if (volumeLev < 1) {
-                        volumeLev += 0.1;
-                        trueVolumeLev = volumeLev.toPrecision(1);
-                        this.volumebt.setText('Volume: ' + trueVolumeLev);
-                        if (tutorialmusicIsPlaying) {
-                            tutorialmusic.setVolume(volumeLev);
-                        }
-
-                        if (music1IsPlaying) {
-                            music1.setVolume(volumeLev);
-                        }
-
-                        if (bgmusicIsPlaying) {
-                            bgmusic.setVolume(volumeLev);
-                        }
-                    }
-                }, this);
-
-                this.volumeMinus.on('pointerdown', function() {
-                    if (volumeLev > 0.1) {
-                        volumeLev -= 0.1;
-                        trueVolumeLev = volumeLev.toPrecision(1);
-
-                        this.volumebt.setText('Volume: ' + trueVolumeLev);
-                        if (tutorialmusicIsPlaying) {
-                            tutorialmusic.setVolume(volumeLev);
-                        }
-
-                        if (music1IsPlaying) {
-                            music1.setVolume(volumeLev);
-                        }
-
-                        if (bgmusicIsPlaying) {
-                            bgmusic.setVolume(volumeLev);
-                        }
-                    }
-
-                }, this);
-
             }
 
         });
