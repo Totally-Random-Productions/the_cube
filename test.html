@@ -92,8 +92,9 @@
         var tutorialmusicIsPlaying = false;
         var music1IsPlaying = false;
         var volumeLev = 1;
-        var trueVolumeLev = volumeLev.toPrecision(1);
+        var trueVolumeLev = volumeLev.toFixed(1);
         var autoRestart = false;
+        var touchInput = false;
 
         /*creates a new scene while extending the Phaser Scene Class 
                                                                                                                                                                                                                                                                                                                                                                         so that the default functions remain the same*/
@@ -126,7 +127,7 @@
 
                 this.load.on('progress', function(value) {
                     progressbar.clear();
-                    percent.setText(value * 100 + '%');
+                    percent.setText(value.toFixed(0) * 100 + '%');
                     progressbar.fillStyle(0x355f76, 1);
                     progressbar.fillRect(100, 360, 1080 * value, 60);
 
@@ -159,6 +160,9 @@
                 }
 
                 this.add.image(0, 0, 'menuback').setOrigin(0);
+                window.addEventListener('touchstart', function() {
+                    touchInput = true;
+                })
                 this.startbutton = this.add.image(1280 / 2, 720 - 610, 'startbt').setInteractive({
                     cursor: 'pointer'
                 });
@@ -275,9 +279,11 @@
                 this.turretText;
                 this.WjumpText;
                 this.trophyText;
+                this.pauseText;
                 this.change;
                 this.allowedToChange = true;
                 this.esc;
+                this.altControls;
                 level = 'tutorial';
             },
 
@@ -290,7 +296,7 @@
 
                 this.load.on('progress', function(value) {
                     progressbar.clear();
-                    percent.setText(value * 100 + '%');
+                    percent.setText(value.toFixed(0) * 100 + '%');
                     progressbar.fillStyle(0x355f76, 1);
                     progressbar.fillRect(100, 360, 1080 * value, 60);
 
@@ -440,19 +446,19 @@
                 });
                 this.timer.scrollFactorX = 0;
 
-                this.moveText = this.add.text(100, 630, 'Use ⇦ and ⇨ to move', {
+                this.moveText = this.add.text(100, 630, 'Use ⇦ or A and ⇨ or D to move', {
                     fontSize: '24px',
                     fill: '#fff'
                 });
-                this.crouchText = this.add.text(350, 430, 'Use ⇩ in open space to crouch', {
+                this.crouchText = this.add.text(310, 430, 'Use ⇩ or S in open space to crouch', {
                     fontSize: '24px',
                     fill: '#fff'
                 });
-                this.jumpText = this.add.text(50, 430, 'Press ⇧ to jump', {
+                this.jumpText = this.add.text(0, 430, 'Press ⇧ or W to jump,', {
                     fontSize: '24px',
                     fill: '#fff'
                 });
-                this.DjumpText = this.add.text(100, 190, 'Press ⇧ again to double jump', {
+                this.DjumpText = this.add.text(100, 190, 'Press ⇧ or W again to double jump', {
                     fontSize: '24px',
                     fill: '#fff'
                 });
@@ -460,7 +466,7 @@
                     fontSize: '24px',
                     fill: '#fff'
                 });
-                this.killText = this.add.text(800, 430, 'Scythes will kill you', {
+                this.killText = this.add.text(850, 430, 'Scythes will kill you', {
                     fontSize: '24px',
                     fill: '#fff'
                 });
@@ -476,7 +482,7 @@
                     fontSize: '24px',
                     fill: '#fff'
                 });
-                this.WjumpText = this.add.text(1540, 190, 'Press ⇧ against a wall to wall jump', {
+                this.WjumpText = this.add.text(1540, 190, 'Press ⇧ or W against a wall to wall jump', {
                     fontSize: '24px',
                     fill: '#fff'
                 });
@@ -484,8 +490,13 @@
                     fontSize: '24px',
                     fill: '#fff'
                 });
+                this.pauseText = this.add.text(10, 50, 'Press ESC to pause', {
+                    fontSize: '24px',
+                    fill: '#fff'
+                });
 
                 this.cursors = this.input.keyboard.createCursorKeys(); //creates inputs using the arrow keys
+                this.altControls = this.input.keyboard.addKeys({ 'up': Phaser.Input.Keyboard.KeyCodes.W, 'down': Phaser.Input.Keyboard.KeyCodes.S, 'left': Phaser.Input.Keyboard.KeyCodes.A, 'right': Phaser.Input.Keyboard.KeyCodes.D});
                 this.esc = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC); //sets up the escape button for input
                 this.cameras.main.startFollow(this.player, true, 0.05, 0.05); //makes the camera track the player. increasing the numbers makes the camera track faster
             },
@@ -496,7 +507,6 @@
                 this.groundCheck();
 
                 this.controls();
-
                 this.aggrox = Phaser.Math.Difference(this.turret.x, this.player.x); //finds the positive x distance between the player and turret
                 this.aggroy = Phaser.Math.Difference(this.turret.y, this.player.y); //finds the positive y distance between the player and turret
 
@@ -592,25 +602,24 @@
                         this.scene.launch('pause')
                     }
 
-                    if (!this.cursors.up.isDown && this.isOnGround) {
+                    if ((!this.cursors.up.isDown || !this.altControls.up.isDown) && this.isOnGround) {
                         this.jumps = 2;
                     }
 
-                    if (this.cursors.left.isDown && !this.cursors.right.isDown) {
+                    if ((this.cursors.left.isDown && !this.cursors.right.isDown) || (this.altControls.left.isDown && !this.altControls.right.isDown)) {
                         this.player.setVelocityX(-350);
-                    } else if (this.cursors.right.isDown && !this.cursors.left.isDown) {
+                    } else if ((!this.cursors.left.isDown && this.cursors.right.isDown) || (!this.altControls.left.isDown && this.altControls.right.isDown)) {
                         this.player.setVelocityX(350);
                     } else {
                         this.player.setVelocityX(0);
                     }
 
-                    if (this.cursors.down.isDown && this.allowedToChange) //flattens player if down arrow is pressed
+                    if ((this.cursors.down.isDown || this.altControls.down.isDown) && this.allowedToChange) //flattens player if down arrow is pressed
                     {
                         this.player.setDisplaySize(100, 25);
                     }
 
-
-                    if (Phaser.Input.Keyboard.JustDown(this.cursors.up) && this.jumps > 0) {
+                    if ((Phaser.Input.Keyboard.JustDown(this.cursors.up) || Phaser.Input.Keyboard.JustDown(this.altControls.up)) && this.jumps > 0) {
                         if (!this.isOnGround) {
                             this.jumps = 1;
                         }
@@ -795,6 +804,7 @@
                 this.change;
                 this.allowedToChange = true;
                 this.esc;
+                this.altControls;
                 level = 'level1';
             },
 
@@ -807,7 +817,7 @@
 
                 this.load.on('progress', function(value) {
                     progressbar.clear();
-                    percent.setText(value * 100 + '%');
+                    percent.setText(value.toFixed(0) * 100 + '%');
                     progressbar.fillStyle(0x355f76, 1);
                     progressbar.fillRect(100, 360, 1080 * value, 60);
 
@@ -1001,6 +1011,7 @@
                 this.timer.scrollFactorX = 0;
 
                 this.cursors = this.input.keyboard.createCursorKeys(); //creates inputs using the arrow keys
+                this.altControls = this.input.keyboard.addKeys({ 'up': Phaser.Input.Keyboard.KeyCodes.W, 'down': Phaser.Input.Keyboard.KeyCodes.S, 'left': Phaser.Input.Keyboard.KeyCodes.A, 'right': Phaser.Input.Keyboard.KeyCodes.D});
                 this.esc = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC); //sets up the escape button for input
                 this.cameras.main.startFollow(this.player, true, 0.05, 0.05); //makes the camera track the player. increasing the numbers makes the camera track faster
             },
@@ -1119,25 +1130,24 @@
                         this.scene.launch('pause')
                     }
 
-                    if (!this.cursors.up.isDown && this.isOnGround) {
+                    if ((!this.cursors.up.isDown || !this.altControls.up.isDown) && this.isOnGround) {
                         this.jumps = 2;
                     }
 
-                    if (this.cursors.left.isDown && !this.cursors.right.isDown) {
+                    if ((this.cursors.left.isDown && !this.cursors.right.isDown) || (this.altControls.left.isDown && !this.altControls.right.isDown)) {
                         this.player.setVelocityX(-350);
-                    } else if (this.cursors.right.isDown && !this.cursors.left.isDown) {
+                    } else if ((!this.cursors.left.isDown && this.cursors.right.isDown) || (!this.altControls.left.isDown && this.altControls.right.isDown)) {
                         this.player.setVelocityX(350);
                     } else {
                         this.player.setVelocityX(0);
                     }
 
-                    if (this.cursors.down.isDown && this.allowedToChange) //flattens player if down arrow is pressed
+                    if ((this.cursors.down.isDown || this.altControls.down.isDown) && this.allowedToChange) //flattens player if down arrow is pressed
                     {
                         this.player.setDisplaySize(100, 25);
                     }
 
-
-                    if (Phaser.Input.Keyboard.JustDown(this.cursors.up) && this.jumps > 0) {
+                    if ((Phaser.Input.Keyboard.JustDown(this.cursors.up) || Phaser.Input.Keyboard.JustDown(this.altControls.up)) && this.jumps > 0) {
                         if (!this.isOnGround) {
                             this.jumps = 1;
                         }
@@ -1209,6 +1219,7 @@
             },
 
             turretDestroy: function(axe, obst) {
+                this.bullet.destroy();
                 axe.destroy();
                 obst.destroy();
                 this.aimer.destroy();
@@ -1571,7 +1582,7 @@
 
                 this.load.on('progress', function(value) {
                     progressbar.clear();
-                    percent.setText(value * 100 + '%');
+                    percent.setText(value.toFixed(0) * 100 + '%');
                     progressbar.fillStyle(0x355f76, 1);
                     progressbar.fillRect(100, 360, 1080 * value, 60);
 
@@ -1882,6 +1893,46 @@
                 this.menubt.on('pointerout', function(event) {
                     this.menubt.setScale(1);
                 }, this);
+
+                this.volumePlus.on('pointerdown', function() {
+                    if (volumeLev < 1) {
+                        volumeLev += 0.1;
+                        trueVolumeLev = volumeLev.toFixed(1);
+                        this.volumebt.setText('Volume: ' + trueVolumeLev*10);
+                        if (tutorialmusicIsPlaying) {
+                            tutorialmusic.setVolume(volumeLev);
+                        }
+
+                        if (music1IsPlaying) {
+                            music1.setVolume(volumeLev);
+                        }
+
+                        if (bgmusicIsPlaying) {
+                            bgmusic.setVolume(volumeLev);
+                        }
+                    }
+                }, this);
+
+                this.volumeMinus.on('pointerdown', function() {
+                    if (volumeLev > 0.1) {
+                        volumeLev -= 0.1;
+                        trueVolumeLev = volumeLev.toFixed(1);
+
+                        this.volumebt.setText('Volume: ' + trueVolumeLev*10);
+                        if (tutorialmusicIsPlaying) {
+                            tutorialmusic.setVolume(volumeLev);
+                        }
+
+                        if (music1IsPlaying) {
+                            music1.setVolume(volumeLev);
+                        }
+
+                        if (bgmusicIsPlaying) {
+                            bgmusic.setVolume(volumeLev);
+                        }
+                    }
+
+                }, this);
             },
 
             update: function() {
@@ -1900,9 +1951,9 @@
                 }
 
                 if (!this.muted) {
-                    trueVolumeLev = volumeLev.toPrecision(1);
+                    trueVolumeLev = volumeLev.toFixed(1);
                     this.mutebt.setText('Mute');
-                    this.volumebt.setText('Volume: ' + trueVolumeLev);
+                    this.volumebt.setText('Volume: ' + trueVolumeLev*10);
                     this.mutebt.on('pointerdown', function() {
                         volumeLev = 0;
                         this.muted = true;
@@ -1922,9 +1973,9 @@
                         }
                     }, this);
                 } else if (this.muted) {
-                    trueVolumeLev = volumeLev.toPrecision(1);
+                    trueVolumeLev = volumeLev.toFixed(1);
                     this.mutebt.setText('Unmute')
-                    this.volumebt.setText('Volume: ' + trueVolumeLev);
+                    this.volumebt.setText('Volume: ' + trueVolumeLev*10);
                     this.mutebt.on('pointerdown', function() {
                         volumeLev = 1;
                         this.muted = false;
@@ -1944,46 +1995,6 @@
                         }
                     }, this);
                 }
-
-                this.volumePlus.on('pointerdown', function() {
-                    if (volumeLev < 1) {
-                        volumeLev += 0.1;
-                        trueVolumeLev = volumeLev.toPrecision(1);
-                        this.volumebt.setText('Volume: ' + trueVolumeLev);
-                        if (tutorialmusicIsPlaying) {
-                            tutorialmusic.setVolume(volumeLev);
-                        }
-
-                        if (music1IsPlaying) {
-                            music1.setVolume(volumeLev);
-                        }
-
-                        if (bgmusicIsPlaying) {
-                            bgmusic.setVolume(volumeLev);
-                        }
-                    }
-                }, this);
-
-                this.volumeMinus.on('pointerdown', function() {
-                    if (volumeLev > 0.1) {
-                        volumeLev -= 0.1;
-                        trueVolumeLev = volumeLev.toPrecision(1);
-
-                        this.volumebt.setText('Volume: ' + trueVolumeLev);
-                        if (tutorialmusicIsPlaying) {
-                            tutorialmusic.setVolume(volumeLev);
-                        }
-
-                        if (music1IsPlaying) {
-                            music1.setVolume(volumeLev);
-                        }
-
-                        if (bgmusicIsPlaying) {
-                            bgmusic.setVolume(volumeLev);
-                        }
-                    }
-
-                }, this);
             }
 
         });
@@ -2021,7 +2032,7 @@
 
                 this.load.on('progress', function(value) {
                     progressbar.clear();
-                    percent.setText(value * 100 + '%');
+                    percent.setText(value.toFixed(0) * 100 + '%');
                     progressbar.fillStyle(0x355f76, 1);
                     progressbar.fillRect(100, 360, 1080 * value, 60);
 
@@ -2203,7 +2214,7 @@
 
                 this.load.on('progress', function(value) {
                     progressbar.clear();
-                    percent.setText(value * 100 + '%');
+                    percent.setText(value.toFixed(0) * 100 + '%');
                     progressbar.fillStyle(0x355f76, 1);
                     progressbar.fillRect(100, 360, 1080 * value, 60);
 
@@ -2295,6 +2306,47 @@
                     this.menubt.setScale(1);
                 }, this);
 
+                this.volumePlus.on('pointerdown', function() {
+                    if (volumeLev < 1) {
+                        volumeLev += 0.1;
+                        trueVolumeLev = volumeLev.toFixed(1);
+                        console.log(volumeLev)
+                        console.log(trueVolumeLev)
+                        this.volumebt.setText('Volume: ' + trueVolumeLev*10);
+                        if (tutorialmusicIsPlaying) {
+                            tutorialmusic.setVolume(volumeLev);
+                        }
+
+                        if (music1IsPlaying) {
+                            music1.setVolume(volumeLev);
+                        }
+
+                        if (bgmusicIsPlaying) {
+                            bgmusic.setVolume(volumeLev);
+                        }
+                    }
+                }, this);
+
+                this.volumeMinus.on('pointerdown', function() {
+                    if (volumeLev > 0.1) {
+                        volumeLev -= 0.1;
+                        trueVolumeLev = volumeLev.toFixed(1);
+
+                        this.volumebt.setText('Volume: ' + trueVolumeLev*10);
+                        if (tutorialmusicIsPlaying) {
+                            tutorialmusic.setVolume(volumeLev);
+                        }
+
+                        if (music1IsPlaying) {
+                            music1.setVolume(volumeLev);
+                        }
+
+                        if (bgmusicIsPlaying) {
+                            bgmusic.setVolume(volumeLev);
+                        }
+                    }
+
+                }, this);
             },
 
             update: function() {
@@ -2313,9 +2365,9 @@
                 }
 
                 if (!this.muted) {
-                    trueVolumeLev = volumeLev.toPrecision(1);
+                    trueVolumeLev = volumeLev.toFixed(1);
                     this.mutebt.setText('Mute');
-                    this.volumebt.setText('Volume: ' + trueVolumeLev);
+                    this.volumebt.setText('Volume: ' + trueVolumeLev*10);
                     this.mutebt.on('pointerdown', function() {
                         volumeLev = 0;
                         this.muted = true;
@@ -2335,9 +2387,9 @@
                         }
                     }, this);
                 } else if (this.muted) {
-                    trueVolumeLev = volumeLev.toPrecision(1);
+                    trueVolumeLev = volumeLev.toFixed(1);
                     this.mutebt.setText('Unmute')
-                    this.volumebt.setText('Volume: ' + trueVolumeLev);
+                    this.volumebt.setText('Volume: ' + trueVolumeLev*10);
                     this.mutebt.on('pointerdown', function() {
                         volumeLev = 1;
                         this.muted = false;
@@ -2357,47 +2409,6 @@
                         }
                     }, this);
                 }
-
-                this.volumePlus.on('pointerdown', function() {
-                    if (volumeLev < 1) {
-                        volumeLev += 0.1;
-                        trueVolumeLev = volumeLev.toPrecision(1);
-                        this.volumebt.setText('Volume: ' + trueVolumeLev);
-                        if (tutorialmusicIsPlaying) {
-                            tutorialmusic.setVolume(volumeLev);
-                        }
-
-                        if (music1IsPlaying) {
-                            music1.setVolume(volumeLev);
-                        }
-
-                        if (bgmusicIsPlaying) {
-                            bgmusic.setVolume(volumeLev);
-                        }
-                    }
-                }, this);
-
-                this.volumeMinus.on('pointerdown', function() {
-                    if (volumeLev > 0.1) {
-                        volumeLev -= 0.1;
-                        trueVolumeLev = volumeLev.toPrecision(1);
-
-                        this.volumebt.setText('Volume: ' + trueVolumeLev);
-                        if (tutorialmusicIsPlaying) {
-                            tutorialmusic.setVolume(volumeLev);
-                        }
-
-                        if (music1IsPlaying) {
-                            music1.setVolume(volumeLev);
-                        }
-
-                        if (bgmusicIsPlaying) {
-                            bgmusic.setVolume(volumeLev);
-                        }
-                    }
-
-                }, this);
-
             }
 
         });
