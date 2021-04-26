@@ -695,7 +695,7 @@
             hit: function(player, obst) {
                 this.physics.pause();
                 player.setDisplaySize(50, 50);
-                player.setTexture('death');
+                player.setTexture('death').setScale(0.5);
                 this.gameOver = true;
             },
 
