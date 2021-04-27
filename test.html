@@ -38,6 +38,11 @@
             border-style: solid;
             border-width: 5px;
         }
+        @font-face {
+			font-family: "Minecraft";
+			src: url('assets/fonts/Minecraft.ttf');
+		}
+
     </style>
 
 </head>
@@ -94,7 +99,7 @@
         var volumeLev = 1;
         var trueVolumeLev = volumeLev.toFixed(1);
         var autoRestart = false;
-        var touchInput = false;
+        var showControls = true;
 
         /*creates a new scene while extending the Phaser Scene Class 
                                                                                                                                                                                                                                                                                                                                                                         so that the default functions remain the same*/
@@ -121,13 +126,14 @@
             preload: function() {
                 var progressbar = this.add.graphics();
                 var percent = this.add.text(100, 430, '%', {
+                    fontFamily: 'Minecraft',
                     fontSize: '32px',
                     fill: '#fff'
                 });
 
                 this.load.on('progress', function(value) {
                     progressbar.clear();
-                    percent.setText(value.toFixed(0) * 100 + '%');
+                    percent.setText(value.toFixed(2) * 100 + '%');
                     progressbar.fillStyle(0x355f76, 1);
                     progressbar.fillRect(100, 360, 1080 * value, 60);
 
@@ -163,6 +169,7 @@
                 }
 
                 this.add.image(0, 0, 'menuback').setOrigin(0);
+<<<<<<< Updated upstream
                 this.add.sprite()
                 this.player = this.physics.add.sprite(650, 470, 'cube');
                
@@ -176,6 +183,9 @@
                 window.addEventListener('touchstart', function() {
                     touchInput = true;
                 })
+=======
+
+>>>>>>> Stashed changes
                 this.startbutton = this.add.image(200, 72 , 'startbt').setInteractive({
                     cursor: 'pointer'
                 });
@@ -204,7 +214,7 @@
 
                 this.leaderbutton.on('pointerdown', function() {
                     this.scene.stop('start');
-                    this.scene.start('leader');
+                    this.scene.start('soon');
                 }, this);
 
                 this.settingsbutton.on('pointerdown', function() {
@@ -281,9 +291,6 @@
                 this.bullet;
                 this.bulletTimer;
                 this.aiming;
-                this.moveText;
-                this.crouchText;
-                this.jumpText;
                 this.DjumpText;
                 this.breakText;
                 this.killText;
@@ -303,13 +310,14 @@
             preload: function() {
                 var progressbar = this.add.graphics();
                 var percent = this.add.text(100, 430, '%', {
+                    fontFamily: 'Minecraft',
                     fontSize: '32px',
                     fill: '#fff'
                 });
 
                 this.load.on('progress', function(value) {
                     progressbar.clear();
-                    percent.setText(value.toFixed(0) * 100 + '%');
+                    percent.setText(value.toFixed(2) * 100 + '%');
                     progressbar.fillStyle(0x355f76, 1);
                     progressbar.fillRect(100, 360, 1080 * value, 60);
 
@@ -418,7 +426,7 @@
                 }
                 this.floor.create(1965, 300, 'floor').setScale(0.5, 0.5).refreshBody();
 
-                this.player = this.physics.add.sprite(100, 470, 'cube').setScale(1.6);
+                this.player = this.physics.add.sprite(100, 470, 'cube').setDisplaySize(48, 48);
                 this.player.setBounce(0.1);
                 this.player.setCollideWorldBounds(true);
                 this.player.body.setGravityY(900);
@@ -454,57 +462,55 @@
                     loop: true
                 })
                 this.timer = this.add.text(16, 16, '0: 00', {
+                    fontFamily: 'Minecraft',
                     fontSize: '32px',
                     fill: '#fff'
                 });
                 this.timer.scrollFactorX = 0;
 
-                this.moveText = this.add.text(100, 630, 'Use ⇦ or A and ⇨ or D to move', {
-                    fontSize: '24px',
-                    fill: '#fff'
-                });
-                this.crouchText = this.add.text(310, 430, 'Use ⇩ or S in open space to crouch', {
-                    fontSize: '24px',
-                    fill: '#fff'
-                });
-                this.jumpText = this.add.text(0, 430, 'Press ⇧ or W to jump,', {
-                    fontSize: '24px',
-                    fill: '#fff'
-                });
                 this.DjumpText = this.add.text(100, 190, 'Press ⇧ or W again to double jump', {
                     fontSize: '24px',
+                    fontFamily: 'Minecraft',
                     fill: '#fff'
                 });
                 this.breakText = this.add.text(500, 150, 'Some platforms break', {
                     fontSize: '24px',
+                    fontFamily: 'Minecraft',
                     fill: '#fff'
                 });
                 this.killText = this.add.text(850, 430, 'Scythes will kill you', {
                     fontSize: '24px',
+                    fontFamily: 'Minecraft',
                     fill: '#fff'
                 });
                 this.spikeText = this.add.text(700, 595, 'Spikes will also kill you', {
                     fontSize: '24px',
+                    fontFamily: 'Minecraft',
                     fill: '#fff'
                 });
                 this.mPlatText = this.add.text(1300, 430, 'Some platforms move', {
                     fontSize: '24px',
+                    fontFamily: 'Minecraft',
                     fill: '#fff'
                 });
                 this.turretText = this.add.text(1700, 430, 'Turrets will shoot at you', {
                     fontSize: '24px',
+                    fontFamily: 'Minecraft',
                     fill: '#fff'
                 });
                 this.WjumpText = this.add.text(1540, 190, 'Press ⇧ or W against a wall to wall jump', {
                     fontSize: '24px',
+                    fontFamily: 'Minecraft',
                     fill: '#fff'
                 });
                 this.trophyText = this.add.text(2170, 190, 'Collect the trophy to win', {
                     fontSize: '24px',
+                    fontFamily: 'Minecraft',
                     fill: '#fff'
                 });
                 this.pauseText = this.add.text(10, 50, 'Press ESC to pause', {
                     fontSize: '24px',
+                    fontFamily: 'Minecraft',
                     fill: '#fff'
                 });
 
@@ -520,6 +526,7 @@
                 this.groundCheck();
 
                 this.controls();
+
                 this.aggrox = Phaser.Math.Difference(this.turret.x, this.player.x); //finds the positive x distance between the player and turret
                 this.aggroy = Phaser.Math.Difference(this.turret.y, this.player.y); //finds the positive y distance between the player and turret
 
@@ -651,7 +658,7 @@
                         // up arrow must be pressed each time the player wants to jump
 
                         if (this.allowedToChange) {
-                            this.player.setDisplaySize(30, 30).setScale(1.6);
+                            this.player.setDisplaySize(48, 48);
                         }
                     }
                 }
@@ -707,8 +714,7 @@
 
             hit: function(player, obst) {
                 this.physics.pause();
-                player.setDisplaySize(50, 50);
-                player.setTexture('death').setScale(0.5);
+                player.setTexture('death').setScale(0.4);
                 this.gameOver = true;
             },
 
@@ -824,13 +830,14 @@
             preload: function() {
                 var progressbar = this.add.graphics();
                 var percent = this.add.text(100, 430, '%', {
+                    fontFamily: 'Minecraft',
                     fontSize: '32px',
                     fill: '#fff'
                 });
 
                 this.load.on('progress', function(value) {
                     progressbar.clear();
-                    percent.setText(value.toFixed(0) * 100 + '%');
+                    percent.setText(value.toFixed(2) * 100 + '%');
                     progressbar.fillStyle(0x355f76, 1);
                     progressbar.fillRect(100, 360, 1080 * value, 60);
 
@@ -973,7 +980,7 @@
                 this.aimer = this.add.image(this.axe.x, this.axe.y, 'arrow').setOrigin(0, 0.5);
                 this.aimer.setVisible(false);
 
-                this.player = this.physics.add.sprite(100, 470, 'cube').setScale(1.6);
+                this.player = this.physics.add.sprite(100, 470, 'cube').setDisplaySize(48, 48);
                 this.player.setBounce(0.1);
                 this.player.setCollideWorldBounds(true);
                 this.player.body.setGravityY(900);
@@ -1018,6 +1025,7 @@
                     loop: true
                 })
                 this.timer = this.add.text(16, 16, '0: 00', {
+                    fontFamily: 'Minecraft',
                     fontSize: '32px',
                     fill: '#fff'
                 });
@@ -1179,7 +1187,7 @@
                         // up arrow must be pressed each time the player wants to jump
 
                         if (this.allowedToChange) {
-                            this.player.setDisplaySize(30, 30).setScale(1.6);
+                            this.player.setDisplaySize(48, 48);
                         }
                     }
                 }
@@ -1301,8 +1309,7 @@
 
             hit: function(player, obst) {
                 this.physics.pause();
-                player.setDisplaySize(50, 50);
-                player.setTexture('death');
+                player.setTexture('death').setScale(0.4);
                 this.gameOver = true;
             },
 
@@ -1589,13 +1596,14 @@
             preload: function() {
                 var progressbar = this.add.graphics();
                 var percent = this.add.text(100, 430, '%', {
+                    fontFamily: 'Minecraft',
                     fontSize: '32px',
                     fill: '#fff'
                 });
 
                 this.load.on('progress', function(value) {
                     progressbar.clear();
-                    percent.setText(value.toFixed(0) * 100 + '%');
+                    percent.setText(value.toFixed(2) * 100 + '%');
                     progressbar.fillStyle(0x355f76, 1);
                     progressbar.fillRect(100, 360, 1080 * value, 60);
 
@@ -1673,8 +1681,16 @@
                         bgmusicIsPlaying = false;
                     }
 
-                    this.scene.stop('levels');
-                    this.scene.start('tutorial');
+                    if(showControls) {
+                        this.scene.stop('levels');
+                        this.scene.start('controls');
+                    }
+
+                    else if(!showControls) {
+                        this.scene.stop('levels');
+                        this.scene.start('tutorial');
+                    }
+   
                 }, this);
 
                 this.tutorialbt.on('pointerover', function() {
@@ -1704,7 +1720,7 @@
 
                 this.level2bt.on('pointerdown', function() {
                     this.scene.stop('levels');
-                    this.scene.start('level2');
+                    this.scene.start('soon');
                 }, this);
 
                 this.level2bt.on('pointerover', function() {
@@ -1717,7 +1733,7 @@
 
                 this.level3bt.on('pointerdown', function() {
                     this.scene.stop('levels');
-                    this.scene.start('level3');
+                    this.scene.start('soon');
                 }, this);
 
                 this.level3bt.on('pointerover', function() {
@@ -1766,14 +1782,20 @@
                 this.load.image('gameRestart', 'testob/gamerestart.png');
                 this.load.image('menuReturn', 'testob/returnmenu.png');
                 this.load.image('levelSelect', 'testob/nextlevel.png');
-                this.load.image('menuback', 'testob/menuback.png');
+                this.load.image('menuback2', 'testob/menuback2.png');
             },
 
             create: function() {
+<<<<<<< Updated upstream
                 this.add.image(0, 0, 'menuback').setOrigin(0);
                 
                 
+=======
+                this.add.image(0, 0, 'menuback2').setOrigin(0);
+
+>>>>>>> Stashed changes
                 this.mutebt = this.add.text(16, 16, '', {
+                    fontFamily: 'Minecraft',
                     fontSize: '32px',
                     fill: '#fff'
                 }).setInteractive({
@@ -1782,6 +1804,7 @@
 
                 this.volumebt = this.add.text(16, 46, 'Volume: ' + trueVolumeLev, {
                     fontSize: '32px',
+                    fontFamily: 'Minecraft',
                     fill: '#fff'
                 }).setInteractive({
                     cursor: 'pointer'
@@ -1789,6 +1812,7 @@
 
                 this.volumePlus = this.add.text(16, 76, '+', {
                     fontSize: '32px',
+                    fontFamily: 'Minecraft',
                     fill: '#fff'
                 }).setInteractive({
                     cursor: 'pointer'
@@ -1796,6 +1820,7 @@
 
                 this.volumeMinus = this.add.text(36, 76, '-', {
                     fontSize: '32px',
+                    fontFamily: 'Minecraft',
                     fill: '#fff'
                 }).setInteractive({
                     cursor: 'pointer'
@@ -1803,6 +1828,7 @@
 
                 this.autoRestartbt = this.add.text(16, 136, '', {
                     fontSize: '32px',
+                    fontFamily: 'Minecraft',
                     fill: '#fff'
                 }).setInteractive({
                     cursor: 'pointer'
@@ -2040,13 +2066,14 @@
             preload: function() {
                 var progressbar = this.add.graphics();
                 var percent = this.add.text(100, 430, '%', {
+                    fontFamily: 'Minecraft',
                     fontSize: '32px',
                     fill: '#fff'
                 });
 
                 this.load.on('progress', function(value) {
                     progressbar.clear();
-                    percent.setText(value.toFixed(0) * 100 + '%');
+                    percent.setText(value.toFixed(2) * 100 + '%');
                     progressbar.fillStyle(0x355f76, 1);
                     progressbar.fillRect(100, 360, 1080 * value, 60);
 
@@ -2059,7 +2086,7 @@
 
                 });
 
-                this.load.image('menuback', 'testob/menuback.png');
+                this.load.image('menuback2', 'testob/menuback2.png');
                 this.load.image('menu', 'testob/returnmenu.png');
             },
 
@@ -2070,50 +2097,58 @@
                         loop: false
                     });
                 }
-                this.add.image(0, 0, 'menuback').setOrigin(0);
+                this.add.image(0, 0, 'menuback2').setOrigin(0);
                 this.menubt = this.add.image(1280 / 2, 600, 'menu').setInteractive({
                     cursor: 'pointer'
                 });
                 this.leaderText = this.add.text(16, 16, 'Team Leader: Aaron Hazzard', {
                     fontSize: '42px',
-                    fill: '#000'
+                    fontFamily: 'Minecraft',
+                    fill: '#fff'
                 });
                 this.gameDesignText = this.add.text(16, 76, 'Game Art Designer: Aaron Hazzard', {
                     fontSize: '42px',
-                    fill: '#000'
+                    fontFamily: 'Minecraft',
+                    fill: '#fff'
                 });
                 this.gameDevText = this.add.text(16, 136, 'Game Developer: Mallet Marie', {
                     fontSize: '42px',
-                    fill: '#000'
+                    fontFamily: 'Minecraft',
+                    fill: '#fff'
                 });
                 this.webDevText = this.add.text(16, 196, 'Web Developer: Romaine Carter', {
                     fontSize: '42px',
-                    fill: '#000'
+                    fontFamily: 'Minecraft',
+                    fill: '#fff'
                 });
                 this.musicText1 = this.add.text(16, 256, 'Music: https://loyaltyfreakmusic.com/music/', {
                     fontSize: '42px',
-                    fill: '#000',
+                    fontFamily: 'Minecraft',
+                    fill: '#fff',
                 }).setInteractive({
                     cursor: 'pointer'
                 });
 
                 this.musicText2 = this.add.text(16, 316, '       https://mrjoshuamclean.com', {
                     fontSize: '42px',
-                    fill: '#000',
+                    fontFamily: 'Minecraft',
+                    fill: '#fff',
                 }).setInteractive({
                     cursor: 'pointer'
                 });
 
                 this.musicText3 = this.add.text(16, 376, '       https://kubbimusic.com/', {
                     fontSize: '42px',
-                    fill: '#000',
+                    fontFamily: 'Minecraft',
+                    fill: '#fff',
                 }).setInteractive({
                     cursor: 'pointer'
                 });
 
                 this.fxText = this.add.text(16, 436, 'SFX: https://mixkit.co/free-sound-effects/', {
                     fontSize: '42px',
-                    fill: '#000',
+                    fontFamily: 'Minecraft',
+                    fill: '#fff',
                 }).setInteractive({
                     cursor: 'pointer'
                 });
@@ -2217,18 +2252,20 @@
                     this.volumebt;
                     this.muted;
                     this.autoRestartbt;
+                    this.showControlsbt
                 },
 
             preload: function() {
                 var progressbar = this.add.graphics();
                 var percent = this.add.text(100, 430, '%', {
                     fontSize: '32px',
+                    fontFamily: 'Minecraft',
                     fill: '#fff'
                 });
 
                 this.load.on('progress', function(value) {
                     progressbar.clear();
-                    percent.setText(value.toFixed(0) * 100 + '%');
+                    percent.setText(value.toFixed(2) * 100 + '%');
                     progressbar.fillStyle(0x355f76, 1);
                     progressbar.fillRect(100, 360, 1080 * value, 60);
 
@@ -2242,11 +2279,11 @@
                 });
 
                 this.load.image('menuReturn', 'testob/returnmenu.png');
-                this.load.image('menuback', 'testob/menuback.png');
+                this.load.image('menuback2', 'testob/menuback2.png');
             },
 
             create: function() {
-                this.add.image(0, 0, 'menuback').setOrigin(0);
+                this.add.image(0, 0, 'menuback2').setOrigin(0);
 
                 if (!bgmusicIsPlaying) {
                     bgmusicIsPlaying = true;
@@ -2257,6 +2294,15 @@
 
                 this.autoRestartbt = this.add.text(16, 136, '', {
                     fontSize: '32px',
+                    fontFamily: 'Minecraft',
+                    fill: '#fff'
+                }).setInteractive({
+                    cursor: 'pointer'
+                });
+
+                this.showControlsbt = this.add.text(16, 196, '', {
+                    fontSize: '32px',
+                    fontFamily: 'Minecraft',
                     fill: '#fff'
                 }).setInteractive({
                     cursor: 'pointer'
@@ -2264,6 +2310,7 @@
 
                 this.mutebt = this.add.text(16, 16, '', {
                     fontSize: '32px',
+                    fontFamily: 'Minecraft',
                     fill: '#fff'
                 }).setInteractive({
                     cursor: 'pointer'
@@ -2271,6 +2318,7 @@
 
                 this.volumebt = this.add.text(16, 46, 'Volume: ' + trueVolumeLev, {
                     fontSize: '32px',
+                    fontFamily: 'Minecraft',
                     fill: '#fff'
                 }).setInteractive({
                     cursor: 'pointer'
@@ -2278,6 +2326,7 @@
 
                 this.volumePlus = this.add.text(16, 76, '+', {
                     fontSize: '32px',
+                    fontFamily: 'Minecraft',
                     fill: '#fff'
                 }).setInteractive({
                     cursor: 'pointer'
@@ -2285,6 +2334,7 @@
 
                 this.volumeMinus = this.add.text(36, 76, '-', {
                     fontSize: '32px',
+                    fontFamily: 'Minecraft',
                     fill: '#fff'
                 }).setInteractive({
                     cursor: 'pointer'
@@ -2378,6 +2428,20 @@
                     }, this);
                 }
 
+                if (!showControls) {
+                    this.showControlsbt.setText('Enable Controls Screen');
+                    this.showControlsbt.on('pointerdown', function() {
+                        showControls = true;
+                        this.showControlsbt.setText('Disable Controls Screen');
+                    }, this);
+                } else if (showControls) {
+                    this.showControlsbt.setText('Disable Controls Screen');
+                    this.showControlsbt.on('pointerdown', function() {
+                        showControls = false;
+                        this.showControlsbt.setText('Enable Controls Screen');
+                    }, this);
+                }
+
                 if (!this.muted) {
                     trueVolumeLev = volumeLev.toFixed(1);
                     this.mutebt.setText('Mute');
@@ -2427,6 +2491,288 @@
 
         });
 
+        var SoonScene = new Phaser.Class({
+
+            Extends: Phaser.Scene,
+
+            initialize:
+
+                function SettingsScene() {
+                Phaser.Scene.call(this, {
+                    key: 'soon'
+                });
+            },
+
+            init: function() //called everytime the scene restarts. I use it to declare variables, 'this' is used so that the scope of the variables is only within this scene.
+                {
+                    this.menubt;
+                },
+
+            preload: function() {
+                var progressbar = this.add.graphics();
+                var percent = this.add.text(100, 430, '%', {
+                    fontSize: '32px',
+                    fontFamily: 'Minecraft',
+                    fill: '#fff'
+                });
+
+                this.load.on('progress', function(value) {
+                    progressbar.clear();
+                    percent.setText(value.toFixed(2) * 100 + '%');
+                    progressbar.fillStyle(0x355f76, 1);
+                    progressbar.fillRect(100, 360, 1080 * value, 60);
+
+                });
+
+                this.load.on('complete', function() {
+
+                    progressbar.destroy();
+                    percent.destroy();
+
+                });
+
+                this.load.image('menuReturn', 'testob/returnmenu.png');
+                this.load.image('menuback2', 'testob/menuback2.png');
+            },
+
+            create: function() {
+                this.add.image(0, 0, 'menuback2').setOrigin(0);
+
+                if (!bgmusicIsPlaying) {
+                    bgmusicIsPlaying = true;
+                    bgmusic.play({
+                        loop: false
+                    });
+                }
+
+                this.add.text(1280 / 4, 720 - 420, 'Coming Soon', {
+                    fontSize: '108px',
+                    fontFamily: 'Minecraft',
+                    fill: '#fff'
+                });
+
+                this.menubt = this.add.image(1280 / 2, 720 - 145, 'menuReturn').setInteractive({
+                    cursor: 'pointer'
+                });
+
+                this.menubt.on('pointerdown', function() {
+                    if (tutorialmusicIsPlaying) {
+                        tutorialmusicIsPlaying = false;
+                        tutorialmusic.stop();
+                    }
+
+                    if (music1IsPlaying) {
+                        music1IsPlaying = false;
+                        music1.stop();
+                    }
+                    if (bgmusicIsPlaying) {
+                        bgmusic.stop();
+                        bgmusicIsPlaying = false;
+                    }
+                    this.scene.stop('soon');
+                    this.scene.start('start');
+                }, this);
+
+                this.menubt.on('pointerover', function() {
+                    this.menubt.setScale(1.2);
+                }, this);
+
+                this.menubt.on('pointerout', function(event) {
+                    this.menubt.setScale(1);
+                }, this);
+            },
+            });
+
+            var ControlScene = new Phaser.Class({
+
+                Extends: Phaser.Scene,
+
+                initialize:
+
+                    function SettingsScene() {
+                    Phaser.Scene.call(this, {
+                        key: 'controls'
+                    });
+                },
+
+                init: function() //called everytime the scene restarts. I use it to declare variables, 'this' is used so that the scope of the variables is only within this scene.
+                    {
+                        this.menubt;
+                        this.continuebt;
+                    },
+
+                preload: function() {
+                    var progressbar = this.add.graphics();
+                    var percent = this.add.text(100, 430, '%', {
+                        fontSize: '32px',
+                        fontFamily: 'Minecraft',
+                        fill: '#fff'
+                    });
+
+                    this.load.on('progress', function(value) {
+                        progressbar.clear();
+                        percent.setText(value.toFixed(2) * 100 + '%');
+                        progressbar.fillStyle(0x355f76, 1);
+                        progressbar.fillRect(100, 360, 1080 * value, 60);
+
+                    });
+
+                    this.load.on('complete', function() {
+
+                        progressbar.destroy();
+                        percent.destroy();
+
+                    });
+
+                    this.load.image('menuReturn', 'testob/returnmenu.png');
+                    this.load.image('menuback2', 'testob/menuback2.png');
+                    this.load.image('continue', 'testob/continue.png');
+                    this.load.image('up', 'testob/Arrow_Up_Key_Light.png');
+                    this.load.image('down', 'testob/Arrow_Down_Key_Light.png');
+                    this.load.image('left', 'testob/Arrow_Left_Key_Light.png');
+                    this.load.image('right', 'testob/Arrow_Right_Key_Light.png');
+                    this.load.image('w', 'testob/W_Key_Light.png');
+                    this.load.image('a', 'testob/A_Key_Light.png');
+                    this.load.image('s', 'testob/S_Key_Light.png');
+                    this.load.image('d', 'testob/D_Key_Light.png');
+                    this.load.image('mouse', 'testob/Mouse_Left_Key_Light.png');
+                },
+
+                create: function() {
+                    this.add.image(0, 0, 'menuback2').setOrigin(0);
+
+                    if (!bgmusicIsPlaying) {
+                        bgmusicIsPlaying = true;
+                        bgmusic.play({
+                            loop: false
+                        });
+                    }
+
+                    this.menubt = this.add.image(1280 / 2, 720 - 145, 'menuReturn').setInteractive({
+                        cursor: 'pointer'
+                    });
+
+                    this.continuebt = this.add.image(1280 / 2, 720 - 300, 'continue').setInteractive({
+                        cursor: 'pointer'
+                    });
+
+                    this.add.image(250, 150, 'up');
+                    this.add.image(250, 220, 'down');
+                    this.add.image(180, 220, 'left');
+                    this.add.image(320, 220, 'right');
+
+                    this.add.image(1030, 150, 'w');
+                    this.add.image(1030, 220, 's');
+                    this.add.image(960, 220, 'a');
+                    this.add.image(1100, 220, 'd');
+
+                    this.add.image(640, 220, 'mouse');
+
+                    this.add.text(50, 250, 'Move left', {
+                        fontSize: '24px',
+                        fontFamily: 'Minecraft',
+                        fill: '#fff'
+                    });
+                    this.add.text(350, 250, 'Move right', {
+                        fontSize: '24px',
+                        fontFamily: 'Minecraft',
+                        fill: '#fff'
+                    });
+                    this.add.text(210, 260, 'Crouch', {
+                        fontSize: '24px',
+                        fontFamily: 'Minecraft',
+                        fill: '#fff'
+                    });
+                    this.add.text(220, 80, 'Jump', {
+                        fontSize: '24px',
+                        fontFamily: 'Minecraft',
+                        fill: '#fff'
+                    });
+                    this.add.text(535, 150, 'Click to shoot axe', {
+                        fontSize: '24px',
+                        fontFamily: 'Minecraft',
+                        fill: '#fff'
+                    });
+                    this.add.text(570, 270, 'Move to aim', {
+                        fontSize: '24px',
+                        fontFamily: 'Minecraft',
+                        fill: '#fff'
+                    });
+                    this.add.text(830, 250, 'Move left', {
+                        fontSize: '24px',
+                        fontFamily: 'Minecraft',
+                        fill: '#fff'
+                    });
+                    this.add.text(1130, 250, 'Move right', {
+                        fontSize: '24px',
+                        fontFamily: 'Minecraft',
+                        fill: '#fff'
+                    });
+                    this.add.text(990, 260, 'Crouch', {
+                        fontSize: '24px',
+                        fontFamily: 'Minecraft',
+                        fill: '#fff'
+                    });
+                    this.add.text(1000, 80, 'Jump', {
+                        fontSize: '24px',
+                        fontFamily: 'Minecraft',
+                        fill: '#fff'
+                    });
+
+                    this.menubt.on('pointerdown', function() {
+                        if (tutorialmusicIsPlaying) {
+                            tutorialmusicIsPlaying = false;
+                            tutorialmusic.stop();
+                        }
+
+                        if (music1IsPlaying) {
+                            music1IsPlaying = false;
+                            music1.stop();
+                        }
+                        if (bgmusicIsPlaying) {
+                            bgmusic.stop();
+                            bgmusicIsPlaying = false;
+                        }
+                        this.scene.stop('controls');
+                        this.scene.start('start');
+                    }, this);
+
+                    this.menubt.on('pointerover', function() {
+                        this.menubt.setScale(1.2);
+                    }, this);
+
+                    this.menubt.on('pointerout', function(event) {
+                        this.menubt.setScale(1);
+                    }, this);
+
+                    this.continuebt.on('pointerdown', function() {
+                        if (tutorialmusicIsPlaying) {
+                            tutorialmusicIsPlaying = false;
+                            tutorialmusic.stop();
+                        }
+
+                        if (music1IsPlaying) {
+                            music1IsPlaying = false;
+                            music1.stop();
+                        }
+                        if (bgmusicIsPlaying) {
+                            bgmusic.stop();
+                            bgmusicIsPlaying = false;
+                        }
+                        this.scene.stop('controls');
+                        this.scene.start('tutorial');
+                    }, this);
+
+                    this.continuebt.on('pointerover', function() {
+                        this.continuebt.setScale(1.2);
+                    }, this);
+
+                    this.continuebt.on('pointerout', function(event) {
+                        this.continuebt.setScale(1);
+                    }, this);
+                },
+                });
+
         var config = {
             type: Phaser.CANVAS,
             width: 1280,
@@ -2440,7 +2786,7 @@
                     debug: false //disables visible object outlines and paths
                 }
             },
-            scene: [StartScene, Level1Scene, TutorialScene, GameOverScene, GameWinScene, LevelSelectScene, PauseScene, CreditsScene, SettingsScene]
+            scene: [StartScene, Level1Scene, TutorialScene, GameOverScene, GameWinScene, LevelSelectScene, PauseScene, CreditsScene, SettingsScene, SoonScene, ControlScene]
         };
 
         var game = new Phaser.Game(config);
