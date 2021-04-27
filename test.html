@@ -146,9 +146,12 @@
                 this.load.image('credit', 'testob/menucredits.png');
                 this.load.image('settings', 'testob/menusettings.png');
                 this.load.audio('bg', 'assets/media/music/Monplaisir - Soundtrack.mp3');
+                this.load.image('cube', 'testob/cube1.png')
+                
             },
 
             create: function() {
+                this.player = this.physics.add.sprite(100, 470, 'cube')
                 bgmusic = this.sound.add('bg');
                 if (!bgmusicIsPlaying) {
                     bgmusicIsPlaying = true;
@@ -160,6 +163,16 @@
                 }
 
                 this.add.image(0, 0, 'menuback').setOrigin(0);
+                this.add.sprite()
+                this.player = this.physics.add.sprite(650, 470, 'cube');
+               
+                  this.player.setGravityY(-350);
+
+                 if (this.player.y <= 200) {
+                    this.player.setGraivtyY(350);
+                } else if (this.player.y > 400) {
+                    this.player.setGravityY(-350);
+                }
                 window.addEventListener('touchstart', function() {
                     touchInput = true;
                 })
@@ -1758,7 +1771,8 @@
 
             create: function() {
                 this.add.image(0, 0, 'menuback').setOrigin(0);
-
+                
+                
                 this.mutebt = this.add.text(16, 16, '', {
                     fontSize: '32px',
                     fill: '#fff'
