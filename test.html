@@ -141,7 +141,7 @@
                 });
 
                 this.load.image('startbt', 'testob/menustart.png');
-                this.load.image('menuback', 'testob/back.png');
+                this.load.image('menuback', 'testob/menuback.png');
                 this.load.image('leader', 'testob/menuleader.png');
                 this.load.image('credit', 'testob/menucredits.png');
                 this.load.image('settings', 'testob/menusettings.png');
@@ -163,16 +163,16 @@
                 window.addEventListener('touchstart', function() {
                     touchInput = true;
                 })
-                this.startbutton = this.add.image(1280 / 2, 720 - 610, 'startbt').setInteractive({
+                this.startbutton = this.add.image(200, 72 , 'startbt').setInteractive({
                     cursor: 'pointer'
                 });
-                this.settingsbutton = this.add.image(1280 / 2, 720 - 455, 'settings').setInteractive({
+                this.settingsbutton = this.add.image(200, 230, 'settings').setInteractive({
                     cursor: 'pointer'
                 });
-                this.leaderbutton = this.add.image(1280 / 2, 720 - 300, 'leader').setInteractive({
+                this.leaderbutton = this.add.image(1100, 72, 'leader').setInteractive({
                     cursor: 'pointer'
                 });
-                this.creditsbutton = this.add.image(1280 / 2, 720 - 145, 'credit').setInteractive({
+                this.creditsbutton = this.add.image(1100, 230, 'credit').setInteractive({
                     cursor: 'pointer'
                 });
 
@@ -1595,7 +1595,7 @@
 
                 });
 
-                this.load.image('menuback', 'testob/back.png');
+                this.load.image('menuback', 'testob/menuback.png');
                 this.load.image('tutorial', 'testob/tutorial.png');
                 this.load.image('level1', 'testob/level1.png');
                 this.load.image('level2', 'testob/level2.png');
@@ -1605,19 +1605,19 @@
 
             create: function() {
                 this.add.image(0, 0, 'menuback').setOrigin(0);
-                this.menubt = this.add.image(1280 / 2, 600, 'menu').setInteractive({
+                this.menubt = this.add.image(1280 / 2, 650, 'menu').setInteractive({
                     cursor: 'pointer'
                 });
-                this.tutorialbt = this.add.image(360, 260, 'tutorial').setInteractive({
+                this.tutorialbt = this.add.image(200, 72 , 'tutorial').setInteractive({
                     cursor: 'pointer'
                 });
-                this.level1bt = this.add.image(840, 260, 'level1').setInteractive({
+                this.level1bt = this.add.image(200, 230, 'level1').setInteractive({
                     cursor: 'pointer'
                 });
-                this.level2bt = this.add.image(360, 400, 'level2').setInteractive({
+                this.level2bt = this.add.image(1100, 72, 'level2').setInteractive({
                     cursor: 'pointer'
                 });
-                this.level3bt = this.add.image(840, 400, 'level3').setInteractive({
+                this.level3bt = this.add.image(1100, 230, 'level3').setInteractive({
                     cursor: 'pointer'
                 });
 
@@ -1753,7 +1753,7 @@
                 this.load.image('gameRestart', 'testob/gamerestart.png');
                 this.load.image('menuReturn', 'testob/returnmenu.png');
                 this.load.image('levelSelect', 'testob/nextlevel.png');
-                this.load.image('menuback', 'testob/back.png');
+                this.load.image('menuback', 'testob/menuback.png');
             },
 
             create: function() {
@@ -2045,7 +2045,7 @@
 
                 });
 
-                this.load.image('menuback', 'testob/back.png');
+                this.load.image('menuback', 'testob/menuback.png');
                 this.load.image('menu', 'testob/returnmenu.png');
             },
 
@@ -2228,7 +2228,7 @@
                 });
 
                 this.load.image('menuReturn', 'testob/returnmenu.png');
-                this.load.image('menuback', 'testob/back.png');
+                this.load.image('menuback', 'testob/menuback.png');
             },
 
             create: function() {
