@@ -121,6 +121,7 @@
                     this.leaderbutton;
                     this.creditsbutton;
                     this.settingsbutton;
+                    this.player;
                 },
 
             preload: function() {
@@ -151,13 +152,11 @@
                 this.load.image('leader', 'testob/menuleader.png');
                 this.load.image('credit', 'testob/menucredits.png');
                 this.load.image('settings', 'testob/menusettings.png');
+                this.load.image('cube', 'testob/cube1.png');
                 this.load.audio('bg', 'assets/media/music/Monplaisir - Soundtrack.mp3');
-                this.load.image('cube', 'testob/cube1.png')
-                
             },
 
             create: function() {
-                this.player = this.physics.add.sprite(100, 470, 'cube')
                 bgmusic = this.sound.add('bg');
                 if (!bgmusicIsPlaying) {
                     bgmusicIsPlaying = true;
@@ -169,23 +168,7 @@
                 }
 
                 this.add.image(0, 0, 'menuback').setOrigin(0);
-<<<<<<< Updated upstream
-                this.add.sprite()
-                this.player = this.physics.add.sprite(650, 470, 'cube');
-               
-                  this.player.setGravityY(-350);
 
-                 if (this.player.y <= 200) {
-                    this.player.setGraivtyY(350);
-                } else if (this.player.y > 400) {
-                    this.player.setGravityY(-350);
-                }
-                window.addEventListener('touchstart', function() {
-                    touchInput = true;
-                })
-=======
-
->>>>>>> Stashed changes
                 this.startbutton = this.add.image(200, 72 , 'startbt').setInteractive({
                     cursor: 'pointer'
                 });
@@ -250,6 +233,20 @@
                 this.creditsbutton.on('pointerout', function(event) {
                     this.creditsbutton.setScale(1);
                 }, this);
+
+                this.player = this.physics.add.sprite(1280/2, 500, 'cube');
+                this.player.rotation+=0.78;
+                this.player.setGravityY(-300);
+                this.player.setImmovable(true);
+            },
+
+            update: function() {
+                if(this.player.y >=500) {
+                    this.player.setVelocityY(-100)
+                }
+                else if(this.player.y <=420) {
+                    this.player.setVelocityY(100)
+                }
             }
 
         });
@@ -1786,14 +1783,8 @@
             },
 
             create: function() {
-<<<<<<< Updated upstream
-                this.add.image(0, 0, 'menuback').setOrigin(0);
-                
-                
-=======
                 this.add.image(0, 0, 'menuback2').setOrigin(0);
 
->>>>>>> Stashed changes
                 this.mutebt = this.add.text(16, 16, '', {
                     fontFamily: 'Minecraft',
                     fontSize: '32px',
