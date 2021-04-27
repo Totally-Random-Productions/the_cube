@@ -1588,6 +1588,7 @@
                 this.level1bt;
                 this.level2bt;
                 this.level3bt;
+                this.player;
             },
 
             preload: function() {
@@ -1619,6 +1620,7 @@
                 this.load.image('level2', 'testob/level2.png');
                 this.load.image('level3', 'testob/level3.png');
                 this.load.image('menu', 'testob/returnmenu.png');
+                this.load.image('cube', 'testob/cube1.png');
             },
 
             create: function() {
@@ -1740,10 +1742,19 @@
                 this.level3bt.on('pointerout', function(event) {
                     this.level3bt.setScale(1);
                 }, this);
+                this.player = this.physics.add.sprite(1280/2, 500, 'cube');
+                this.player.rotation+=0.78;
+                this.player.setGravityY(-300);
+                this.player.setImmovable(true);
             },
 
             update: function() {
-
+                if(this.player.y >=500) {
+                    this.player.setVelocityY(-100)
+                }
+                else if(this.player.y <=420) {
+                    this.player.setVelocityY(100)
+                }
             }
 
         });
