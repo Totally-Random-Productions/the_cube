@@ -2642,7 +2642,8 @@
 
                 create: function() {
                     this.add.image(0, 0, 'menuback2').setOrigin(0);
-
+                    showControls = false;
+                    
                     if (!bgmusicIsPlaying) {
                         bgmusicIsPlaying = true;
                         bgmusic.play({
