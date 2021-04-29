@@ -38,11 +38,11 @@
             border-style: solid;
             border-width: 5px;
         }
+        
         @font-face {
-			font-family: "Minecraft";
-			src: url('assets/fonts/Minecraft.ttf');
-		}
-
+            font-family: "Minecraft";
+            src: url('assets/fonts/Minecraft.ttf');
+        }
     </style>
 
 </head>
@@ -169,7 +169,7 @@
 
                 this.add.image(0, 0, 'menuback').setOrigin(0);
 
-                this.startbutton = this.add.image(200, 72 , 'startbt').setInteractive({
+                this.startbutton = this.add.image(200, 72, 'startbt').setInteractive({
                     cursor: 'pointer'
                 });
                 this.settingsbutton = this.add.image(200, 230, 'settings').setInteractive({
@@ -234,17 +234,16 @@
                     this.creditsbutton.setScale(1);
                 }, this);
 
-                this.player = this.physics.add.sprite(1280/2, 500, 'cube');
-                this.player.rotation+=0.78;
+                this.player = this.physics.add.sprite(1280 / 2, 500, 'cube');
+                this.player.rotation += 0.78;
                 this.player.setGravityY(-300);
                 this.player.setImmovable(true);
             },
 
             update: function() {
-                if(this.player.y >=470) {
+                if (this.player.y >= 470) {
                     this.player.setVelocityY(-100)
-                }
-                else if(this.player.y <=420) {
+                } else if (this.player.y <= 420) {
                     this.player.setVelocityY(100)
                 }
             }
@@ -512,7 +511,12 @@
                 });
 
                 this.cursors = this.input.keyboard.createCursorKeys(); //creates inputs using the arrow keys
-                this.altControls = this.input.keyboard.addKeys({ 'up': Phaser.Input.Keyboard.KeyCodes.W, 'down': Phaser.Input.Keyboard.KeyCodes.S, 'left': Phaser.Input.Keyboard.KeyCodes.A, 'right': Phaser.Input.Keyboard.KeyCodes.D});
+                this.altControls = this.input.keyboard.addKeys({
+                    'up': Phaser.Input.Keyboard.KeyCodes.W,
+                    'down': Phaser.Input.Keyboard.KeyCodes.S,
+                    'left': Phaser.Input.Keyboard.KeyCodes.A,
+                    'right': Phaser.Input.Keyboard.KeyCodes.D
+                });
                 this.esc = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC); //sets up the escape button for input
                 this.cameras.main.startFollow(this.player, true, 0.05, 0.05); //makes the camera track the player. increasing the numbers makes the camera track faster
             },
@@ -1029,7 +1033,12 @@
                 this.timer.scrollFactorX = 0;
 
                 this.cursors = this.input.keyboard.createCursorKeys(); //creates inputs using the arrow keys
-                this.altControls = this.input.keyboard.addKeys({ 'up': Phaser.Input.Keyboard.KeyCodes.W, 'down': Phaser.Input.Keyboard.KeyCodes.S, 'left': Phaser.Input.Keyboard.KeyCodes.A, 'right': Phaser.Input.Keyboard.KeyCodes.D});
+                this.altControls = this.input.keyboard.addKeys({
+                    'up': Phaser.Input.Keyboard.KeyCodes.W,
+                    'down': Phaser.Input.Keyboard.KeyCodes.S,
+                    'left': Phaser.Input.Keyboard.KeyCodes.A,
+                    'right': Phaser.Input.Keyboard.KeyCodes.D
+                });
                 this.esc = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC); //sets up the escape button for input
                 this.cameras.main.startFollow(this.player, true, 0.05, 0.05); //makes the camera track the player. increasing the numbers makes the camera track faster
             },
@@ -1120,8 +1129,8 @@
 
                 }
 
-                if(this.axeIsThrown) {      
-                    this.axe.rotation+=0.2;
+                if (this.axeIsThrown) {
+                    this.axe.rotation += 0.2;
                 }
 
             },
@@ -1190,7 +1199,7 @@
                 }
                 console.log(this.axePower)
                 if (this.axePower) {
-                    this.axe.rotation=0;
+                    this.axe.rotation = 0;
                     this.axeIsThrown = false;
                     this.axe.x = this.player.x + 50;
                     this.axe.y = this.player.y - 55;
@@ -1206,7 +1215,7 @@
                         this.aimer.setVisible(false);
                         this.axePower = false;
                         this.axeIsThrown = true;
-                        this.axe.rotation+=0.2;
+                        this.axe.rotation += 0.2;
                         this.axeTimer = this.time.addEvent({
                             delay: 10000,
                             callback: this.axeDown,
@@ -1411,7 +1420,7 @@
                 });
 
                 this.cameras.main.fadeIn(3000);
-                this.add.image(0, 0, 'die').setOrigin(0); //Dark Souls end screen, will have to change but its a good placeholder
+                this.add.image(0, 0, 'die').setOrigin(0); //End screen
 
                 this.retrybt = this.add.image(250, 600, 'retry').setInteractive({
                     cursor: 'pointer'
@@ -1513,7 +1522,7 @@
                 });
 
                 this.cameras.main.fadeIn(3000);
-                this.add.image(0, 0, 'winner').setOrigin(0); //Dark Souls end screen, will have to change but its a good placeholder
+                this.add.image(0, 0, 'winner').setOrigin(0); //End screen
 
                 this.retrybt = this.add.image(250, 600, 'retry').setInteractive({
                     cursor: 'pointer'
@@ -1628,7 +1637,7 @@
                 this.menubt = this.add.image(1280 / 2, 650, 'menu').setInteractive({
                     cursor: 'pointer'
                 });
-                this.tutorialbt = this.add.image(200, 72 , 'tutorial').setInteractive({
+                this.tutorialbt = this.add.image(200, 72, 'tutorial').setInteractive({
                     cursor: 'pointer'
                 });
                 this.level1bt = this.add.image(200, 230, 'level1').setInteractive({
@@ -1680,16 +1689,14 @@
                         bgmusicIsPlaying = false;
                     }
 
-                    if(showControls) {
+                    if (showControls) {
                         this.scene.stop('levels');
                         this.scene.start('controls');
-                    }
-
-                    else if(!showControls) {
+                    } else if (!showControls) {
                         this.scene.stop('levels');
                         this.scene.start('tutorial');
                     }
-   
+
                 }, this);
 
                 this.tutorialbt.on('pointerover', function() {
@@ -1742,17 +1749,16 @@
                 this.level3bt.on('pointerout', function(event) {
                     this.level3bt.setScale(1);
                 }, this);
-                this.player = this.physics.add.sprite(1280/2, 500, 'cube');
-                this.player.rotation+=0.78;
+                this.player = this.physics.add.sprite(1280 / 2, 500, 'cube');
+                this.player.rotation += 0.78;
                 this.player.setGravityY(-300);
                 this.player.setImmovable(true);
             },
 
             update: function() {
-                if(this.player.y >=500) {
+                if (this.player.y >= 500) {
                     this.player.setVelocityY(-100)
-                }
-                else if(this.player.y <=420) {
+                } else if (this.player.y <= 420) {
                     this.player.setVelocityY(100)
                 }
             }
@@ -1940,7 +1946,7 @@
                     if (volumeLev < 1) {
                         volumeLev += 0.1;
                         trueVolumeLev = volumeLev.toFixed(1);
-                        this.volumebt.setText('Volume: ' + trueVolumeLev*10);
+                        this.volumebt.setText('Volume: ' + trueVolumeLev * 10);
                         if (tutorialmusicIsPlaying) {
                             tutorialmusic.setVolume(volumeLev);
                         }
@@ -1960,7 +1966,7 @@
                         volumeLev -= 0.1;
                         trueVolumeLev = volumeLev.toFixed(1);
 
-                        this.volumebt.setText('Volume: ' + trueVolumeLev*10);
+                        this.volumebt.setText('Volume: ' + trueVolumeLev * 10);
                         if (tutorialmusicIsPlaying) {
                             tutorialmusic.setVolume(volumeLev);
                         }
@@ -1995,7 +2001,7 @@
                 if (!this.muted) {
                     trueVolumeLev = volumeLev.toFixed(1);
                     this.mutebt.setText('Mute');
-                    this.volumebt.setText('Volume: ' + trueVolumeLev*10);
+                    this.volumebt.setText('Volume: ' + trueVolumeLev * 10);
                     this.mutebt.on('pointerdown', function() {
                         volumeLev = 0;
                         this.muted = true;
@@ -2017,7 +2023,7 @@
                 } else if (this.muted) {
                     trueVolumeLev = volumeLev.toFixed(1);
                     this.mutebt.setText('Unmute')
-                    this.volumebt.setText('Volume: ' + trueVolumeLev*10);
+                    this.volumebt.setText('Volume: ' + trueVolumeLev * 10);
                     this.mutebt.on('pointerdown', function() {
                         volumeLev = 1;
                         this.muted = false;
@@ -2378,7 +2384,7 @@
                         trueVolumeLev = volumeLev.toFixed(1);
                         console.log(volumeLev)
                         console.log(trueVolumeLev)
-                        this.volumebt.setText('Volume: ' + trueVolumeLev*10);
+                        this.volumebt.setText('Volume: ' + trueVolumeLev * 10);
                         if (tutorialmusicIsPlaying) {
                             tutorialmusic.setVolume(volumeLev);
                         }
@@ -2398,7 +2404,7 @@
                         volumeLev -= 0.1;
                         trueVolumeLev = volumeLev.toFixed(1);
 
-                        this.volumebt.setText('Volume: ' + trueVolumeLev*10);
+                        this.volumebt.setText('Volume: ' + trueVolumeLev * 10);
                         if (tutorialmusicIsPlaying) {
                             tutorialmusic.setVolume(volumeLev);
                         }
@@ -2447,7 +2453,7 @@
                 if (!this.muted) {
                     trueVolumeLev = volumeLev.toFixed(1);
                     this.mutebt.setText('Mute');
-                    this.volumebt.setText('Volume: ' + trueVolumeLev*10);
+                    this.volumebt.setText('Volume: ' + trueVolumeLev * 10);
                     this.mutebt.on('pointerdown', function() {
                         volumeLev = 0;
                         this.muted = true;
@@ -2469,7 +2475,7 @@
                 } else if (this.muted) {
                     trueVolumeLev = volumeLev.toFixed(1);
                     this.mutebt.setText('Unmute')
-                    this.volumebt.setText('Volume: ' + trueVolumeLev*10);
+                    this.volumebt.setText('Volume: ' + trueVolumeLev * 10);
                     this.mutebt.on('pointerdown', function() {
                         volumeLev = 1;
                         this.muted = false;
@@ -2507,7 +2513,96 @@
 
             init: function() //called everytime the scene restarts. I use it to declare variables, 'this' is used so that the scope of the variables is only within this scene.
                 {
+                    this.levelbt;
+                },
+
+            preload: function() {
+                var progressbar = this.add.graphics();
+                var percent = this.add.text(100, 430, '%', {
+                    fontSize: '32px',
+                    fontFamily: 'Minecraft',
+                    fill: '#fff'
+                });
+
+                this.load.on('progress', function(value) {
+                    progressbar.clear();
+                    percent.setText(value.toFixed(2) * 100 + '%');
+                    progressbar.fillStyle(0x355f76, 1);
+                    progressbar.fillRect(100, 360, 1080 * value, 60);
+
+                });
+
+                this.load.on('complete', function() {
+
+                    progressbar.destroy();
+                    percent.destroy();
+
+                });
+
+                this.load.image('levelSelect', 'testob/nextlevel.png');
+                this.load.image('menuback2', 'testob/menuback2.png');
+            },
+
+            create: function() {
+                this.add.image(0, 0, 'menuback2').setOrigin(0);
+
+                if (!bgmusicIsPlaying) {
+                    bgmusicIsPlaying = true;
+                    bgmusic.play({
+                        loop: false
+                    });
+                }
+
+                this.add.text(1280 / 4, 720 - 420, 'Coming Soon', {
+                    fontSize: '108px',
+                    fontFamily: 'Minecraft',
+                    fill: '#fff'
+                });
+
+                this.levelbt = this.add.image(1280 / 2, 720 - 145, 'levelSelect').setInteractive({
+                    cursor: 'pointer'
+                });
+
+                this.levelbt.on('pointerdown', function() {
+                    if (tutorialmusicIsPlaying) {
+                        tutorialmusicIsPlaying = false;
+                        tutorialmusic.stop();
+                    }
+
+                    if (music1IsPlaying) {
+                        music1IsPlaying = false;
+                        music1.stop();
+                    }
+                    this.scene.stop('soon');
+                    this.scene.start('levels');
+                }, this);
+
+                this.levelbt.on('pointerover', function() {
+                    this.levelbt.setScale(1.2);
+                }, this);
+
+                this.levelbt.on('pointerout', function() {
+                    this.levelbt.setScale(1);
+                }, this);
+            },
+        });
+
+        var ControlScene = new Phaser.Class({
+
+            Extends: Phaser.Scene,
+
+            initialize:
+
+                function SettingsScene() {
+                Phaser.Scene.call(this, {
+                    key: 'controls'
+                });
+            },
+
+            init: function() //called everytime the scene restarts. I use it to declare variables, 'this' is used so that the scope of the variables is only within this scene.
+                {
                     this.menubt;
+                    this.continuebt;
                 },
 
             preload: function() {
@@ -2535,10 +2630,21 @@
 
                 this.load.image('menuReturn', 'testob/returnmenu.png');
                 this.load.image('menuback2', 'testob/menuback2.png');
+                this.load.image('continue', 'testob/continue.png');
+                this.load.image('up', 'testob/Arrow_Up_Key_Light.png');
+                this.load.image('down', 'testob/Arrow_Down_Key_Light.png');
+                this.load.image('left', 'testob/Arrow_Left_Key_Light.png');
+                this.load.image('right', 'testob/Arrow_Right_Key_Light.png');
+                this.load.image('w', 'testob/W_Key_Light.png');
+                this.load.image('a', 'testob/A_Key_Light.png');
+                this.load.image('s', 'testob/S_Key_Light.png');
+                this.load.image('d', 'testob/D_Key_Light.png');
+                this.load.image('mouse', 'testob/Mouse_Left_Key_Light.png');
             },
 
             create: function() {
                 this.add.image(0, 0, 'menuback2').setOrigin(0);
+                showControls = false;
 
                 if (!bgmusicIsPlaying) {
                     bgmusicIsPlaying = true;
@@ -2547,14 +2653,75 @@
                     });
                 }
 
-                this.add.text(1280 / 4, 720 - 420, 'Coming Soon', {
-                    fontSize: '108px',
+                this.menubt = this.add.image(1280 / 2, 720 - 145, 'menuReturn').setInteractive({
+                    cursor: 'pointer'
+                });
+
+                this.continuebt = this.add.image(1280 / 2, 720 - 300, 'continue').setInteractive({
+                    cursor: 'pointer'
+                });
+
+                this.add.image(250, 150, 'up');
+                this.add.image(250, 220, 'down');
+                this.add.image(180, 220, 'left');
+                this.add.image(320, 220, 'right');
+
+                this.add.image(1030, 150, 'w');
+                this.add.image(1030, 220, 's');
+                this.add.image(960, 220, 'a');
+                this.add.image(1100, 220, 'd');
+
+                this.add.image(640, 220, 'mouse');
+
+                this.add.text(50, 250, 'Move left', {
+                    fontSize: '24px',
                     fontFamily: 'Minecraft',
                     fill: '#fff'
                 });
-
-                this.menubt = this.add.image(1280 / 2, 720 - 145, 'menuReturn').setInteractive({
-                    cursor: 'pointer'
+                this.add.text(350, 250, 'Move right', {
+                    fontSize: '24px',
+                    fontFamily: 'Minecraft',
+                    fill: '#fff'
+                });
+                this.add.text(210, 260, 'Crouch', {
+                    fontSize: '24px',
+                    fontFamily: 'Minecraft',
+                    fill: '#fff'
+                });
+                this.add.text(220, 80, 'Jump', {
+                    fontSize: '24px',
+                    fontFamily: 'Minecraft',
+                    fill: '#fff'
+                });
+                this.add.text(535, 150, 'Click to shoot axe', {
+                    fontSize: '24px',
+                    fontFamily: 'Minecraft',
+                    fill: '#fff'
+                });
+                this.add.text(570, 270, 'Move to aim', {
+                    fontSize: '24px',
+                    fontFamily: 'Minecraft',
+                    fill: '#fff'
+                });
+                this.add.text(830, 250, 'Move left', {
+                    fontSize: '24px',
+                    fontFamily: 'Minecraft',
+                    fill: '#fff'
+                });
+                this.add.text(1130, 250, 'Move right', {
+                    fontSize: '24px',
+                    fontFamily: 'Minecraft',
+                    fill: '#fff'
+                });
+                this.add.text(990, 260, 'Crouch', {
+                    fontSize: '24px',
+                    fontFamily: 'Minecraft',
+                    fill: '#fff'
+                });
+                this.add.text(1000, 80, 'Jump', {
+                    fontSize: '24px',
+                    fontFamily: 'Minecraft',
+                    fill: '#fff'
                 });
 
                 this.menubt.on('pointerdown', function() {
@@ -2571,7 +2738,7 @@
                         bgmusic.stop();
                         bgmusicIsPlaying = false;
                     }
-                    this.scene.stop('soon');
+                    this.scene.stop('controls');
                     this.scene.start('start');
                 }, this);
 
@@ -2582,199 +2749,34 @@
                 this.menubt.on('pointerout', function(event) {
                     this.menubt.setScale(1);
                 }, this);
-            },
-            });
 
-            var ControlScene = new Phaser.Class({
-
-                Extends: Phaser.Scene,
-
-                initialize:
-
-                    function SettingsScene() {
-                    Phaser.Scene.call(this, {
-                        key: 'controls'
-                    });
-                },
-
-                init: function() //called everytime the scene restarts. I use it to declare variables, 'this' is used so that the scope of the variables is only within this scene.
-                    {
-                        this.menubt;
-                        this.continuebt;
-                    },
-
-                preload: function() {
-                    var progressbar = this.add.graphics();
-                    var percent = this.add.text(100, 430, '%', {
-                        fontSize: '32px',
-                        fontFamily: 'Minecraft',
-                        fill: '#fff'
-                    });
-
-                    this.load.on('progress', function(value) {
-                        progressbar.clear();
-                        percent.setText(value.toFixed(2) * 100 + '%');
-                        progressbar.fillStyle(0x355f76, 1);
-                        progressbar.fillRect(100, 360, 1080 * value, 60);
-
-                    });
-
-                    this.load.on('complete', function() {
-
-                        progressbar.destroy();
-                        percent.destroy();
-
-                    });
-
-                    this.load.image('menuReturn', 'testob/returnmenu.png');
-                    this.load.image('menuback2', 'testob/menuback2.png');
-                    this.load.image('continue', 'testob/continue.png');
-                    this.load.image('up', 'testob/Arrow_Up_Key_Light.png');
-                    this.load.image('down', 'testob/Arrow_Down_Key_Light.png');
-                    this.load.image('left', 'testob/Arrow_Left_Key_Light.png');
-                    this.load.image('right', 'testob/Arrow_Right_Key_Light.png');
-                    this.load.image('w', 'testob/W_Key_Light.png');
-                    this.load.image('a', 'testob/A_Key_Light.png');
-                    this.load.image('s', 'testob/S_Key_Light.png');
-                    this.load.image('d', 'testob/D_Key_Light.png');
-                    this.load.image('mouse', 'testob/Mouse_Left_Key_Light.png');
-                },
-
-                create: function() {
-                    this.add.image(0, 0, 'menuback2').setOrigin(0);
-                    showControls = false;
-                    
-                    if (!bgmusicIsPlaying) {
-                        bgmusicIsPlaying = true;
-                        bgmusic.play({
-                            loop: false
-                        });
+                this.continuebt.on('pointerdown', function() {
+                    if (tutorialmusicIsPlaying) {
+                        tutorialmusicIsPlaying = false;
+                        tutorialmusic.stop();
                     }
 
-                    this.menubt = this.add.image(1280 / 2, 720 - 145, 'menuReturn').setInteractive({
-                        cursor: 'pointer'
-                    });
+                    if (music1IsPlaying) {
+                        music1IsPlaying = false;
+                        music1.stop();
+                    }
+                    if (bgmusicIsPlaying) {
+                        bgmusic.stop();
+                        bgmusicIsPlaying = false;
+                    }
+                    this.scene.stop('controls');
+                    this.scene.start('tutorial');
+                }, this);
 
-                    this.continuebt = this.add.image(1280 / 2, 720 - 300, 'continue').setInteractive({
-                        cursor: 'pointer'
-                    });
+                this.continuebt.on('pointerover', function() {
+                    this.continuebt.setScale(1.2);
+                }, this);
 
-                    this.add.image(250, 150, 'up');
-                    this.add.image(250, 220, 'down');
-                    this.add.image(180, 220, 'left');
-                    this.add.image(320, 220, 'right');
-
-                    this.add.image(1030, 150, 'w');
-                    this.add.image(1030, 220, 's');
-                    this.add.image(960, 220, 'a');
-                    this.add.image(1100, 220, 'd');
-
-                    this.add.image(640, 220, 'mouse');
-
-                    this.add.text(50, 250, 'Move left', {
-                        fontSize: '24px',
-                        fontFamily: 'Minecraft',
-                        fill: '#fff'
-                    });
-                    this.add.text(350, 250, 'Move right', {
-                        fontSize: '24px',
-                        fontFamily: 'Minecraft',
-                        fill: '#fff'
-                    });
-                    this.add.text(210, 260, 'Crouch', {
-                        fontSize: '24px',
-                        fontFamily: 'Minecraft',
-                        fill: '#fff'
-                    });
-                    this.add.text(220, 80, 'Jump', {
-                        fontSize: '24px',
-                        fontFamily: 'Minecraft',
-                        fill: '#fff'
-                    });
-                    this.add.text(535, 150, 'Click to shoot axe', {
-                        fontSize: '24px',
-                        fontFamily: 'Minecraft',
-                        fill: '#fff'
-                    });
-                    this.add.text(570, 270, 'Move to aim', {
-                        fontSize: '24px',
-                        fontFamily: 'Minecraft',
-                        fill: '#fff'
-                    });
-                    this.add.text(830, 250, 'Move left', {
-                        fontSize: '24px',
-                        fontFamily: 'Minecraft',
-                        fill: '#fff'
-                    });
-                    this.add.text(1130, 250, 'Move right', {
-                        fontSize: '24px',
-                        fontFamily: 'Minecraft',
-                        fill: '#fff'
-                    });
-                    this.add.text(990, 260, 'Crouch', {
-                        fontSize: '24px',
-                        fontFamily: 'Minecraft',
-                        fill: '#fff'
-                    });
-                    this.add.text(1000, 80, 'Jump', {
-                        fontSize: '24px',
-                        fontFamily: 'Minecraft',
-                        fill: '#fff'
-                    });
-
-                    this.menubt.on('pointerdown', function() {
-                        if (tutorialmusicIsPlaying) {
-                            tutorialmusicIsPlaying = false;
-                            tutorialmusic.stop();
-                        }
-
-                        if (music1IsPlaying) {
-                            music1IsPlaying = false;
-                            music1.stop();
-                        }
-                        if (bgmusicIsPlaying) {
-                            bgmusic.stop();
-                            bgmusicIsPlaying = false;
-                        }
-                        this.scene.stop('controls');
-                        this.scene.start('start');
-                    }, this);
-
-                    this.menubt.on('pointerover', function() {
-                        this.menubt.setScale(1.2);
-                    }, this);
-
-                    this.menubt.on('pointerout', function(event) {
-                        this.menubt.setScale(1);
-                    }, this);
-
-                    this.continuebt.on('pointerdown', function() {
-                        if (tutorialmusicIsPlaying) {
-                            tutorialmusicIsPlaying = false;
-                            tutorialmusic.stop();
-                        }
-
-                        if (music1IsPlaying) {
-                            music1IsPlaying = false;
-                            music1.stop();
-                        }
-                        if (bgmusicIsPlaying) {
-                            bgmusic.stop();
-                            bgmusicIsPlaying = false;
-                        }
-                        this.scene.stop('controls');
-                        this.scene.start('tutorial');
-                    }, this);
-
-                    this.continuebt.on('pointerover', function() {
-                        this.continuebt.setScale(1.2);
-                    }, this);
-
-                    this.continuebt.on('pointerout', function(event) {
-                        this.continuebt.setScale(1);
-                    }, this);
-                },
-                });
+                this.continuebt.on('pointerout', function(event) {
+                    this.continuebt.setScale(1);
+                }, this);
+            },
+        });
 
         var config = {
             type: Phaser.CANVAS,
