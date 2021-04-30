@@ -724,6 +724,7 @@
 
 
                 if (this.isOnGround == true) {
+                    level = 'level1';
                     obj.disableBody(true, true);
                     this.player.setVelocityX(0); //U cud also use this but
                     this.input.disable = true //input disable makes the player not be able to do anything whatsoever
@@ -1324,6 +1325,7 @@
 
 
                 if (this.isOnGround == true) {
+                    level = 'level2';
                     obj.disableBody(true, true);
                     this.player.setVelocityX(0); //U cud also use this but
                     this.input.disable = true //input disable makes the player not be able to do anything whatsoever
@@ -1397,7 +1399,7 @@
             preload: function() {
                 this.load.image('die', 'testob/die.png');
                 this.load.image('retry', 'testob/playagain.png');
-                this.load.image('next', 'testob/nextlevel.png');
+                this.load.image('next', 'testob/selectlevel.png');
                 this.load.audio('dead', 'assets/media/music/mixkit-player-losing-or-failing-2042.wav');
             },
 
@@ -1545,7 +1547,13 @@
                 });
                 this.nextbt.on('pointerdown', function() {
                     this.scene.stop('win');
-                    this.scene.start('levels');
+                    if(level === 'tutorial' || level === 'level1') {
+                        this.scene.start(level);
+                    }
+                    else {
+                        this.scene.start('soon');
+                    }
+
                 }, this);
 
                 this.nextbt.on('pointerover', function() {
@@ -1684,15 +1692,16 @@
                 }, this);
 
                 this.tutorialbt.on('pointerdown', function() {
-                    if (bgmusicIsPlaying) {
-                        bgmusic.stop();
-                        bgmusicIsPlaying = false;
-                    }
 
                     if (showControls) {
                         this.scene.stop('levels');
                         this.scene.start('controls');
                     } else if (!showControls) {
+
+                        if (bgmusicIsPlaying) {
+                            bgmusic.stop();
+                            bgmusicIsPlaying = false;
+                        }
                         this.scene.stop('levels');
                         this.scene.start('tutorial');
                     }
@@ -1795,7 +1804,7 @@
                 this.load.image('gameReturn', 'testob/returngame.png');
                 this.load.image('gameRestart', 'testob/gamerestart.png');
                 this.load.image('menuReturn', 'testob/returnmenu.png');
-                this.load.image('levelSelect', 'testob/nextlevel.png');
+                this.load.image('levelSelect', 'testob/selectlevel.png');
                 this.load.image('menuback2', 'testob/menuback2.png');
             },
 
@@ -2539,7 +2548,7 @@
 
                 });
 
-                this.load.image('levelSelect', 'testob/nextlevel.png');
+                this.load.image('levelSelect', 'testob/selectlevel.png');
                 this.load.image('menuback2', 'testob/menuback2.png');
             },
 
