@@ -724,6 +724,7 @@
 
 
                 if (this.isOnGround == true) {
+                    level = 'level1';
                     obj.disableBody(true, true);
                     this.player.setVelocityX(0); //U cud also use this but
                     this.input.disable = true //input disable makes the player not be able to do anything whatsoever
@@ -1324,6 +1325,7 @@
 
 
                 if (this.isOnGround == true) {
+                    level = 'level2';
                     obj.disableBody(true, true);
                     this.player.setVelocityX(0); //U cud also use this but
                     this.input.disable = true //input disable makes the player not be able to do anything whatsoever
@@ -1438,7 +1440,7 @@
                     this.retrybt.setScale(1);
                 }, this);
 
-                this.nextbt = this.add.image(650, 600, 'next').setInteractive({
+                this.nextbt = this.add.image(650, 600, 'select').setInteractive({
                     cursor: 'pointer'
                 });
                 this.nextbt.on('pointerdown', function() {
@@ -1545,7 +1547,12 @@
                 });
                 this.nextbt.on('pointerdown', function() {
                     this.scene.stop('win');
-                    this.scene.start('levels');
+                    if (level === 'tutorial' || level === 'level1') {
+                        this.scene.start(level);
+                    } else {
+                        this.scene.start('soon');
+                    }
+
                 }, this);
 
                 this.nextbt.on('pointerover', function() {
@@ -1684,15 +1691,16 @@
                 }, this);
 
                 this.tutorialbt.on('pointerdown', function() {
-                    if (bgmusicIsPlaying) {
-                        bgmusic.stop();
-                        bgmusicIsPlaying = false;
-                    }
 
                     if (showControls) {
                         this.scene.stop('levels');
                         this.scene.start('controls');
                     } else if (!showControls) {
+
+                        if (bgmusicIsPlaying) {
+                            bgmusic.stop();
+                            bgmusicIsPlaying = false;
+                        }
                         this.scene.stop('levels');
                         this.scene.start('tutorial');
                     }
