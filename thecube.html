@@ -115,9 +115,11 @@
                 Phaser.Scene.call(this, {
                     key: 'start',
                     pack: {
-                        files: [
-                            { type: 'image', key: 'loading', url: 'assets/testob/loading.png' }
-                        ]
+                        files: [{
+                            type: 'image',
+                            key: 'loading',
+                            url: 'assets/testob/loading.png'
+                        }]
                     }
                 });
             },
@@ -267,9 +269,11 @@
                 Phaser.Scene.call(this, {
                     key: 'tutorial',
                     pack: {
-                        files: [
-                            { type: 'image', key: 'loading', url: 'assets/testob/loading.png' }
-                        ]
+                        files: [{
+                            type: 'image',
+                            key: 'loading',
+                            url: 'assets/testob/loading.png'
+                        }]
                     }
                 });
             },
@@ -1612,9 +1616,11 @@
                 Phaser.Scene.call(this, {
                     key: 'levels',
                     pack: {
-                        files: [
-                            { type: 'image', key: 'loading', url: 'assets/testob/loading.png' }
-                        ]
+                        files: [{
+                            type: 'image',
+                            key: 'loading',
+                            url: 'assets/testob/loading.png'
+                        }]
                     }
                 });
             },
@@ -1739,7 +1745,7 @@
                     this.tutorialbt.setScale(1);
                 }, this);
 
-                if(beatTutorial) {
+                if (beatTutorial) {
                     this.level1bt.setInteractive({
                         cursor: 'pointer'
                     });
@@ -1798,7 +1804,7 @@
                 this.platform = this.physics.add.sprite(300, 455, 'cube').setDisplaySize(700, 70);
                 this.platform.body.setGravityY(-300);
                 this.platform.setImmovable(true);
-                this.platform.setVisible(false);               
+                this.platform.setVisible(false);
 
                 this.platform1 = this.physics.add.sprite(1100, 455, 'cube').setDisplaySize(300, 70);
                 this.platform1.body.setGravityY(-300);
@@ -1809,17 +1815,15 @@
             },
 
             update: function() {
-                if(!this.pressed) {
+                if (!this.pressed) {
                     if (this.player.x > 500) {
                         this.player.setVelocityX(-350)
-                    }
-                    else if(this.player.x < 100) {
+                    } else if (this.player.x < 100) {
                         this.player.setVelocityX(350)
                     }
-                }
-                else if(this.pressed) {
+                } else if (this.pressed) {
                     this.player.setVelocityX(350);
-                    if(this.player.x === 600) {
+                    if (this.player.x === 600) {
                         this.player.setVelocityY(-630)
                     }
                 }
@@ -2119,9 +2123,11 @@
                 Phaser.Scene.call(this, {
                     key: 'credits',
                     pack: {
-                        files: [
-                            { type: 'image', key: 'loading', url: 'assets/testob/loading.png' }
-                        ]
+                        files: [{
+                            type: 'image',
+                            key: 'loading',
+                            url: 'assets/testob/loading.png'
+                        }]
                     }
                 });
             },
@@ -2317,9 +2323,11 @@
                 Phaser.Scene.call(this, {
                     key: 'settings',
                     pack: {
-                        files: [
-                            { type: 'image', key: 'loading', url: 'assets/testob/loading.png' }
-                        ]
+                        files: [{
+                            type: 'image',
+                            key: 'loading',
+                            url: 'assets/testob/loading.png'
+                        }]
                     }
                 });
             },
@@ -2583,9 +2591,11 @@
                 Phaser.Scene.call(this, {
                     key: 'titlesoon',
                     pack: {
-                        files: [
-                            { type: 'image', key: 'loading', url: 'assets/testob/loading.png' }
-                        ]
+                        files: [{
+                            type: 'image',
+                            key: 'loading',
+                            url: 'assets/testob/loading.png'
+                        }]
                     }
                 });
             },
@@ -2648,12 +2658,12 @@
                         tutorialmusicIsPlaying = false;
                         tutorialmusic.stop();
                     }
-                    
+
                     if (bgmusicIsPlaying) {
                         bgmusic.stop();
                         bgmusicIsPlaying = false;
                     }
-                    
+
                     if (music1IsPlaying) {
                         music1IsPlaying = false;
                         music1.stop();
@@ -2682,9 +2692,11 @@
                 Phaser.Scene.call(this, {
                     key: 'lvlsoon',
                     pack: {
-                        files: [
-                            { type: 'image', key: 'loading', url: 'assets/testob/loading.png' }
-                        ]
+                        files: [{
+                            type: 'image',
+                            key: 'loading',
+                            url: 'assets/testob/loading.png'
+                        }]
                     }
                 });
             },
@@ -2775,9 +2787,11 @@
                 Phaser.Scene.call(this, {
                     key: 'controls',
                     pack: {
-                        files: [
-                            { type: 'image', key: 'loading', url: 'assets/testob/loading.png' }
-                        ]
+                        files: [{
+                            type: 'image',
+                            key: 'loading',
+                            url: 'assets/testob/loading.png'
+                        }]
                     }
                 });
             },
