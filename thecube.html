@@ -100,6 +100,7 @@
         var trueVolumeLev = volumeLev.toFixed(1);
         var autoRestart = false;
         var showControls = true;
+        var beatTutorial = false;
 
         /*creates a new scene while extending the Phaser Scene Class 
                                                                                                                                                                                                                                                                                                                                                                         so that the default functions remain the same*/
@@ -724,6 +725,7 @@
 
 
                 if (this.isOnGround == true) {
+                    beatTutorial = true;
                     level = 'level1';
                     obj.disableBody(true, true);
                     this.player.setVelocityX(0); //U cud also use this but
@@ -1399,7 +1401,7 @@
             preload: function() {
                 this.load.image('die', 'assets/testob/die.png');
                 this.load.image('retry', 'assets/testob/playagain.png');
-                this.load.image('next', 'assets/testob/nextlevel.png');
+                this.load.image('select', 'assets/testob/selectlevel.png');
                 this.load.audio('dead', 'assets/media/music/mixkit-player-losing-or-failing-2042.wav');
             },
 
@@ -1647,9 +1649,8 @@
                 this.tutorialbt = this.add.image(200, 72, 'tutorial').setInteractive({
                     cursor: 'pointer'
                 });
-                this.level1bt = this.add.image(200, 230, 'level1').setInteractive({
-                    cursor: 'pointer'
-                });
+                this.level1bt = this.add.image(200, 230, 'level1');
+
                 this.level2bt = this.add.image(1100, 72, 'level2').setInteractive({
                     cursor: 'pointer'
                 });
@@ -1714,6 +1715,12 @@
                 this.tutorialbt.on('pointerout', function() {
                     this.tutorialbt.setScale(1);
                 }, this);
+
+                if(beatTutorial) {
+                    this.level1bt.setInteractive({
+                        cursor: 'pointer'
+                    });
+                }
 
                 this.level1bt.on('pointerdown', function() {
                     if (bgmusicIsPlaying) {
