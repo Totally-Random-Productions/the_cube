@@ -1399,7 +1399,7 @@
             preload: function() {
                 this.load.image('die', 'testob/die.png');
                 this.load.image('retry', 'testob/playagain.png');
-                this.load.image('next', 'testob/selectlevel.png');
+                this.load.image('select', 'testob/selectlevel.png');
                 this.load.audio('dead', 'assets/media/music/mixkit-player-losing-or-failing-2042.wav');
             },
 
@@ -1440,7 +1440,7 @@
                     this.retrybt.setScale(1);
                 }, this);
 
-                this.nextbt = this.add.image(650, 600, 'next').setInteractive({
+                this.nextbt = this.add.image(650, 600, 'select').setInteractive({
                     cursor: 'pointer'
                 });
                 this.nextbt.on('pointerdown', function() {
