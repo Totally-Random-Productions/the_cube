@@ -101,6 +101,7 @@
         var autoRestart = false;
         var showControls = true;
         var beatTutorial = false;
+        var levelRestart;
 
         /*creates a new scene while extending the Phaser Scene Class 
                                                                                                                                                                                                                                                                                                                                                                         so that the default functions remain the same*/
@@ -349,7 +350,7 @@
             create: function() {
                 this.cameras.main.setBounds(0, 0, 1280 * 2, 720); //stops the camera from leaving the game area
                 this.physics.world.setBounds(0, 0, 1280 * 2, 720); //sets the game area where physics is applied
-
+                levelRestart = 'tutorial';
                 tutorialmusic = this.sound.add('tutorialSound');
 
                 if (!tutorialmusicIsPlaying) {
@@ -879,7 +880,7 @@
                 this.physics.world.setBounds(0, 0, 1280 * 4, 720); //sets the game area where physics is applied
 
                 music1 = this.sound.add('level1Sound');
-
+                levelRestart = 'level1';
                 if (!music1IsPlaying) {
                     music1IsPlaying = true;
                     music1.play({
@@ -1431,7 +1432,7 @@
                 });
                 this.retrybt.on('pointerdown', function() {
                     this.scene.stop('over');
-                    this.scene.start(level);
+                    this.scene.start(levelRestart);
                 }, this);
 
                 this.retrybt.on('pointerover', function() {
@@ -1533,7 +1534,7 @@
                 });
                 this.retrybt.on('pointerdown', function() {
                     this.scene.stop('win');
-                    this.scene.start(level);
+                    this.scene.start(levelRestart);
                 }, this);
 
                 this.retrybt.on('pointerover', function() {
@@ -1810,7 +1811,7 @@
                 this.load.image('gameReturn', 'assets/testob/returngame.png');
                 this.load.image('gameRestart', 'assets/testob/gamerestart.png');
                 this.load.image('menuReturn', 'assets/testob/returnmenu.png');
-                this.load.image('levelSelect', 'assets/testob/nextlevel.png');
+                this.load.image('levelSelect', 'assets/testob/selectlevel.png');
                 this.load.image('menuback2', 'assets/testob/menuback2.png');
             },
 
@@ -2676,7 +2677,6 @@
                         tutorialmusicIsPlaying = false;
                         tutorialmusic.stop();
                     }
-                    
                     if (music1IsPlaying) {
                         music1IsPlaying = false;
                         music1.stop();
