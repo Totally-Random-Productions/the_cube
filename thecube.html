@@ -1327,7 +1327,7 @@
 
 
                 if (this.isOnGround == true) {
-                    level = 'level2';
+                    level = 'lvlsoon';
                     obj.disableBody(true, true);
                     this.player.setVelocityX(0); //U cud also use this but
                     this.input.disable = true //input disable makes the player not be able to do anything whatsoever
@@ -1552,7 +1552,7 @@
                     if (level === 'tutorial' || level === 'level1') {
                         this.scene.start(level);
                     } else {
-                        this.scene.start('soon');
+                        this.scene.start('lvlsoon');
                     }
 
                 }, this);
@@ -1679,7 +1679,7 @@
                         bgmusic.stop();
                         bgmusicIsPlaying = false;
                     }
-                    this.scene.stop('credits');
+                    this.scene.stop('levels');
                     this.scene.start('start');
                 }, this);
 
@@ -2583,7 +2583,12 @@
                         tutorialmusicIsPlaying = false;
                         tutorialmusic.stop();
                     }
-
+                    
+                    if (bgmusicIsPlaying) {
+                        bgmusic.stop();
+                        bgmusicIsPlaying = false;
+                    }
+                    
                     if (music1IsPlaying) {
                         music1IsPlaying = false;
                         music1.stop();
@@ -2642,7 +2647,7 @@
 
                 });
 
-                this.load.image('levelSelect', 'assets/testob/nextlevel.png');
+                this.load.image('levelSelect', 'assets/testob/selectlevel.png');
                 this.load.image('menuback2', 'assets/testob/menuback2.png');
             },
 
@@ -2671,7 +2676,7 @@
                         tutorialmusicIsPlaying = false;
                         tutorialmusic.stop();
                     }
-
+                    
                     if (music1IsPlaying) {
                         music1IsPlaying = false;
                         music1.stop();
